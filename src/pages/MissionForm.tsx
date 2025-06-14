@@ -22,6 +22,7 @@ import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 
+// Zod schema ne comporte pas de "name"
 const missionSchema = z.object({
   ref: z.string().min(1, "Référence obligatoire"),
   client: z.string().min(1, "Client obligatoire"),
@@ -52,7 +53,6 @@ export default function MissionForm({ editMode = false }: { editMode?: boolean }
           }
           setDefaultValues({
             ...data,
-            // date: data.date ? data.date.split("T")[0] : ""
           });
           setLoading(false);
         });
@@ -81,11 +81,12 @@ export default function MissionForm({ editMode = false }: { editMode?: boolean }
     // eslint-disable-next-line
   }, [defaultValues]);
 
+  // No reference to 'name' in values or insert/update
   const onSubmit = async (values: any) => {
     setLoading(true);
     try {
       if (editMode && params.id) {
-        // Update
+        // UPDATE, pas de champ 'name'
         const { error } = await supabase.from("missions").update({
           ...values,
           updated_at: new Date().toISOString()
@@ -94,7 +95,7 @@ export default function MissionForm({ editMode = false }: { editMode?: boolean }
         toast({ title: "Mission mise à jour", description: "Les modifications ont été enregistrées." });
         navigate(`/missions/${params.id}`);
       } else {
-        // Création
+        // INSERT, pas de champ 'name'
         const user = (await supabase.auth.getUser()).data.user;
         if (!user) throw new Error("Utilisateur non authentifié");
         const { error } = await supabase.from("missions").insert({
@@ -114,7 +115,6 @@ export default function MissionForm({ editMode = false }: { editMode?: boolean }
     }
   };
 
-  // DatePicker (recommandation shadcn)
   const [datePickerOpen, setDatePickerOpen] = React.useState(false);
 
   return (
