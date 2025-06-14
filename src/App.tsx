@@ -27,7 +27,6 @@ const App = () => (
           <AuthProvider>
             <Header />
             <Routes>
-              {/* REDIRECT root vers dashboard */}
               <Route path="/" element={<Navigate to="/dashboard" />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/auth" element={<Auth />} />
