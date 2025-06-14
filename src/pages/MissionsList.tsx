@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -50,7 +49,7 @@ export default function MissionsList() {
 
   // Supprimer une mission
   const queryClient = useQueryClient();
-  const { mutate: deleteMission, isLoading: isDeleting } = useMutation({
+  const { mutate: deleteMission, isPending: isDeleting } = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("missions").delete().eq("id", id);
       if (error) throw new Error(error.message);
@@ -167,7 +166,17 @@ export default function MissionsList() {
         <Pagination className="mt-6">
           <PaginationContent>
             <PaginationItem>
-              <PaginationPrevious onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} />
+              {page === 1 ? (
+                <span
+                  className="opacity-50 select-none pointer-events-none gap-1 pl-2.5 inline-flex items-center"
+                  aria-disabled="true"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                  <span>Previous</span>
+                </span>
+              ) : (
+                <PaginationPrevious onClick={() => setPage(p => Math.max(1, p - 1))} />
+              )}
             </PaginationItem>
             {[...Array(pageCount)].map((_, i) => (
               <PaginationItem key={i + 1}>
@@ -177,7 +186,17 @@ export default function MissionsList() {
               </PaginationItem>
             ))}
             <PaginationItem>
-              <PaginationNext onClick={() => setPage(p => Math.min(pageCount, p + 1))} disabled={page === pageCount} />
+              {page === pageCount ? (
+                <span
+                  className="opacity-50 select-none pointer-events-none gap-1 pr-2.5 inline-flex items-center"
+                  aria-disabled="true"
+                >
+                  <span>Next</span>
+                  <ChevronRight className="h-4 w-4" />
+                </span>
+              ) : (
+                <PaginationNext onClick={() => setPage(p => Math.min(pageCount, p + 1))} />
+              )}
             </PaginationItem>
           </PaginationContent>
         </Pagination>
