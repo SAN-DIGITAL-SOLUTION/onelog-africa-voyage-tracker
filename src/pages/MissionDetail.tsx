@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, Edit, FileText } from "lucide-react";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "@/components/ui/use-toast"; // Nettoyage : harmonisation
 import MissionOverview from "./mission-detail/MissionOverview";
 import MissionTrackingHistory from "./mission-detail/MissionTrackingHistory";
 import MissionExtraDetails from "./mission-detail/MissionExtraDetails";
