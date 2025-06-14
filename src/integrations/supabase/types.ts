@@ -9,7 +9,102 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      invoices: {
+        Row: {
+          amount: number
+          created_at: string | null
+          id: string
+          mission_ref: string | null
+          number: string
+          pdf_url: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string | null
+          id?: string
+          mission_ref?: string | null
+          number: string
+          pdf_url?: string | null
+          status: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          id?: string
+          mission_ref?: string | null
+          number?: string
+          pdf_url?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      missions: {
+        Row: {
+          chauffeur: string | null
+          client: string
+          created_at: string | null
+          date: string
+          id: string
+          ref: string
+          status: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          chauffeur?: string | null
+          client: string
+          created_at?: string | null
+          date: string
+          id?: string
+          ref: string
+          status: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          chauffeur?: string | null
+          client?: string
+          created_at?: string | null
+          date?: string
+          id?: string
+          ref?: string
+          status?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          id: string
+          message: string
+          sent_at: string | null
+          target: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          message: string
+          sent_at?: string | null
+          target: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          message?: string
+          sent_at?: string | null
+          target?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
