@@ -138,6 +138,41 @@ export type Database = {
         }
         Relationships: []
       }
+      tracking_points: {
+        Row: {
+          created_at: string
+          id: string
+          latitude: number
+          longitude: number
+          mission_id: string
+          recorded_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          latitude: number
+          longitude: number
+          mission_id: string
+          recorded_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          latitude?: number
+          longitude?: number
+          mission_id?: string
+          recorded_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tracking_points_mission_id_fkey"
+            columns: ["mission_id"]
+            isOneToOne: false
+            referencedRelation: "missions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           id: string
