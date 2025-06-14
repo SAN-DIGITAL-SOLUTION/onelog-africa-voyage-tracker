@@ -1,7 +1,8 @@
-
 import { useState, useEffect, useCallback, createContext, useContext } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { User, Session } from "@supabase/supabase-js";
+import { fetchUserRole } from "./useFetchUserRole";
+import { useRole } from "./useRole";
 
 type AuthContextType = {
   user: User | null;
@@ -19,12 +20,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Listen to auth state changes (session, user, token refresh)
+  // Ajout du contexte de rôle pour hydrater après connexion
+  const { setRole, setLoadingRole } = useRole ? useRole() : { setRole: () => {}, setLoadingRole: () => {} };
+
   useEffect(() => {
     // 1. Set up auth state listener first
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
+
+      // Charger le rôle _uniquement_ si l'utilisateur est connecté
+      if (session?.user) {
+        setLoadingRole?.(true);
+        fetchUserRole(session.user.id).then((role) => {
+          setRole?.(role);
+          setLoadingRole?.(false);
+        });
+      } else {
+        setRole?.(null);
+        setLoadingRole?.(false);
+      }
       setLoading(false);
     });
 
@@ -32,13 +47,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
+
+      // Idem ici
+      if (session?.user) {
+        setLoadingRole?.(true);
+        fetchUserRole(session.user.id).then((role) => {
+          setRole?.(role);
+          setLoadingRole?.(false);
+        });
+      } else {
+        setRole?.(null);
+        setLoadingRole?.(false);
+      }
+
       setLoading(false);
     });
 
     return () => {
       subscription.unsubscribe();
     };
-  }, []);
+  }, [setRole, setLoadingRole]);
 
   const signUp = useCallback(async (email: string, password: string) => {
     setLoading(true);

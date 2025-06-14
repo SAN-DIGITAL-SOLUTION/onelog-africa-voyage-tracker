@@ -12,6 +12,8 @@ import Invoices from "./pages/Invoices";
 import Notifications from "./pages/Notifications";
 import NotFound from "./pages/NotFound";
 import { AuthProvider } from "@/hooks/useAuth";
+import { RoleProvider } from "@/hooks/useRole";
+import NoRole from "@/pages/NoRole";
 
 const queryClient = new QueryClient();
 
@@ -21,20 +23,23 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <AuthProvider>
-          <Header />
-          <Routes>
-            {/* REDIRECT root vers dashboard */}
-            <Route path="/" element={<Navigate to="/dashboard" />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/missions/*" element={<Missions />} />
-            <Route path="/tracking" element={<TrackingMap />} />
-            <Route path="/invoices" element={<Invoices />} />
-            <Route path="/notifications" element={<Notifications />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </AuthProvider>
+        <RoleProvider>
+          <AuthProvider>
+            <Header />
+            <Routes>
+              {/* REDIRECT root vers dashboard */}
+              <Route path="/" element={<Navigate to="/dashboard" />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/missions/*" element={<Missions />} />
+              <Route path="/tracking" element={<TrackingMap />} />
+              <Route path="/invoices" element={<Invoices />} />
+              <Route path="/notifications" element={<Notifications />} />
+              <Route path="/no-role" element={<NoRole />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </AuthProvider>
+        </RoleProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

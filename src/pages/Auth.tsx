@@ -1,6 +1,7 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { useRole } from "@/hooks/useRole";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
@@ -12,14 +13,24 @@ export default function Auth() {
   const [processing, setProcessing] = useState(false);
 
   const { user, signIn, signUp, loading } = useAuth();
+  const { role, loadingRole } = useRole();
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Redirect if already logged
-  if (user) {
-    navigate((location.state as any)?.from?.pathname || "/dashboard", { replace: true });
-    return null;
-  }
+  // Redirection selon le rôle dès qu'on a tout chargé
+  useEffect(() => {
+    if (user && !loading && !loadingRole) {
+      if (role === "admin") {
+        navigate("/admin", { replace: true });
+      } else if (role === "exploiteur") {
+        navigate("/exploiteur", { replace: true });
+      } else if (role === "chauffeur") {
+        navigate("/chauffeur", { replace: true });
+      } else if (role === null) {
+        navigate("/no-role", { replace: true });
+      }
+    }
+  }, [user, loading, role, loadingRole, navigate]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -47,7 +58,7 @@ export default function Auth() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-onelog-nuit/5">
+    <div className="flex min-h-screen items-center justify-center bg-onelog-nuit/5 font-['PT Sans']">
       <div className="bg-white p-8 rounded-xl shadow-lg max-w-sm w-full">
         <h1 className="text-2xl font-semibold mb-4">
           {isLogin ? "Connexion" : "Inscription"}
@@ -82,7 +93,13 @@ export default function Auth() {
             className="w-full"
             disabled={processing || loading}
           >
-            {processing ? (isLogin ? "Connexion..." : "Inscription...") : isLogin ? "Se connecter" : "Créer un compte"}
+            {processing
+              ? isLogin
+                ? "Connexion..."
+                : "Inscription..."
+              : isLogin
+                ? "Se connecter"
+                : "Créer un compte"}
           </Button>
         </form>
         <div className="text-sm text-onelog-nuit mt-4 text-center">
