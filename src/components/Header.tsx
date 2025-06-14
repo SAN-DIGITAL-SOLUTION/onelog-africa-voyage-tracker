@@ -1,6 +1,8 @@
 
-import { NavLink } from "react-router-dom";
-import { BadgeCheck } from "lucide-react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { BadgeCheck, LogOut } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { Button } from "./ui/button";
 
 const headerLinks = [
   { to: "/dashboard", label: "Tableau de bord" },
@@ -11,6 +13,14 @@ const headerLinks = [
 ];
 
 export default function Header() {
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate("/auth");
+  };
+
   return (
     <header className="flex items-center justify-between py-4 px-0 border-b bg-white z-10">
       <div className="flex items-center gap-3">
@@ -19,7 +29,7 @@ export default function Header() {
           OneLog Africa
         </span>
       </div>
-      <nav className="flex gap-6 font-semibold text-base">
+      <nav className="flex gap-6 font-semibold text-base items-center">
         {headerLinks.map((l) => (
           <NavLink
             key={l.to}
@@ -36,6 +46,17 @@ export default function Header() {
             {l.label}
           </NavLink>
         ))}
+        {user && (
+          <Button
+            variant="outline"
+            size="sm"
+            className="ml-4 flex gap-2 items-center"
+            onClick={handleLogout}
+          >
+            <LogOut size={18} />
+            Déconnexion
+          </Button>
+        )}
       </nav>
     </header>
   );

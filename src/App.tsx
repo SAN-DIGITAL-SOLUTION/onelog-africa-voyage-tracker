@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -12,6 +11,7 @@ import TrackingMap from "./pages/TrackingMap";
 import Invoices from "./pages/Invoices";
 import Notifications from "./pages/Notifications";
 import NotFound from "./pages/NotFound";
+import { AuthProvider } from "@/hooks/useAuth";
 
 const queryClient = new QueryClient();
 
@@ -21,18 +21,20 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Header />
-        <Routes>
-          {/* REDIRECT root vers dashboard */}
-          <Route path="/" element={<Navigate to="/dashboard" />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/missions/*" element={<Missions />} />
-          <Route path="/tracking" element={<TrackingMap />} />
-          <Route path="/invoices" element={<Invoices />} />
-          <Route path="/notifications" element={<Notifications />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <AuthProvider>
+          <Header />
+          <Routes>
+            {/* REDIRECT root vers dashboard */}
+            <Route path="/" element={<Navigate to="/dashboard" />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/missions/*" element={<Missions />} />
+            <Route path="/tracking" element={<TrackingMap />} />
+            <Route path="/invoices" element={<Invoices />} />
+            <Route path="/notifications" element={<Notifications />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
