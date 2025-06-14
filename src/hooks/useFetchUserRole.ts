@@ -23,3 +23,22 @@ export async function fetchUserRole(userId: string): Promise<AppRole> {
   }
   return data.role as AppRole;
 }
+
+/**
+ * Crée ou met à jour le rôle d'un utilisateur dans la table user_roles.
+ * Retourne { error: string | null }
+ */
+export async function updateUserRole(
+  userId: string,
+  role: AppRole
+): Promise<{ error: string | null }> {
+  const { error } = await supabase
+    .from("user_roles")
+    .upsert({ user_id: userId, role }, { onConflict: "user_id" });
+  if (error) {
+    console.error("Erreur lors de la mise à jour du rôle :", error.message);
+    return { error: error.message };
+  }
+  return { error: null };
+}
+
