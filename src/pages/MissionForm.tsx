@@ -6,21 +6,15 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
-import { CalendarIcon, ChevronRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import {
   Form,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormMessage
 } from "@/components/ui/form";
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import { format } from "date-fns";
+import ClientFields from "./mission-form/ClientFields";
+import DateStatusFields from "./mission-form/DateStatusFields";
+import ChauffeurSelector from "./mission-form/ChauffeurSelector";
+import DescriptionField from "./mission-form/DescriptionField";
 
 // Zod schema ne comporte pas de "name"
 const missionSchema = z.object({
@@ -116,100 +110,28 @@ export default function MissionForm({ editMode = false }: { editMode?: boolean }
   };
 
   const [datePickerOpen, setDatePickerOpen] = React.useState(false);
+  const fontFamily = "'PT Sans',sans-serif";
 
   return (
     <main className="container mx-auto pt-8 max-w-xl">
-      <h1 className="text-2xl font-bold mb-6" style={{ fontFamily: "'PT Sans',sans-serif" }}>
+      <h1 className="text-2xl font-bold mb-6" style={{ fontFamily }}>
         {editMode ? "Éditer la mission" : "Nouvelle mission"}
       </h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-          <FormField control={form.control} name="ref" render={({ field }) => (
-            <FormItem>
-              <FormLabel>Référence <span className="text-red-500">*</span></FormLabel>
-              <FormControl>
-                <Input {...field} placeholder="Entrer une référence" style={{ fontFamily: "'PT Sans',sans-serif" }} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )} />
+          <ClientFields control={form.control} fontFamily={fontFamily} />
 
-          <FormField control={form.control} name="client" render={({ field }) => (
-            <FormItem>
-              <FormLabel>Client <span className="text-red-500">*</span></FormLabel>
-              <FormControl>
-                <Input {...field} placeholder="Nom du client" style={{ fontFamily: "'PT Sans',sans-serif" }} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )} />
+          <ChauffeurSelector control={form.control} fontFamily={fontFamily} />
 
-          <FormField control={form.control} name="chauffeur" render={({ field }) => (
-            <FormItem>
-              <FormLabel>Chauffeur</FormLabel>
-              <FormControl>
-                <Input {...field} placeholder="Nom du chauffeur (facultatif)" style={{ fontFamily: "'PT Sans',sans-serif" }} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )} />
+          <DateStatusFields
+            control={form.control}
+            datePickerOpen={datePickerOpen}
+            setDatePickerOpen={setDatePickerOpen}
+            statusOptions={statusOptions}
+            fontFamily={fontFamily}
+          />
 
-          <FormField control={form.control} name="date" render={({ field }) => (
-            <FormItem>
-              <FormLabel>Date <span className="text-red-500">*</span></FormLabel>
-              <Popover open={datePickerOpen} onOpenChange={setDatePickerOpen}>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant="outline"
-                      type="button"
-                      className="w-full justify-start text-left font-normal"
-                      style={{ fontFamily: "'PT Sans',sans-serif" }}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4 opacity-50" />
-                      {field.value ? format(new Date(field.value), "yyyy-MM-dd") : <span>Choisir une date</span>}
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={field.value ? new Date(field.value) : undefined}
-                    onSelect={date => {
-                      field.onChange(date ? date.toISOString().substring(0, 10) : "");
-                      setDatePickerOpen(false);
-                    }}
-                    initialFocus
-                    className="p-3 pointer-events-auto"
-                  />
-                </PopoverContent>
-              </Popover>
-              <FormMessage />
-            </FormItem>
-          )} />
-
-          <FormField control={form.control} name="status" render={({ field }) => (
-            <FormItem>
-              <FormLabel>Statut <span className="text-red-500">*</span></FormLabel>
-              <FormControl>
-                <select {...field} className="border rounded px-3 py-2 text-base w-full bg-white" style={{ fontFamily: "'PT Sans',sans-serif" }}>
-                  <option value="">Sélectionner…</option>
-                  {statusOptions.map(s => <option value={s} key={s}>{s}</option>)}
-                </select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )} />
-
-          <FormField control={form.control} name="description" render={({ field }) => (
-            <FormItem>
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <Textarea {...field} placeholder="Description de la mission (facultatif)" style={{ fontFamily: "'PT Sans',sans-serif" }} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )} />
+          <DescriptionField control={form.control} fontFamily={fontFamily} />
 
           <Button type="submit" className="w-full bg-onelog-bleu text-white text-lg font-bold" disabled={loading}>
             <ChevronRight className="mr-2" />
