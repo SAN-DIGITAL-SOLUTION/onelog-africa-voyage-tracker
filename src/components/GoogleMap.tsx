@@ -1,8 +1,4 @@
-
 import React, { useEffect, useRef } from "react";
-
-// Import Google Maps types only for type checking (won't pull in runtime code)
-import type {} from "google.maps";
 
 type TrackingPoint = {
   id: string;
@@ -125,4 +121,3 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
 };
 
 export default GoogleMap;
-
