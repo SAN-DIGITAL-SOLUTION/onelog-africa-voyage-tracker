@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronRight } from "lucide-react";
@@ -53,11 +52,14 @@ export default function MissionsList() {
           refetchKey={refetchKey}
         />
       </div>
-      <MissionsPagination page={page} setPage={setPage} pageCount={pageCount} />
+      <MissionsPagination
+        currentPage={page}
+        totalPages={pageCount}
+        onPageChange={setPage}
+      />
       {error && <div className="text-red-600 mt-2">Erreur : {error.message}</div>}
     </main>
   );
 }
 
 // Note: This file is now refactored. If it grows again, consider further splitting into smaller components.
-
