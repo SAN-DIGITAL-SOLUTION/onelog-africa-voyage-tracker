@@ -1,6 +1,6 @@
 
 import { useNavigate } from "react-router-dom";
-import { Plus, ChevronRight } from "lucide-react";
+import { Plus, ChevronRight, Info } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import RequireAuth from "@/components/RequireAuth";
@@ -46,13 +46,14 @@ export default function Missions() {
               <th className="py-2 px-3 text-left">Chauffeur</th>
               <th className="py-2 px-3 text-left">Date</th>
               <th className="py-2 px-3 text-left">Statut</th>
+              <th className="py-2 px-3 text-left">Description</th>
               <th className="py-2 px-3"></th>
             </tr>
           </thead>
           <tbody>
             {isLoading ? (
               <tr>
-                <td colSpan={6} className="text-center py-8">
+                <td colSpan={7} className="text-center py-8">
                   <span className="animate-spin h-7 w-7 border-4 border-onelog-bleu border-t-transparent rounded-full inline-block" />
                 </td>
               </tr>
@@ -78,6 +79,23 @@ export default function Missions() {
                       {m.status}
                     </span>
                   </td>
+                  <td className="py-2 px-3 max-w-xs">
+                    {/* Afficher un résumé ou un tooltip si plus de 40 caractères */}
+                    {m.description ? (
+                      m.description.length > 40 ? (
+                        <span
+                          className="cursor-pointer underline decoration-dotted"
+                          title={m.description}
+                        >
+                          {m.description.slice(0, 36)}...
+                        </span>
+                      ) : (
+                        <span>{m.description}</span>
+                      )
+                    ) : (
+                      <span className="text-onelog-nuit/40 italic">Aucune</span>
+                    )}
+                  </td>
                   <td>
                     <button
                       onClick={() => navigate(`/missions/${m.id}`)}
@@ -91,7 +109,7 @@ export default function Missions() {
               ))
             ) : (
               <tr>
-                <td colSpan={6} className="text-center py-8 text-onelog-nuit/60">
+                <td colSpan={7} className="text-center py-8 text-onelog-nuit/60">
                   Aucune mission trouvée.
                 </td>
               </tr>

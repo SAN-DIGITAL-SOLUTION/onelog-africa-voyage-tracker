@@ -48,6 +48,7 @@ export type Database = {
           client: string
           created_at: string | null
           date: string
+          description: string | null
           id: string
           ref: string
           status: string
@@ -59,6 +60,7 @@ export type Database = {
           client: string
           created_at?: string | null
           date: string
+          description?: string | null
           id?: string
           ref: string
           status: string
@@ -70,6 +72,7 @@ export type Database = {
           client?: string
           created_at?: string | null
           date?: string
+          description?: string | null
           id?: string
           ref?: string
           status?: string
