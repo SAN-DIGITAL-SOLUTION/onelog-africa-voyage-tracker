@@ -4,11 +4,13 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, Edit } from "lucide-react";
+import { ChevronLeft, Edit, FileText } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 export default function MissionDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [generating, setGenerating] = React.useState(false);
 
   const { data: mission, isLoading, error } = useQuery({
     queryKey: ["missions-detail", id],
@@ -19,6 +21,28 @@ export default function MissionDetail() {
     },
     enabled: !!id,
   });
+
+  // Génération PDF via Edge Function
+  const handleGeneratePDF = async () => {
+    if (!id) return;
+    setGenerating(true);
+    toast({ title: "Génération PDF...", description: "Veuillez patienter pendant la génération de la facture." });
+    try {
+      // On appelle la fonction Edge
+      const { data, error } = await supabase.functions.invoke("generate-invoice-pdf", {
+        body: { missionId: id },
+      });
+      if (error || !data?.pdfUrl) {
+        throw new Error(error?.message || "Impossible de générer le PDF.");
+      }
+      toast({ title: "PDF prêt", description: "La facture PDF est générée, ouverture dans un nouvel onglet." });
+      window.open(data.pdfUrl, "_blank");
+    } catch (e: any) {
+      toast({ title: "Erreur PDF", description: e.message, variant: "destructive" });
+    } finally {
+      setGenerating(false);
+    }
+  };
 
   if (isLoading) return (
     <main className="container mx-auto flex items-center justify-center h-64">
@@ -46,9 +70,21 @@ export default function MissionDetail() {
 
   return (
     <main className="container mx-auto max-w-2xl pt-8">
-      <Button variant="ghost" className="mb-3" onClick={() => navigate("/missions")}>
-        <ChevronLeft size={16} className="mr-1" /> Retour à la liste
-      </Button>
+      <div className="flex items-center justify-between mb-3">
+        <Button variant="ghost" className="mb-0" onClick={() => navigate("/missions")}>
+          <ChevronLeft size={16} className="mr-1" /> Retour à la liste
+        </Button>
+        <Button
+          variant="secondary"
+          className="flex gap-1"
+          onClick={handleGeneratePDF}
+          disabled={generating}
+          title="Générer la facture PDF"
+        >
+          <FileText size={16} />
+          Générer PDF
+        </Button>
+      </div>
       <div className="bg-white rounded shadow p-6 flex flex-col gap-4" style={{ fontFamily: "'PT Sans',sans-serif" }}>
         <div className="flex justify-between items-center border-b pb-2">
           <h2 className="text-xl font-bold">Détails de la mission</h2>
@@ -89,3 +125,4 @@ export default function MissionDetail() {
     </main>
   );
 }
+
