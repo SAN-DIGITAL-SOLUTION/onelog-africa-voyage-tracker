@@ -6,6 +6,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, Edit, FileText } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import MissionOverview from "./mission-detail/MissionOverview";
+import MissionTrackingHistory from "./mission-detail/MissionTrackingHistory";
+import MissionExtraDetails from "./mission-detail/MissionExtraDetails";
 
 export default function MissionDetail() {
   const { id } = useParams<{ id: string }>();
@@ -28,7 +31,6 @@ export default function MissionDetail() {
     setGenerating(true);
     toast({ title: "Génération PDF...", description: "Veuillez patienter pendant la génération de la facture." });
     try {
-      // On appelle la fonction Edge
       const { data, error } = await supabase.functions.invoke("generate-invoice-pdf", {
         body: { missionId: id },
       });
@@ -68,6 +70,10 @@ export default function MissionDetail() {
     </main>
   );
 
+  // -- Ajout points de tracking éventuels --
+  // Remplacer ceci par la vraie récupération depuis mission.tracking_points si disponible !
+  const trackingPoints = mission.tracking_points || [];
+
   return (
     <main className="container mx-auto max-w-2xl pt-8">
       <div className="flex items-center justify-between mb-3">
@@ -93,36 +99,10 @@ export default function MissionDetail() {
             Éditer
           </Button>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-8 pt-4">
-          <div>
-            <div className="text-sm text-gray-600">Référence</div>
-            <div className="font-semibold">{mission.ref}</div>
-          </div>
-          <div>
-            <div className="text-sm text-gray-600">Client</div>
-            <div className="font-semibold">{mission.client}</div>
-          </div>
-          <div>
-            <div className="text-sm text-gray-600">Chauffeur</div>
-            <div className="font-semibold">{mission.chauffeur || <span className="italic text-onelog-nuit/40">Aucun</span>}</div>
-          </div>
-          <div>
-            <div className="text-sm text-gray-600">Date</div>
-            <div className="font-semibold">{mission.date}</div>
-          </div>
-          <div>
-            <div className="text-sm text-gray-600">Statut</div>
-            <div className="font-semibold">{mission.status}</div>
-          </div>
-          <div className="sm:col-span-2">
-            <div className="text-sm text-gray-600">Description</div>
-            <div className="font-semibold">
-              {mission.description || <span className="italic text-onelog-nuit/40">Aucune</span>}
-            </div>
-          </div>
-        </div>
+        <MissionOverview mission={mission} />
+        <MissionTrackingHistory points={trackingPoints} />
+        <MissionExtraDetails mission={mission} />
       </div>
     </main>
   );
 }
-

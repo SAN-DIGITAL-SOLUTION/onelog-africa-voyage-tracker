@@ -5,9 +5,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
-import { ChevronRight } from "lucide-react";
 import {
   Form,
 } from "@/components/ui/form";
@@ -15,8 +13,9 @@ import ClientFields from "./mission-form/ClientFields";
 import DateStatusFields from "./mission-form/DateStatusFields";
 import ChauffeurSelector from "./mission-form/ChauffeurSelector";
 import DescriptionField from "./mission-form/DescriptionField";
+import MissionFormSection from "./mission-form/MissionFormSection";
+import MissionFormActions from "./mission-form/MissionFormActions";
 
-// Zod schema ne comporte pas de "name"
 const missionSchema = z.object({
   ref: z.string().min(1, "Référence obligatoire"),
   client: z.string().min(1, "Client obligatoire"),
@@ -34,7 +33,6 @@ export default function MissionForm({ editMode = false }: { editMode?: boolean }
   const [defaultValues, setDefaultValues] = React.useState<any>(null);
   const [loading, setLoading] = React.useState(false);
 
-  // Charger mission à éditer si besoin
   React.useEffect(() => {
     if (editMode && params.id) {
       setLoading(true);
@@ -65,7 +63,6 @@ export default function MissionForm({ editMode = false }: { editMode?: boolean }
     }
   });
 
-  // Synchronise form si chargement
   React.useEffect(() => {
     if (defaultValues) {
       form.reset({
@@ -75,12 +72,10 @@ export default function MissionForm({ editMode = false }: { editMode?: boolean }
     // eslint-disable-next-line
   }, [defaultValues]);
 
-  // No reference to 'name' in values or insert/update
   const onSubmit = async (values: any) => {
     setLoading(true);
     try {
       if (editMode && params.id) {
-        // UPDATE, pas de champ 'name'
         const { error } = await supabase.from("missions").update({
           ...values,
           updated_at: new Date().toISOString()
@@ -89,7 +84,6 @@ export default function MissionForm({ editMode = false }: { editMode?: boolean }
         toast({ title: "Mission mise à jour", description: "Les modifications ont été enregistrées." });
         navigate(`/missions/${params.id}`);
       } else {
-        // INSERT, pas de champ 'name'
         const user = (await supabase.auth.getUser()).data.user;
         if (!user) throw new Error("Utilisateur non authentifié");
         const { error } = await supabase.from("missions").insert({
@@ -119,24 +113,25 @@ export default function MissionForm({ editMode = false }: { editMode?: boolean }
       </h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-          <ClientFields control={form.control} fontFamily={fontFamily} />
-
-          <ChauffeurSelector control={form.control} fontFamily={fontFamily} />
-
-          <DateStatusFields
-            control={form.control}
-            datePickerOpen={datePickerOpen}
-            setDatePickerOpen={setDatePickerOpen}
-            statusOptions={statusOptions}
-            fontFamily={fontFamily}
-          />
-
-          <DescriptionField control={form.control} fontFamily={fontFamily} />
-
-          <Button type="submit" className="w-full bg-onelog-bleu text-white text-lg font-bold" disabled={loading}>
-            <ChevronRight className="mr-2" />
-            {editMode ? "Enregistrer les modifications" : "Créer la mission"}
-          </Button>
+          <MissionFormSection title="Client" fontFamily={fontFamily}>
+            <ClientFields control={form.control} fontFamily={fontFamily} />
+          </MissionFormSection>
+          <MissionFormSection title="Chauffeur" fontFamily={fontFamily}>
+            <ChauffeurSelector control={form.control} fontFamily={fontFamily} />
+          </MissionFormSection>
+          <MissionFormSection title="Dates & Statut" fontFamily={fontFamily}>
+            <DateStatusFields
+              control={form.control}
+              datePickerOpen={datePickerOpen}
+              setDatePickerOpen={setDatePickerOpen}
+              statusOptions={statusOptions}
+              fontFamily={fontFamily}
+            />
+          </MissionFormSection>
+          <MissionFormSection title="Description" fontFamily={fontFamily}>
+            <DescriptionField control={form.control} fontFamily={fontFamily} />
+          </MissionFormSection>
+          <MissionFormActions loading={loading} editMode={editMode} />
         </form>
       </Form>
     </main>
