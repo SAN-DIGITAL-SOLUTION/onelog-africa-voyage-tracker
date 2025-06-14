@@ -1,12 +1,12 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, ChevronLeft } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { Pagination, PaginationContent, PaginationItem, PaginationPrevious, PaginationNext, PaginationLink } from "@/components/ui/pagination";
-import { useMissions, PAGE_SIZE } from "./missions/useMissions";
+import { useMissions } from "./missions/useMissions";
 import MissionsTable from "./missions/MissionsTable";
 import MissionFilters from "./missions/MissionFilters";
+import MissionsPagination from "./missions/MissionsPagination";
 
 export default function MissionsList() {
   const navigate = useNavigate();
@@ -53,48 +53,11 @@ export default function MissionsList() {
           refetchKey={refetchKey}
         />
       </div>
-      {pageCount > 1 && (
-        <Pagination className="mt-6">
-          <PaginationContent>
-            <PaginationItem>
-              {page === 1 ? (
-                <span
-                  className="opacity-50 select-none pointer-events-none gap-1 pl-2.5 inline-flex items-center"
-                  aria-disabled="true"
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                  <span>Previous</span>
-                </span>
-              ) : (
-                <PaginationPrevious onClick={() => setPage(page - 1)} />
-              )}
-            </PaginationItem>
-            {[...Array(pageCount)].map((_, i) => (
-              <PaginationItem key={i + 1}>
-                <PaginationLink isActive={i + 1 === page} onClick={() => setPage(i + 1)}>
-                  {i + 1}
-                </PaginationLink>
-              </PaginationItem>
-            ))}
-            <PaginationItem>
-              {page === pageCount ? (
-                <span
-                  className="opacity-50 select-none pointer-events-none gap-1 pr-2.5 inline-flex items-center"
-                  aria-disabled="true"
-                >
-                  <span>Next</span>
-                  <ChevronRight className="h-4 w-4" />
-                </span>
-              ) : (
-                <PaginationNext onClick={() => setPage(page + 1)} />
-              )}
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      )}
+      <MissionsPagination page={page} setPage={setPage} pageCount={pageCount} />
       {error && <div className="text-red-600 mt-2">Erreur : {error.message}</div>}
     </main>
   );
 }
 
 // Note: This file is now refactored. If it grows again, consider further splitting into smaller components.
+
