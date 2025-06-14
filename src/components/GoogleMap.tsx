@@ -1,6 +1,9 @@
 
 import React, { useEffect, useRef } from "react";
 
+// Import Google Maps types only for type checking (won't pull in runtime code)
+import type {} from "google.maps";
+
 type TrackingPoint = {
   id: string;
   mission_id: string;
@@ -17,6 +20,7 @@ type GoogleMapProps = {
   places?: any[];
 };
 
+// Specify the type directly instead of using the google.maps types before they are loaded
 const DEFAULT_CENTER = { lat: 7.3775, lng: 12.3547 }; // Centrée Afrique centrale
 
 const GoogleMap: React.FC<GoogleMapProps> = ({
@@ -33,7 +37,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
   useEffect(() => {
     if (!apiKey || typeof window === "undefined") return;
     // Déjà chargé ?
-    if ((window as any).google?.maps) {
+    if (window.google && window.google.maps) {
       initMap();
       return;
     }
@@ -55,6 +59,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
   // Place/update les markers quand la map et les data sont prêts
   useEffect(() => {
     if (!googleMap.current || !markers) return;
+    if (!(window.google && window.google.maps)) return; // Defensive for types
     // Supprime markers précédents
     markerRefs.current.forEach((marker) => marker.setMap(null));
     markerRefs.current = [];
@@ -75,7 +80,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
         `,
       });
       marker.addListener("click", () => {
-        infowindow.open({ anchor: marker, map: googleMap.current });
+        infowindow.open({ anchor: marker, map: googleMap.current! });
       });
       markerRefs.current.push(marker);
     });
@@ -91,6 +96,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
 
   function initMap() {
     if (!mapRef.current) return;
+    if (!(window.google && window.google.maps)) return; // Defensive for types
     // Crée la carte - centrée Afrique
     googleMap.current = new window.google.maps.Map(mapRef.current, {
       center: DEFAULT_CENTER,
@@ -119,3 +125,4 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
 };
 
 export default GoogleMap;
+
