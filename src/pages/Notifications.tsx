@@ -72,7 +72,7 @@ export default function Notifications() {
   });
 
   // Mutation : envoie notification via email/sms et stocke dans Supabase
-  const { mutate: sendNotification, isLoading: isSending } = useMutation({
+  const { mutate: sendNotification, isPending: isSending } = useMutation({
     mutationFn: async (values: { mode: "email" | "sms"; target: string; message: string }) => {
       if (!user) throw new Error("Non authentifié");
       // 1. Envoi (email/sms)
