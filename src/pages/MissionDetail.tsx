@@ -10,17 +10,45 @@ import MissionOverview from "./mission-detail/MissionOverview";
 import MissionTrackingHistory from "./mission-detail/MissionTrackingHistory";
 import MissionExtraDetails from "./mission-detail/MissionExtraDetails";
 
+type TrackingPoint = {
+  id: string | number;
+  label: string;
+  timestamp: string;
+};
+
 export default function MissionDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [generating, setGenerating] = React.useState(false);
 
+  // Fetch mission data
   const { data: mission, isLoading, error } = useQuery({
     queryKey: ["missions-detail", id],
     queryFn: async () => {
       const { data, error } = await supabase.from("missions").select("*").eq("id", id).single();
       if (error) throw new Error(error.message);
       return data;
+    },
+    enabled: !!id,
+  });
+
+  // Fetch tracking points
+  const { data: trackingPoints, isLoading: loadingTracking } = useQuery({
+    queryKey: ["tracking-points", id],
+    queryFn: async () => {
+      if (!id) return [];
+      const { data, error } = await supabase
+        .from("tracking_points")
+        .select("*")
+        .eq("mission_id", id)
+        .order("recorded_at", { ascending: true });
+      if (error) throw new Error(error.message);
+      // Transform as needed for MissionTrackingHistory
+      return (data || []).map((pt) => ({
+        id: pt.id,
+        label: `Lat: ${pt.latitude.toFixed(5)}, Lng: ${pt.longitude.toFixed(5)}`,
+        timestamp: new Date(pt.recorded_at).toLocaleString(),
+      }));
     },
     enabled: !!id,
   });
@@ -70,10 +98,6 @@ export default function MissionDetail() {
     </main>
   );
 
-  // -- Ajout points de tracking éventuels --
-  // Remplacer ceci par la vraie récupération depuis mission.tracking_points si disponible !
-  const trackingPoints = mission.tracking_points || [];
-
   return (
     <main className="container mx-auto max-w-2xl pt-8">
       <div className="flex items-center justify-between mb-3">
@@ -100,7 +124,7 @@ export default function MissionDetail() {
           </Button>
         </div>
         <MissionOverview mission={mission} />
-        <MissionTrackingHistory points={trackingPoints} />
+        <MissionTrackingHistory points={loadingTracking ? [] : trackingPoints || []} />
         <MissionExtraDetails mission={mission} />
       </div>
     </main>
