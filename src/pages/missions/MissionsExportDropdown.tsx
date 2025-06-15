@@ -1,10 +1,9 @@
-
 import React from "react";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import { CSVLink } from "react-csv";
-import jsPDF from "jspdf";
+import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import logo from "/public/lovable-uploads/91fd0505-b323-44ce-8632-1456882003e9.png";
 
@@ -38,7 +37,7 @@ export default function MissionsExportDropdown({ missions }: ExportDropdownProps
     const doc = new jsPDF({ orientation: "portrait", unit: "pt", format: "a4" });
     
     // Dessiner le logo si présent
-    const img = new Image();
+    const img = new window.Image();
     img.src = logo;
     img.onload = () => {
       doc.addImage(img, "PNG", 40, 30, 90, 35);
