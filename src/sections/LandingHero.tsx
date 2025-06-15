@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 
 export default function LandingHero() {
@@ -6,39 +5,14 @@ export default function LandingHero() {
     <section className="relative flex flex-col items-center justify-center min-h-[85vh] pt-40 pb-12 text-center select-none">
       {/* Fond motif africain discret */}
       <div className="absolute inset-0 w-full h-full african-texture pointer-events-none z-0" aria-hidden />
-      {/* Animated SVG illustration for "wahou" effect */}
+      {/* Animated SVG illustration for "wahou" effect" */}
       <motion.div
         initial={{ opacity: 0, y: 45, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 1, ease: "easeOut" }}
         className="relative w-full max-w-3xl mx-auto z-10"
       >
-        {/* Big African map background (SVG) */}
-        <motion.svg
-          width="480"
-          height="320"
-          viewBox="0 0 480 320"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          className="mx-auto absolute inset-0 pointer-events-none filter blur-[2.5px] drop-shadow-xl"
-        >
-          <motion.path
-            d="M55,60 Q71,40 160,60 Q192,36 228,57 Q241,44 293,61 Q376,86 417,140 Q458,194 431,256 Q410,303 352,293 Q288,283 240,308 Q215,320 189,312 Q132,294 87,250 Q48,212 63,142 Q62,123 55,60Z"
-            fill="url(#africa-gradient)"
-            initial={{ scale: 0.98 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 2.1, delay: 0.2, type: "spring", stiffness: 18 }}
-            style={{ filter: "drop-shadow(0 0 60px #E65100bb)" }}
-          />
-          <defs>
-            <radialGradient id="africa-gradient" cx="50%" cy="50%" r="80%">
-              <stop offset="0%" stopColor="#F9A825" stopOpacity="0.78" />
-              <stop offset="60%" stopColor="#009688" stopOpacity="0.94" />
-              <stop offset="100%" stopColor="#1A3C40" stopOpacity="1" />
-            </radialGradient>
-          </defs>
-        </motion.svg>
-        {/* The truck, road, digital flows */}
+        {/* Camion, route, flows digitaux */}
         <motion.svg
           width="420"
           height="180"
