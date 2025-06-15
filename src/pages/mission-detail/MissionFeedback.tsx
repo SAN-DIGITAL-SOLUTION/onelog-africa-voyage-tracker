@@ -1,10 +1,18 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Star, MessageSquare, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 type Feedback = {
   id: string;
@@ -20,17 +28,61 @@ type MissionFeedbackProps = {
   onAddFeedback: () => void;
 };
 
+const FEEDBACK_PER_PAGE = 5;
+
 export default function MissionFeedback({ missionId, onAddFeedback }: MissionFeedbackProps) {
-  const { data: feedback, isLoading, error } = useQuery({
-    queryKey: ["mission-feedback", missionId],
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // Fetch total count
+  const { data: totalCount } = useQuery({
+    queryKey: ["mission-feedback-count", missionId],
     queryFn: async () => {
+      const { count, error } = await supabase
+        .from("mission_feedback")
+        .select("*", { count: "exact", head: true })
+        .eq("mission_id", missionId);
+      if (error) throw new Error(error.message);
+      return count || 0;
+    },
+    enabled: !!missionId,
+  });
+
+  // Fetch paginated feedback
+  const { data: feedback, isLoading, error } = useQuery({
+    queryKey: ["mission-feedback", missionId, currentPage],
+    queryFn: async () => {
+      const from = (currentPage - 1) * FEEDBACK_PER_PAGE;
+      const to = from + FEEDBACK_PER_PAGE - 1;
+      
       const { data, error } = await supabase
         .from("mission_feedback")
         .select("*")
         .eq("mission_id", missionId)
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: false })
+        .range(from, to);
       if (error) throw new Error(error.message);
       return data as Feedback[];
+    },
+    enabled: !!missionId,
+  });
+
+  // Fetch average rating (separate query to avoid recalculation on pagination)
+  const { data: averageData } = useQuery({
+    queryKey: ["mission-feedback-average", missionId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("mission_feedback")
+        .select("rating")
+        .eq("mission_id", missionId);
+      if (error) throw new Error(error.message);
+      
+      if (!data || data.length === 0) return null;
+      
+      const average = data.reduce((sum, f) => sum + f.rating, 0) / data.length;
+      return {
+        average: average.toFixed(1),
+        count: data.length
+      };
     },
     enabled: !!missionId,
   });
@@ -45,9 +97,7 @@ export default function MissionFeedback({ missionId, onAddFeedback }: MissionFee
     ));
   };
 
-  const averageRating = feedback?.length 
-    ? (feedback.reduce((sum, f) => sum + f.rating, 0) / feedback.length).toFixed(1)
-    : null;
+  const totalPages = totalCount ? Math.ceil(totalCount / FEEDBACK_PER_PAGE) : 0;
 
   if (isLoading) {
     return (
@@ -81,14 +131,14 @@ export default function MissionFeedback({ missionId, onAddFeedback }: MissionFee
 
       {feedback && feedback.length > 0 ? (
         <div className="space-y-4">
-          {averageRating && (
+          {averageData && (
             <div className="flex items-center gap-2 p-3 bg-gray-50 rounded">
               <div className="flex items-center gap-1">
-                {renderStars(Math.round(parseFloat(averageRating)))}
+                {renderStars(Math.round(parseFloat(averageData.average)))}
               </div>
-              <span className="font-medium">{averageRating}/5</span>
+              <span className="font-medium">{averageData.average}/5</span>
               <span className="text-gray-600 text-sm">
-                ({feedback.length} évaluation{feedback.length > 1 ? 's' : ''})
+                ({averageData.count} évaluation{averageData.count > 1 ? 's' : ''})
               </span>
             </div>
           )}
@@ -127,6 +177,53 @@ export default function MissionFeedback({ missionId, onAddFeedback }: MissionFee
               )}
             </Card>
           ))}
+
+          {totalPages > 1 && (
+            <div className="flex justify-center pt-4">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious 
+                      onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                      className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                    />
+                  </PaginationItem>
+                  
+                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                    let pageNumber;
+                    if (totalPages <= 5) {
+                      pageNumber = i + 1;
+                    } else if (currentPage <= 3) {
+                      pageNumber = i + 1;
+                    } else if (currentPage >= totalPages - 2) {
+                      pageNumber = totalPages - 4 + i;
+                    } else {
+                      pageNumber = currentPage - 2 + i;
+                    }
+                    
+                    return (
+                      <PaginationItem key={pageNumber}>
+                        <PaginationLink
+                          onClick={() => setCurrentPage(pageNumber)}
+                          isActive={currentPage === pageNumber}
+                          className="cursor-pointer"
+                        >
+                          {pageNumber}
+                        </PaginationLink>
+                      </PaginationItem>
+                    );
+                  })}
+                  
+                  <PaginationItem>
+                    <PaginationNext 
+                      onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                      className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          )}
         </div>
       ) : (
         <div className="text-center py-8 text-gray-500">
