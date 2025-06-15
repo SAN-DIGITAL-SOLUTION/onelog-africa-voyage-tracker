@@ -15,8 +15,11 @@ export default function LandingMadeInAfrica() {
             className="font-montserrat font-extrabold text-2xl md:text-3xl mb-4 flex items-center gap-2 text-[#E65100]"
           >
             <span className="text-2xl md:text-3xl">🌍</span>
-            Section “Made in Africa” — <span className="text-[#1A3C40]">Notre force, c’est notre ancrage</span>
+            Made In Africa
           </h2>
+          <h3 className="font-montserrat font-bold text-xl md:text-2xl mb-3 text-[#1A3C40]">
+            Notre force c&apos;est notre ancrage
+          </h3>
           <ul className="mb-6 space-y-2 md:text-lg text-base font-semibold text-[#263238] pl-0">
             <li>
               <span className="mr-2">🇨🇮</span>
