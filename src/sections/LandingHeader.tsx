@@ -50,6 +50,12 @@ export default function LandingHeader() {
     });
   };
 
+  // Détermine la couleur du texte des liens selon le mode
+  const linkColor =
+    dark
+      ? "#fff"
+      : "#1A3C40";
+
   return (
     <>
       <NotificationBanner />
@@ -78,11 +84,40 @@ export default function LandingHeader() {
             </span>
           </div>
           <nav className="hidden md:flex items-center gap-8 font-semibold text-base relative z-10">
-            <a href="#features" className="story-link" style={{ color: "#F9A825" }}>Fonctionnalités</a>
-            <a href="#secteurs" className="story-link" style={{ color: "#F9A825" }}>Secteurs</a>
-            <a href="#about" className="story-link" style={{ color: "#F9A825" }}>Notre histoire</a>
+            <a
+              href="#features"
+              className="story-link transition-colors"
+              style={{ color: linkColor }}
+              onMouseOver={e => (e.currentTarget.style.color = "#F9A825")}
+              onMouseOut={e => (e.currentTarget.style.color = linkColor)}
+              tabIndex={0}
+            >
+              Fonctionnalités
+            </a>
+            <a
+              href="#secteurs"
+              className="story-link transition-colors"
+              style={{ color: linkColor }}
+              onMouseOver={e => (e.currentTarget.style.color = "#F9A825")}
+              onMouseOut={e => (e.currentTarget.style.color = linkColor)}
+              tabIndex={0}
+            >
+              Secteurs
+            </a>
+            <a
+              href="#about"
+              className="story-link transition-colors"
+              style={{ color: linkColor }}
+              onMouseOver={e => (e.currentTarget.style.color = "#F9A825")}
+              onMouseOut={e => (e.currentTarget.style.color = linkColor)}
+              tabIndex={0}
+            >
+              Notre histoire
+            </a>
             <Button asChild variant="secondary" size="sm" className="font-bold" style={{ background: "#F9A825", color: "#1A3C40" }}>
-              <a href="/auth">Accès client</a>
+              <a href="/auth" tabIndex={0} style={{ color: "#1A3C40" }}>
+                Accès client
+              </a>
             </Button>
           </nav>
           <div className="flex items-center gap-2 z-10">
