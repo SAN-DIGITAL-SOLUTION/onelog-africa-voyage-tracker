@@ -6,6 +6,7 @@ import { useMissions } from "./missions/useMissions";
 import MissionsTable from "./missions/MissionsTable";
 import MissionFilters from "./missions/MissionFilters";
 import MissionsPagination from "./missions/MissionsPagination";
+import MissionsExportDropdown from "./missions/MissionsExportDropdown";
 
 export default function MissionsList() {
   const navigate = useNavigate();
@@ -32,9 +33,12 @@ export default function MissionsList() {
     <main className="container mx-auto pt-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-3">
         <h1 className="text-2xl font-bold" style={{ fontFamily: "'PT Sans',sans-serif" }}>Missions</h1>
-        <Button onClick={() => navigate("/missions/new")} className="bg-onelog-bleu text-white font-bold px-4">
-          <ChevronRight size={18} className="mr-2" /> Nouvelle mission
-        </Button>
+        <div className="flex gap-1">
+          <MissionsExportDropdown missions={missionsPage} />
+          <Button onClick={() => navigate("/missions/new")} className="bg-onelog-bleu text-white font-bold px-4">
+            <ChevronRight size={18} className="mr-2" /> Nouvelle mission
+          </Button>
+        </div>
       </div>
       <MissionFilters
         search={search}
