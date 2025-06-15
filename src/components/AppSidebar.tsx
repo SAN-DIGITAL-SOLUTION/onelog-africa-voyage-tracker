@@ -53,11 +53,11 @@ export default function AppSidebar() {
   const location = useLocation();
 
   return (
-    <Sidebar className="min-h-screen border-r bg-white dark:bg-onelog-nuit pt-4 w-56 data-[state=collapsed]:w-14 transition-all duration-200">
+    <Sidebar className="min-h-screen border-r bg-primary dark:bg-primary pt-4 w-56 data-[state=collapsed]:w-14 transition-all duration-200">
       <div className="flex items-center gap-2 px-4 mb-8">
         <img src="/favicon.ico" alt="logo" className="h-7 w-7" />
         {state !== "collapsed" && (
-          <span className="font-bold text-lg tracking-tight text-onelog-nuit dark:text-white">
+          <span className="font-bold text-lg tracking-tight text-white">
             OneLog Africa
           </span>
         )}
@@ -66,7 +66,7 @@ export default function AppSidebar() {
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel asChild>
-            <div className="text-xs mb-2 font-semibold text-gray-400 dark:text-gray-500 pl-4">
+            <div className="text-xs mb-2 font-semibold text-secondary pl-4">
               Navigation
             </div>
           </SidebarGroupLabel>
@@ -79,8 +79,12 @@ export default function AppSidebar() {
                       to={r.to}
                       end={r.to === "/dashboard"}
                       className={({ isActive }) =>
-                        `flex items-center gap-3 px-3 py-2 rounded hover:bg-onelog-bleu/10 transition-colors group
-                        ${isActive ? "bg-onelog-bleu/90 text-white font-bold" : "text-onelog-nuit dark:text-white"}`
+                        `flex items-center gap-3 px-3 py-2 rounded hover:bg-secondary/30 transition-colors group
+                        ${
+                          isActive
+                            ? "bg-secondary text-primary font-bold"
+                            : "text-white"
+                        }`
                       }
                     >
                       <r.icon className="h-5 w-5 shrink-0" />
@@ -96,3 +100,4 @@ export default function AppSidebar() {
     </Sidebar>
   );
 }
+
