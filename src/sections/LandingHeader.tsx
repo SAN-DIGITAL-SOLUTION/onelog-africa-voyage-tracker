@@ -6,7 +6,16 @@ import { Sun, Moon } from "lucide-react";
 // Bandeau notification visuel
 export function NotificationBanner() {
   return (
-    <div className="banner-notif" role="status" aria-live="polite">
+    <div
+      className="banner-notif bg-secondary text-primary border-b-2 border-accent shadow"
+      role="status"
+      aria-live="polite"
+      style={{
+        background: "#F9A825",
+        color: "#1A3C40",
+        borderBottom: "2px solid #E65100",
+      }}
+    >
       Nouvelle version : Digitalisez votre logistique africaine ! 🚀
     </div>
   );
@@ -41,9 +50,13 @@ export default function LandingHeader() {
   return (
     <>
       <NotificationBanner />
-      <header className="fixed z-50 top-0 left-0 w-full bg-gradient-to-r from-primary/80 via-fresh/70 to-secondary/40 dark:from-dm-bg/90 dark:to-fresh/40 shadow-lg backdrop-blur-2xl mt-[36px]">
+      <header
+        className="fixed z-50 top-0 left-0 w-full shadow-lg backdrop-blur-2xl mt-[36px]"
+        style={{
+          background: "#1A3C40",
+        }}
+      >
         <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-3 relative">
-          {/* Motif africain en fond SUPPRIMÉ */}
           <div className="flex items-center gap-3 relative z-10">
             {/* SVG camion animée */}
             <svg width="39" height="36" viewBox="0 0 48 38" className="h-9 w-9 shrink-0" aria-label="Logo camion OneLog Africa" fill="none">
@@ -58,29 +71,29 @@ export default function LandingHeader() {
                 <ellipse cx="17" cy="33" rx="5" ry="4" fill="#263238" />
               </g>
             </svg>
-            <span className="font-montserrat font-bold text-2xl tracking-wide text-primary dark:text-dm-text drop-shadow-lg">
+            <span className="font-montserrat font-bold text-2xl tracking-wide" style={{ color: "#1A3C40" }}>
               OneLog Africa
             </span>
           </div>
           <nav className="hidden md:flex items-center gap-8 font-semibold text-base relative z-10">
-            <a href="#features" className="text-primary hover:text-accent transition story-link">Fonctionnalités</a>
-            <a href="#secteurs" className="text-primary hover:text-accent transition story-link">Secteurs desservis</a>
-            <a href="#about" className="text-primary hover:text-accent transition story-link">À propos</a>
-            <Button asChild variant="secondary" size="sm" className="font-bold">
+            <a href="#features" className="story-link" style={{ color: "#263238" }}>Fonctionnalités</a>
+            <a href="#secteurs" className="story-link" style={{ color: "#263238" }}>Secteurs desservis</a>
+            <a href="#about" className="story-link" style={{ color: "#263238" }}>À propos</a>
+            <Button asChild variant="secondary" size="sm" className="font-bold" style={{ background: "#F9A825", color: "#1A3C40" }}>
               <a href="/auth">Connexion</a>
             </Button>
           </nav>
           <div className="flex items-center gap-2 z-10">
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-full bg-white/20 hover:bg-secondary/40 outline-none focus:ring-4 focus:ring-secondary transition text-primary dark:text-secondary"
+              className="p-2 rounded-full bg-white/20 hover:bg-secondary/40 outline-none focus:ring-4 focus:ring-secondary transition"
               aria-label="Basculer le mode sombre"
             >
               {dark ? <Sun size={20} /> : <Moon size={20} />}
             </button>
             <div className="ml-2 md:hidden">
               {/* Hamburger mobile */}
-              <Button variant="secondary" size="icon" asChild>
+              <Button variant="secondary" size="icon" asChild style={{ background: "#F9A825", color: "#1A3C40" }}>
                 <a href="/auth">
                   <span className="sr-only">Connexion</span>
                   <svg width={22} height={22} fill="none" stroke="currentColor">

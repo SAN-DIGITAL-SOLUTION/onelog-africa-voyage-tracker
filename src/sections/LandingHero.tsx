@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 
 export default function LandingHero() {
   return (
-    <section className="relative flex flex-col items-center justify-center min-h-[85vh] pt-40 pb-12 text-center select-none">
+    <section className="relative flex flex-col items-center justify-center min-h-[85vh] pt-40 pb-12 text-center select-none" style={{ background: "#F4F4F4" }}>
       {/* Animated SVG illustration for "wahou" effect" */}
       <motion.div
         initial={{ opacity: 0, y: 45, scale: 0.98 }}
@@ -81,9 +81,14 @@ export default function LandingHero() {
         initial={{ opacity: 0, y: 28 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1.3, delay: 2.45 }}
-        className="mt-10 mb-6 text-4xl md:text-5xl font-extrabold text-primary dark:text-dm-text tracking-tight drop-shadow-2xl font-montserrat"
+        className="mt-10 mb-6 text-4xl md:text-5xl font-extrabold tracking-tight drop-shadow-2xl font-montserrat"
+        style={{
+          color: "#1A3C40",
+        }}
       >
-        <span className="inline-block">🚛 Digitalisez votre logistique<br />avec une solution 100% africaine</span>
+        <span className="inline-block">
+          🚛 Digitalisez votre logistique<br />avec une solution 100% africaine
+        </span>
       </motion.h1>
       {/* CTA */}
       <motion.a
@@ -91,7 +96,12 @@ export default function LandingHero() {
         initial={{ opacity: 0, scale: 0.94, y: 12 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 1, delay: 2.8 }}
-        className="btn-cta animate-pulse"
+        className="btn-cta"
+        style={{
+          background: "#E65100",
+          color: "#fff",
+          boxShadow: "0 2px 16px 0 #E6510033",
+        }}
       >
         Demander une démo
       </motion.a>

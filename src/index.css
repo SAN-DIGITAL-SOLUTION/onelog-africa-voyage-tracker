@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -44,4 +43,38 @@
     /* Instead of using @apply animate-fade-in, use the class in JSX */
   }
   /* SUPPRIMÉ : .african-texture (motif africain) */
+}
+
+@layer base {
+  html, body {
+    background: #F4F4F4;
+    color: #263238;
+  }
+  /* Ajout polices Google Fonts dans index.html :
+      <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    */
+    font-family: 'Open Sans', ui-sans-serif, system-ui, sans-serif;
+    background-color: #F4F4F4;
+    color: #263238;
+    scroll-behavior: smooth;
+  }
+
+  h1, h2, h3 {
+    font-family: 'Montserrat', 'Bebas Neue', ui-sans-serif, system-ui;
+    font-weight: 700;
+    color: #1A3C40;
+    letter-spacing: 0.01em;
+  }
+
+  /* Visibilité focus */
+  a:focus, button:focus, input:focus, select:focus {
+    outline: 2px solid #F9A825;
+    outline-offset: 2px;
+  }
+
+  /* Dark mode */
+  .dark {
+    background-color: #1A3C40;
+    color: #F4F4F4;
+  }
 }
