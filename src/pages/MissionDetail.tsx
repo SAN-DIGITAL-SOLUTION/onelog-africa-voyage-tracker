@@ -1,14 +1,17 @@
+
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, Edit, FileText } from "lucide-react";
-import { toast } from "@/components/ui/use-toast"; // Nettoyage : harmonisation
+import { toast } from "@/components/ui/use-toast"; // Nettoyage : harmonisation
 import MissionOverview from "./mission-detail/MissionOverview";
 import MissionTrackingHistory from "./mission-detail/MissionTrackingHistory";
 import MissionExtraDetails from "./mission-detail/MissionExtraDetails";
 import MissionStatusTimeline from "./mission-detail/MissionStatusTimeline";
+import MissionFeedback from "./mission-detail/MissionFeedback";
+import FeedbackForm from "./mission-detail/FeedbackForm";
 
 type TrackingPoint = {
   id: string | number;
@@ -20,6 +23,7 @@ export default function MissionDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [generating, setGenerating] = React.useState(false);
+  const [showFeedbackForm, setShowFeedbackForm] = React.useState(false);
 
   // Fetch mission data
   const { data: mission, isLoading, error } = useQuery({
@@ -128,7 +132,18 @@ export default function MissionDetail() {
         <MissionStatusTimeline missionId={id!} />
         <MissionTrackingHistory points={loadingTracking ? [] : trackingPoints || []} />
         <MissionExtraDetails mission={mission} />
+        {/* Feedback section */}
+        <MissionFeedback 
+          missionId={id!} 
+          onAddFeedback={() => setShowFeedbackForm(true)} 
+        />
       </div>
+
+      <FeedbackForm
+        missionId={id!}
+        open={showFeedbackForm}
+        onClose={() => setShowFeedbackForm(false)}
+      />
     </main>
   );
 }

@@ -78,6 +78,47 @@ export type Database = {
         }
         Relationships: []
       }
+      mission_feedback: {
+        Row: {
+          client_email: string | null
+          client_name: string | null
+          comment: string | null
+          created_at: string | null
+          id: string
+          mission_id: string
+          rating: number
+          updated_at: string | null
+        }
+        Insert: {
+          client_email?: string | null
+          client_name?: string | null
+          comment?: string | null
+          created_at?: string | null
+          id?: string
+          mission_id: string
+          rating: number
+          updated_at?: string | null
+        }
+        Update: {
+          client_email?: string | null
+          client_name?: string | null
+          comment?: string | null
+          created_at?: string | null
+          id?: string
+          mission_id?: string
+          rating?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mission_feedback_mission_id_fkey"
+            columns: ["mission_id"]
+            isOneToOne: false
+            referencedRelation: "missions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mission_status_history: {
         Row: {
           changed_at: string
