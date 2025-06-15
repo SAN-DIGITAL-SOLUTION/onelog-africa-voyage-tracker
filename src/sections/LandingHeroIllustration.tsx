@@ -1,13 +1,33 @@
 
 import React, { useRef, useEffect, useState } from "react";
+import { Truck } from "lucide-react";
 
-// Coordonnées à ajuster pour coller au trajet sur l'image fournie (relatives à 500x500px car l'image jointe est plus carrée)
+// Coordonnées à ajuster pour coller au trajet sur l'image (500x500px de base pour l'image)
 // Les valeurs sont données à titre indicatif pour placer 3 points sur la trajectoire noire.
 const HUBS = [
   { x: 0.16, y: 0.28 }, // Ouest
   { x: 0.46, y: 0.35 }, // Centre du continent
   { x: 0.54, y: 0.71 }, // Sud-Est
 ];
+
+// Fonctions utiles
+function lerp(a: number, b: number, t: number) {
+  return a + (b - a) * t;
+}
+// Interpolation sur segments multiples (array de points), t ∈ [0, 1], renvoie x,y intermédiaire.
+function interpolatePolyline(points: { x: number; y: number }[], t: number) {
+  if (points.length < 2) return points[0];
+  // Découpage égal sur chaque segment (simple)
+  const segments = points.length - 1;
+  const segment = Math.min(Math.floor(t * segments), segments - 1);
+  const localT = (t - segment / segments) * segments;
+  const p0 = points[segment];
+  const p1 = points[segment + 1];
+  return {
+    x: lerp(p0.x, p1.x, localT),
+    y: lerp(p0.y, p1.y, localT),
+  };
+}
 
 // Animation pulsée des points GPS
 function GPSPulse({ left, top, size = 38, delayS = 0 }: { left: string, top: string; size?: number; delayS?: number }) {
@@ -50,6 +70,69 @@ function GPSPulse({ left, top, size = 38, delayS = 0 }: { left: string, top: str
   );
 }
 
+// Camion animé qui suit la route
+function AnimatedTruck({ box }: { box: { width: number; height: number } }) {
+  const [anim, setAnim] = useState(0);
+
+  useEffect(() => {
+    let raf: number;
+    let start: number;
+    function animate(ts: number) {
+      if (!start) start = ts;
+      const DURATION = 4700; // Durée totale du trajet (ms)
+      const progress = ((ts - start) % DURATION) / DURATION;
+      setAnim(progress);
+      raf = requestAnimationFrame(animate);
+    }
+    raf = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  // Interpolation du camion
+  const position = interpolatePolyline(HUBS, anim);
+  const xPx = position.x * box.width;
+  const yPx = position.y * box.height;
+
+  // Calcul direction (pour orienter légèrement le camion)
+  const EPS = 0.002;
+  const posAhead = interpolatePolyline(HUBS, Math.min(anim + EPS, 1));
+  const dx = posAhead.x - position.x;
+  const dy = posAhead.y - position.y;
+  const angleRad = Math.atan2(dy, dx);
+  const angleDeg = (angleRad * 180) / Math.PI;
+
+  return (
+    <div
+      className="absolute"
+      style={{
+        left: `${xPx}px`,
+        top: `${yPx}px`,
+        transform: `translate(-50%, -60%) rotate(${angleDeg}deg)`,
+        zIndex: 10,
+        transition: "filter 0.2s",
+        filter: "drop-shadow(0 3px 9px #26323833)",
+        pointerEvents: "none"
+      }}
+      aria-label="Truck en mouvement"
+    >
+      <Truck
+        size={38}
+        strokeWidth={2.5}
+        color="#E65100"
+        style={{
+          background: "#fff8f0",
+          borderRadius: 8,
+          border: "2.5px solid #F9A825",
+          boxShadow: "0 1px 10px 1px #E6510030",
+          padding: 2,
+          // Légère vibration
+          transform: `scale(1.10) rotate(-10deg)`,
+        }}
+      />
+    </div>
+  );
+}
+
 export default function LandingHeroIllustration() {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -77,12 +160,14 @@ export default function LandingHeroIllustration() {
         aria-hidden="true"
         style={{ pointerEvents: "none" }}
       />
+      {/* Truck animé */}
+      <AnimatedTruck box={box} />
       {/* Points GPS animés */}
       {HUBS.map((hub, i) => (
         <GPSPulse
           key={i}
-          left={(hub.x * 100) + "%"}
-          top={(hub.y * 100) + "%"}
+          left={hub.x * 100 + "%"}
+          top={hub.y * 100 + "%"}
           delayS={i * 0.18}
           size={38}
         />
