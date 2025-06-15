@@ -1,231 +1,193 @@
-import { useEffect, useRef, useState } from "react";
 
-const ROAD_PATH =
-  "M120,350 Q220,160 330,180 Q420,192 470,150 Q520,110 580,180 Q660,270 700,200"; // Chemin courbe sur la carte
+import React, { useRef, useEffect, useState } from "react";
 
-// Hubs logistiques (x, y) sur le SVG
+// Corresponds visually to the `/lovable-uploads/91fd0505-b323-44ce-8632-1456882003e9.png` image.
+// All coordinates below match the map image (420x420px), but get scaled with container.
+
+// GPS hubs on the map (as percentages of image dimensions so it's responsive)
 const HUBS = [
-  { x: 145, y: 270 },
-  { x: 225, y: 188 },
-  { x: 312, y: 187 },
-  { x: 410, y: 183 },
-  { x: 470, y: 150 },
-  { x: 597, y: 183 },
-  { x: 668, y: 207 },
+  { x: 0.173, y: 0.402 }, // Abidjan, CI
+  { x: 0.300, y: 0.345 }, // Dakar, SN
+  { x: 0.500, y: 0.320 }, // Lagos, NG
+  { x: 0.644, y: 0.510 }, // Nairobi, KE
 ];
 
-const CAMION_LENGTH = 36; // taille du camion sur la route
+// Route for the animated truck (array of "waypoints", to interpolate along)
+// These points should roughly match a path across Africa connecting some GPS hubs.
+// The values are [x, y] as ratio (0-1) of image size.
+const TRUCK_PATH = [
+  { x: 0.16, y: 0.425 }, // near Abidjan
+  { x: 0.23, y: 0.39 },  // Cameroon, 
+  { x: 0.40, y: 0.36 },  // Niger
+  { x: 0.536, y: 0.335 }, // Lagos area
+  { x: 0.625, y: 0.45 }, // near Nairobi
+  { x: 0.73, y: 0.59 },  // "East Africa"
+];
 
-// Camion SVG stylisé (orange, accent)
-function Camion({ x, y, angle }: { x: number; y: number; angle: number }) {
+// Truck SVG (accent styling)
+function TruckSVG({ size = 32, style = {} }: { size?: number; style?: React.CSSProperties }) {
   return (
-    <g transform={`translate(${x},${y}) rotate(${angle})`}>
-      <rect
-        x={-20}
-        y={-10}
-        rx={4}
-        ry={4}
-        width={36}
-        height={18}
-        fill="#E65100"
-        stroke="#263238"
-        strokeWidth={1.5}
-        filter="url(#shadow)"
-      />
-      {/* Container arrière (plus foncé) */}
-      <rect
-        x={-20}
-        y={-10}
-        width={14}
-        height={18}
-        rx={3}
-        ry={3}
-        fill="#F9A825"
-        stroke="#263238"
-        strokeWidth={1}
-      />
-      {/* Fenêtre */}
-      <rect x={8} y={-6} width={8} height={5} rx={1} fill="#FFF" opacity={0.85} />
-      {/* Roues */}
-      <ellipse cx={-16} cy={7} rx={2.6} ry={2.1} fill="#263238" />
-      <ellipse cx={12} cy={7} rx={2.7} ry={2.1} fill="#263238" />
+    <svg width={size} height={size * 0.65} viewBox="0 0 42 27" fill="none" style={style}>
+      {/* Container back (yellow) */}
+      <rect x="2" y="9" width="13" height="10" rx="2.8" fill="#F9A825" stroke="#E65100" strokeWidth="1" />
+      {/* Cab (orange) */}
+      <rect x="13" y="6" width="19" height="13" rx="3" fill="#E65100" stroke="#263238" strokeWidth="1.6"/>
+      {/* Window */}
+      <rect x="25" y="8.5" width="6.5" height="5" rx="1" fill="#fff" opacity="0.85" />
+      {/* Wheels */}
+      <ellipse cx="9" cy="21" rx="2.6" ry="2.1" fill="#263238"/>
+      <ellipse cx="27" cy="21" rx="2.7" ry="2.1" fill="#263238"/>
       {/* Calandre */}
-      <rect x={14} y={2} width={4} height={7} rx={1} fill="#009688" />
-      {/* Antenne/signal */}
-      <line x1={17.5} y1={-10} x2={17.5} y2={-18} stroke="#F9A825" strokeWidth={2} />
-      {/* Ombre soft */}
-      <ellipse
-        cx={0}
-        cy={12}
-        rx={17}
-        ry={5}
-        fill="#000"
-        opacity={0.09}
-      />
-    </g>
-  );
-}
-
-/**
- * Permet d’interpoler la position sur le chemin (route) pour l’animation du camion
- */
-function useTruckAnimation() {
-  const requestRef = useRef<number>();
-  const [progress, setProgress] = useState(0);
-
-  useEffect(() => {
-    let start: number | null = null;
-    const DURATION = 5200; // ms pour traverser la courbe
-
-    function animateTruck(ts: number) {
-      if (!start) start = ts;
-      const elapsed = (ts - start) % DURATION;
-      const prog = elapsed / DURATION;
-
-      setProgress(prog);
-      requestRef.current = requestAnimationFrame(animateTruck);
-    }
-    requestRef.current = requestAnimationFrame(animateTruck);
-    return () => requestRef.current && cancelAnimationFrame(requestRef.current);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  return progress;
-}
-
-/**
- * Calcul des coordonnées sur le SVG pour le camion le long du chemin.
- * On utilise la méthode getPointAtLength pour suivre la courbe.
- */
-function getPosOnPath(pathRef: SVGPathElement | null, progress: number) {
-  if (!pathRef) return { x: 0, y: 0, angle: 0 };
-  const total = pathRef.getTotalLength();
-  const l = progress * (total - CAMION_LENGTH / 2);
-  const p = pathRef.getPointAtLength(l);
-  // Pour l'angle, une petite avance
-  const delta = pathRef.getPointAtLength(Math.min(l + 2, total));
-  const angle = (Math.atan2(delta.y - p.y, delta.x - p.x) * 180) / Math.PI;
-  return { x: p.x, y: p.y, angle };
-}
-
-export default function LandingHeroIllustration() {
-  const pathRef = useRef<SVGPathElement>(null);
-  const progress = useTruckAnimation();
-
-  // Positions truck sur la route
-  const { x, y, angle } = getPosOnPath(pathRef.current, progress);
-
-  return (
-    <svg
-      viewBox="0 0 820 420"
-      fill="none"
-      aria-hidden="true"
-      className="w-full h-full max-w-[760px] max-h-[360px] transition-all"
-      style={{
-        minWidth: 250,
-        minHeight: 140,
-      }}
-    >
-      {/* Définition pour l’ombre portée du camion */}
-      <defs>
-        <filter id="shadow" x="-40%" y="-50%" width="180%" height="200%">
-          <feDropShadow dx="0" dy="4" stdDeviation="4" floodColor="#E65100" floodOpacity="0.25" />
-        </filter>
-        {/* Carte Afrique vectoriale, optimisée : fond vert */}
-        <clipPath id="africa-mask">
-          <path
-            d="M221 93Q243 70 297 61Q355 51 416 74Q466 89 488 104Q505 114 520 128Q600 197 646 260Q692 323 689 359Q672 383 637 388Q602 393 508 398Q414 403 293 388Q232 379 188 364Q149 351 137 335Q130 324 131 308Q136 278 154 254Q164 241 185 219Q202 202 216 176Q228 153 221 93Z"
-            transform="translate(90,40) scale(2.2)"
-          />
-        </clipPath>
-      </defs>
-
-      {/* Fond blanc - pour ne pas déborder */}
-      <rect x="0" y="0" width="100%" height="100%" fill="#F4F4F4" />
-
-      {/* Carte de l'Afrique */}
-      <g clipPath="url(#africa-mask)">
-        <rect x="75" y="40" width="660" height="340" fill="#1A3C40" />
-        {/* texture motif léger */}
-        <g opacity="0.02">
-          <circle cx="180" cy="120" r="28" fill="#F9A825" />
-          <circle cx="620" cy="330" r="41" fill="#009688" />
-        </g>
-      </g>
-
-      {/* Chemin courbe (route) */}
-      <path
-        ref={pathRef}
-        d={ROAD_PATH}
-        stroke="#F9A825"
-        strokeWidth={8}
-        fill="none"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        filter="url(#roadGlow)"
-      />
-      {/* Glow effet */}
-      <defs>
-        <filter id="roadGlow" x="-10%" y="-10%" width="120%" height="120%">
-          <feGaussianBlur stdDeviation="5" result="coloredBlur" />
-          <feMerge>
-            <feMergeNode in="coloredBlur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
-      </defs>
-
-      {/* Hubs logistiques (effet pulsation accentué) */}
-      {HUBS.map((hub, i) => (
-        <g key={i}>
-          {/* Cercles d'auréole pulsatiles */}
-          <circle
-            cx={hub.x}
-            cy={hub.y}
-            r="20"
-            fill="#F9A825"
-            opacity="0.20"
-            className="animate-pulse-gps"
-            style={{
-              animationDelay: `${i * 0.23}s`,
-              filter: "blur(3px)"
-            }}
-          />
-          <circle
-            cx={hub.x}
-            cy={hub.y}
-            r="14"
-            fill="#009688"
-            opacity="0.35"
-            className="animate-pulse-gps"
-            style={{
-              animationDelay: `${i * 0.23}s`,
-              filter: "blur(1.5px)"
-            }}
-          />
-          {/* Point central */}
-          <circle
-            cx={hub.x}
-            cy={hub.y}
-            r="11"
-            fill="#009688"
-            stroke="#FFF"
-            strokeWidth={3}
-            className="animate-pulse"
-            style={{
-              animationDelay: `${i * 0.23}s`,
-              filter: "drop-shadow(0 0 10px #009688bb)",
-              opacity: 0.88,
-            }}
-          />
-        </g>
-      ))}
-
-      {/* Camion animé */}
-      <Camion x={x} y={y} angle={angle} />
-
+      <rect x="29.6" y="16" width="3.7" height="4.7" rx="1" fill="#009688"/>
+      {/* Antenna */}
+      <line x1="31.3" y1="6.2" x2="31.3" y2="1.6" stroke="#F9A825" strokeWidth="1.7"/>
+      {/* Shadow */}
+      <ellipse cx="20" cy="24.5" rx="11" ry="2.75" fill="#000" opacity="0.13"/>
     </svg>
   );
 }
 
-// NOTE: Ce fichier approche 200 lignes : il commence à devenir trop long. Après cette étape, pensez à demander un refactoring pour séparer SVG, animations, hooks, etc.
+// Animated pulsating GPS marker (uses Tailwind CSS for animation)
+function GPSPulse({ left, top, size = 32, delayS = 0 }: { left: string, top: string; size?: number; delayS?: number }) {
+  return (
+    <div
+      className="absolute pointer-events-none"
+      style={{
+        left,
+        top,
+        width: size,
+        height: size,
+        transform: `translate(-50%, -50%)`,
+        zIndex: 2,
+      }}
+    >
+      {/* Outer accent pulse */}
+      <span
+        className="absolute w-full h-full rounded-full bg-[#F9A825] opacity-20 animate-pulse-gps"
+        style={{
+          animationDelay: `${delayS || 0}s`,
+          filter: "blur(2.5px)",
+        }}
+      />
+      {/* Inner accent pulse green */}
+      <span
+        className="absolute w-3/4 h-3/4 left-1/8 top-1/8 rounded-full bg-[#009688] opacity-40 animate-pulse-gps"
+        style={{
+          animationDelay: `${delayS || 0}s`,
+          filter: "blur(1.5px)",
+        }}
+      />
+      {/* Center marker white stroke */}
+      <span
+        className="absolute left-1/4 top-1/4 w-1/2 h-1/2 rounded-full bg-[#009688] border-2 border-white"
+        style={{
+          boxShadow: "0 0 9px 0 #009688aa",
+        }}
+      />
+    </div>
+  );
+}
+
+// Interpolate (x, y) along path, return {x, y} as percent of image, and angle for truck orientation.
+function getTruckPosition(progress: number) {
+  // Clamp between 0 and TRUCK_PATH.length-1
+  const n = TRUCK_PATH.length;
+  const seg = Math.floor(progress * (n - 1));
+  const p1 = TRUCK_PATH[seg];
+  const p2 = TRUCK_PATH[Math.min(seg + 1, n - 1)];
+  const localT = (progress * (n - 1)) - seg;
+  const x = p1.x + (p2.x - p1.x) * localT;
+  const y = p1.y + (p2.y - p1.y) * localT;
+  // Angle for truck (in degrees)
+  const angle =
+    Math.atan2((p2.y - p1.y), (p2.x - p1.x)) * 180 / Math.PI;
+  return { x, y, angle };
+}
+
+// Animation hook for progress [0, 1]
+function useProgress(duration = 6000) {
+  const [progress, setProgress] = useState(0);
+  useEffect(() => {
+    let frame: number;
+    let mounted = true;
+    let start: number | null = null;
+    function loop(ts: number) {
+      if (!start) start = ts;
+      const elapsed = ((ts - start) % duration);
+      const prog = elapsed / duration;
+      if (mounted) setProgress(prog);
+      frame = requestAnimationFrame(loop);
+    }
+    frame = requestAnimationFrame(loop);
+    return () => {
+      mounted = false;
+      cancelAnimationFrame(frame);
+    };
+  }, [duration]);
+  return progress;
+}
+
+export default function LandingHeroIllustration() {
+  const imgRef = useRef<HTMLImageElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const progress = useProgress(6200);
+
+  // Responsive size
+  const [box, setBox] = useState({width: 420, height: 420});
+  useEffect(() => {
+    function handle() {
+      if (!containerRef.current) return;
+      const { width } = containerRef.current.getBoundingClientRect();
+      setBox({ width, height: width });
+    }
+    handle();
+    window.addEventListener("resize", handle);
+    return () => window.removeEventListener("resize", handle);
+  }, []);
+
+  // Calculate truck position (in pixels)
+  const { x, y, angle } = getTruckPosition(progress);
+
+  return (
+    <div ref={containerRef} className="relative w-full max-w-[420px] aspect-square mx-auto select-none">
+      {/* Map background */}
+      <img
+        ref={imgRef}
+        src="/lovable-uploads/91fd0505-b323-44ce-8632-1456882003e9.png"
+        alt="Carte de l'Afrique"
+        className="absolute top-0 left-0 w-full h-full object-contain rounded-xl shadow-lg border border-gray-100"
+        draggable={false}
+        aria-hidden="true"
+        style={{pointerEvents: "none"}}
+      />
+      {/* GPS points overlay */}
+      {HUBS.map((hub, i) => (
+        <GPSPulse
+          key={i}
+          left={(hub.x * 100) + "%"}
+          top={(hub.y * 100) + "%"}
+          delayS={i * 0.16}
+          size={38}
+        />
+      ))}
+      {/* Animated truck overlay */}
+      <div
+        className="absolute"
+        style={{
+          left: (x * 100) + "%",
+          top: (y * 100) + "%",
+          width: 42,
+          height: 28,
+          transform: `translate(-50%,-50%) rotate(${angle}deg)`,
+          zIndex: 3,
+        }}
+      >
+        <TruckSVG size={44} />
+      </div>
+    </div>
+  );
+}
+
+// NOTE: This file is now quite long (approaching/exceeding 130 lines and logic is accumulating).
+// It would be beneficial to split out the Truck, GPSPulse, and animation hook into their own files for clarity 
+// after confirming visual parity and function is as expected.
