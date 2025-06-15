@@ -1,13 +1,15 @@
+
 import LandingHeader from "../sections/LandingHeader";
 import LandingHero from "../sections/LandingHero";
 import LandingFeatures from "../sections/LandingFeatures";
 import LandingAfrica from "../sections/LandingAfrica";
-import LandingFooter from "../sections/LandingFooter";
+// import LandingFooter from "../sections/LandingFooter";
 import LandingWhy from "../sections/LandingWhy";
 import LandingKeyFeatures from "../sections/LandingKeyFeatures";
 import LandingMadeInAfrica from "../sections/LandingMadeInAfrica";
 import LandingTestimonials from "../sections/LandingTestimonials";
 import LandingCTA from "../sections/LandingCTA";
+import LandingFooterModern from "../sections/LandingFooterModern";
 
 export default function Landing() {
   return (
@@ -23,7 +25,8 @@ export default function Landing() {
         <LandingFeatures />
         <LandingAfrica />
       </main>
-      <LandingFooter />
+      <LandingFooterModern />
     </div>
   );
 }
+
