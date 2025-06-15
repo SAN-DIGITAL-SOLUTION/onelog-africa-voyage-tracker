@@ -5,6 +5,8 @@ type Notification = {
   target: string;
   message: string;
   sent_at?: string;
+  mission_id?: string | null;
+  trigger?: string | null;
 };
 
 type NotificationHistoryProps = {
@@ -16,6 +18,7 @@ export default function NotificationHistory({
   notifications,
   isLoading,
 }: NotificationHistoryProps) {
+  // Add mission_id and trigger columns to table
   return (
     <section className="mt-10">
       <h2 className="font-bold mb-4">Historique des notifications</h2>
@@ -31,15 +34,19 @@ export default function NotificationHistory({
                 <th className="px-2 py-2 text-left">Type</th>
                 <th className="px-2 py-2 text-left">Destinataire</th>
                 <th className="px-2 py-2 text-left">Message</th>
+                <th className="px-2 py-2 text-left">Mission</th>
+                <th className="px-2 py-2 text-left">Évènement</th>
                 <th className="px-2 py-2 text-left">Envoyé le</th>
               </tr>
             </thead>
             <tbody>
               {notifications.map((notif) => (
                 <tr key={notif.id} className="border-b last:border-none">
-                  <td className="px-2 py-2">{notif.type.toUpperCase()}</td>
+                  <td className="px-2 py-2">{notif.type?.toUpperCase?.() || ""}</td>
                   <td className="px-2 py-2">{notif.target}</td>
                   <td className="px-2 py-2">{notif.message}</td>
+                  <td className="px-2 py-2">{notif.mission_id || "-"}</td>
+                  <td className="px-2 py-2">{notif.trigger || "-"}</td>
                   <td className="px-2 py-2">
                     {notif.sent_at
                       ? new Date(notif.sent_at).toLocaleString("fr-FR")

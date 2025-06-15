@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,6 +14,8 @@ const notificationSchema = z.object({
   mode: z.union([z.literal("email"), z.literal("sms")]),
   target: z.string().min(3, "Champ requis"),
   message: z.string().min(2, "Veuillez écrire un message"),
+  mission_id: z.string().optional(),
+  trigger: z.string().optional(),
 });
 
 // Pour le SMS, à brancher si tu veux faire une API Edge function Supabase plus tard
@@ -41,6 +42,8 @@ export default function Notifications() {
       mode: mode,
       target: "",
       message: "",
+      mission_id: "",
+      trigger: "",
     },
   });
 
@@ -62,7 +65,7 @@ export default function Notifications() {
 
   // Mutation : envoie notification via email/sms et stocke dans Supabase
   const { mutate: sendNotification, isPending: isSending } = useMutation({
-    mutationFn: async (values: { mode: "email" | "sms"; target: string; message: string }) => {
+    mutationFn: async (values: { mode: "email" | "sms"; target: string; message: string; mission_id?: string; trigger?: string }) => {
       if (!user) throw new Error("Non authentifié");
       // 1. Envoi (email/sms)
       if (values.mode === "sms") {
@@ -70,13 +73,15 @@ export default function Notifications() {
       } else {
         await sendEmail(values.target, values.message, user.id);
       }
-      // 2. Enregistrement Supabase
+      // 2. Enregistrement Supabase (inclut mission_id et trigger)
       const { error } = await supabase.from("notifications").insert({
         user_id: user.id,
         type: values.mode,
         target: values.target,
         message: values.message,
         sent_at: new Date().toISOString(),
+        mission_id: values.mission_id || null,
+        trigger: values.trigger || null,
       });
       if (error) throw new Error(error.message);
     },
@@ -85,7 +90,7 @@ export default function Notifications() {
         title: "Notification envoyée !",
         description: "Votre notification a été enregistrée et envoyée.",
       });
-      form.reset({ mode, target: "", message: "" });
+      form.reset({ mode, target: "", message: "", mission_id: "", trigger: "" });
       queryClient.invalidateQueries({ queryKey: ["notifications", user?.id] });
     },
     onError: (error: any) => {
@@ -101,11 +106,11 @@ export default function Notifications() {
   function handleMode(newMode: "email" | "sms") {
     setMode(newMode);
     form.setValue("mode", newMode);
-    form.reset({ mode: newMode, target: "", message: "" });
+    form.reset({ mode: newMode, target: "", message: "", mission_id: "", trigger: "" });
   }
 
-  function handleFormSubmit({ target, message }: { target: string; message: string }) {
-    sendNotification({ mode, target, message });
+  function handleFormSubmit({ target, message, mission_id, trigger }: { target: string; message: string; mission_id?: string; trigger?: string }) {
+    sendNotification({ mode, target, message, mission_id, trigger });
   }
 
   return (

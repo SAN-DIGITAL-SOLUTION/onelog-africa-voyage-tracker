@@ -203,24 +203,30 @@ export type Database = {
         Row: {
           id: string
           message: string
+          mission_id: string | null
           sent_at: string | null
           target: string
+          trigger: string | null
           type: string
           user_id: string
         }
         Insert: {
           id?: string
           message: string
+          mission_id?: string | null
           sent_at?: string | null
           target: string
+          trigger?: string | null
           type: string
           user_id: string
         }
         Update: {
           id?: string
           message?: string
+          mission_id?: string | null
           sent_at?: string | null
           target?: string
+          trigger?: string | null
           type?: string
           user_id?: string
         }

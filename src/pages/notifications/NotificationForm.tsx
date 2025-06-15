@@ -1,4 +1,3 @@
-
 import { Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,7 +16,7 @@ type NotificationFormProps = {
   form: any;
   mode: "email" | "sms";
   isSending: boolean;
-  onSubmit: (values: { target: string; message: string }) => void;
+  onSubmit: (values: { target: string; message: string; mission_id?: string; trigger?: string }) => void;
   onModeChange: (newMode: "email" | "sms") => void;
 };
 
@@ -123,4 +122,3 @@ export default function NotificationForm({
     </section>
   );
 }
-
