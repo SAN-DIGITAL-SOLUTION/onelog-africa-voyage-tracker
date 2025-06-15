@@ -7,6 +7,11 @@ type Mission = {
   chauffeur?: string;
   date: string;
   status: string;
+  type_de_marchandise?: string;
+  volume?: number;
+  poids?: number;
+  lieu_enlevement?: string;
+  lieu_livraison?: string;
 };
 
 type Props = {
@@ -35,6 +40,26 @@ export default function MissionOverview({ mission }: Props) {
       <div>
         <div className="text-sm text-gray-600">Statut</div>
         <div className="font-semibold">{mission.status}</div>
+      </div>
+      <div>
+        <div className="text-sm text-gray-600">Type de marchandise</div>
+        <div className="font-semibold">{mission.type_de_marchandise || <span className="italic text-onelog-nuit/40">Aucune</span>}</div>
+      </div>
+      <div>
+        <div className="text-sm text-gray-600">Volume (m³)</div>
+        <div className="font-semibold">{typeof mission.volume === "number" ? mission.volume : <span className="italic text-onelog-nuit/40">NC</span>}</div>
+      </div>
+      <div>
+        <div className="text-sm text-gray-600">Poids (kg)</div>
+        <div className="font-semibold">{typeof mission.poids === "number" ? mission.poids : <span className="italic text-onelog-nuit/40">NC</span>}</div>
+      </div>
+      <div>
+        <div className="text-sm text-gray-600">Lieu d'enlèvement</div>
+        <div className="font-semibold">{mission.lieu_enlevement || <span className="italic text-onelog-nuit/40">Non renseigné</span>}</div>
+      </div>
+      <div>
+        <div className="text-sm text-gray-600">Lieu de livraison</div>
+        <div className="font-semibold">{mission.lieu_livraison || <span className="italic text-onelog-nuit/40">Non renseigné</span>}</div>
       </div>
     </section>
   );

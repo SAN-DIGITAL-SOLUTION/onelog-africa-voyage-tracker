@@ -86,10 +86,15 @@ export type Database = {
           date: string
           description: string | null
           id: string
+          lieu_enlevement: string | null
+          lieu_livraison: string | null
+          poids: number | null
           ref: string
           status: string
+          type_de_marchandise: string | null
           updated_at: string | null
           user_id: string
+          volume: number | null
         }
         Insert: {
           chauffeur?: string | null
@@ -98,10 +103,15 @@ export type Database = {
           date: string
           description?: string | null
           id?: string
+          lieu_enlevement?: string | null
+          lieu_livraison?: string | null
+          poids?: number | null
           ref: string
           status: string
+          type_de_marchandise?: string | null
           updated_at?: string | null
           user_id: string
+          volume?: number | null
         }
         Update: {
           chauffeur?: string | null
@@ -110,12 +120,52 @@ export type Database = {
           date?: string
           description?: string | null
           id?: string
+          lieu_enlevement?: string | null
+          lieu_livraison?: string | null
+          poids?: number | null
           ref?: string
           status?: string
+          type_de_marchandise?: string | null
           updated_at?: string | null
           user_id?: string
+          volume?: number | null
         }
         Relationships: []
+      }
+      missions_documents: {
+        Row: {
+          filename: string
+          id: string
+          mission_id: string
+          uploaded_at: string
+          url: string
+          user_id: string
+        }
+        Insert: {
+          filename: string
+          id?: string
+          mission_id: string
+          uploaded_at?: string
+          url: string
+          user_id: string
+        }
+        Update: {
+          filename?: string
+          id?: string
+          mission_id?: string
+          uploaded_at?: string
+          url?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "missions_documents_mission_id_fkey"
+            columns: ["mission_id"]
+            isOneToOne: false
+            referencedRelation: "missions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       notifications: {
         Row: {

@@ -34,6 +34,7 @@ export default function MissionsTable({
 }: MissionsTableProps) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+
   const { mutate: deleteMission, isPending: isDeleting } = useMutation({
     mutationFn: async (id: string) => {
       // @ts-ignore
@@ -59,6 +60,11 @@ export default function MissionsTable({
           <TableHead>Chauffeur</TableHead>
           <TableHead>Date</TableHead>
           <TableHead>Statut</TableHead>
+          <TableHead>Type</TableHead>
+          <TableHead>Vol (m³)</TableHead>
+          <TableHead>Poids (kg)</TableHead>
+          <TableHead>Enlèvement</TableHead>
+          <TableHead>Livraison</TableHead>
           <TableHead>Description</TableHead>
           <TableHead></TableHead>
         </TableRow>
@@ -66,7 +72,7 @@ export default function MissionsTable({
       <TableBody>
         {isLoading ? (
           <TableRow>
-            <TableCell colSpan={7} className="text-center py-8">
+            <TableCell colSpan={12} className="text-center py-8">
               <span className="animate-spin h-7 w-7 border-4 border-onelog-bleu border-t-transparent rounded-full inline-block" />
             </TableCell>
           </TableRow>
@@ -85,6 +91,21 @@ export default function MissionsTable({
                     : "bg-red-200 text-red-700")}>
                 {m.status}
               </span>
+            </TableCell>
+            <TableCell style={{ fontFamily: "'PT Sans',sans-serif" }}>
+              {m.type_de_marchandise || <span className="italic text-onelog-nuit/40">-</span>}
+            </TableCell>
+            <TableCell style={{ fontFamily: "'PT Sans',sans-serif" }}>
+              {typeof m.volume === "number" ? m.volume : <span className="italic text-onelog-nuit/40">-</span>}
+            </TableCell>
+            <TableCell style={{ fontFamily: "'PT Sans',sans-serif" }}>
+              {typeof m.poids === "number" ? m.poids : <span className="italic text-onelog-nuit/40">-</span>}
+            </TableCell>
+            <TableCell style={{ fontFamily: "'PT Sans',sans-serif" }}>
+              {m.lieu_enlevement || <span className="italic text-onelog-nuit/40">-</span>}
+            </TableCell>
+            <TableCell style={{ fontFamily: "'PT Sans',sans-serif" }}>
+              {m.lieu_livraison || <span className="italic text-onelog-nuit/40">-</span>}
             </TableCell>
             <TableCell>
               {m.description && m.description.length > 50 ?
@@ -111,7 +132,7 @@ export default function MissionsTable({
           </TableRow>
         )) : (
           <TableRow>
-            <TableCell colSpan={7} className="text-center py-8 text-onelog-nuit/60" style={{ fontFamily: "'PT Sans',sans-serif" }}>
+            <TableCell colSpan={12} className="text-center py-8 text-onelog-nuit/60" style={{ fontFamily: "'PT Sans',sans-serif" }}>
               Aucune mission trouvée.
             </TableCell>
           </TableRow>

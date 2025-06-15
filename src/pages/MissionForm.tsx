@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -15,6 +14,10 @@ import ChauffeurSelector from "./mission-form/ChauffeurSelector";
 import DescriptionField from "./mission-form/DescriptionField";
 import MissionFormSection from "./mission-form/MissionFormSection";
 import MissionFormActions from "./mission-form/MissionFormActions";
+import TypeMarchandiseField from "./mission-form/TypeMarchandiseField";
+import VolumePoidsFields from "./mission-form/VolumePoidsFields";
+import LieuFields from "./mission-form/LieuFields";
+import MissionDocumentsField, { MissionDocUpload } from "./mission-form/MissionDocumentsField";
 
 const missionSchema = z.object({
   ref: z.string().min(1, "Référence obligatoire"),
@@ -22,7 +25,13 @@ const missionSchema = z.object({
   chauffeur: z.string().optional(),
   date: z.string().min(1, "Date obligatoire"),
   status: z.string().min(1, "Statut obligatoire"),
-  description: z.string().optional()
+  description: z.string().optional(),
+  type_de_marchandise: z.string().optional(),
+  volume: z.preprocess(val => (val === "" ? undefined : Number(val)), z.number().optional()),
+  poids: z.preprocess(val => (val === "" ? undefined : Number(val)), z.number().optional()),
+  lieu_enlevement: z.string().optional(),
+  lieu_livraison: z.string().optional(),
+  documents: z.any().optional(), // Handled separately
 });
 
 const statusOptions = ["En cours", "Terminée", "Annulée"];
@@ -32,6 +41,8 @@ export default function MissionForm({ editMode = false }: { editMode?: boolean }
   const navigate = useNavigate();
   const [defaultValues, setDefaultValues] = React.useState<any>(null);
   const [loading, setLoading] = React.useState(false);
+  // Documents state (outside react-hook-form, handled separately since upload is async)
+  const [documents, setDocuments] = React.useState<MissionDocUpload[]>([]);
 
   React.useEffect(() => {
     if (editMode && params.id) {
@@ -51,6 +62,13 @@ export default function MissionForm({ editMode = false }: { editMode?: boolean }
     }
   }, [editMode, params.id, navigate]);
 
+  React.useEffect(() => {
+    // On editing, prefill document list from backend if present in defaultValues
+    if (editMode && defaultValues && defaultValues.documents) {
+      setDocuments(defaultValues.documents);
+    }
+  }, [defaultValues, editMode]);
+
   const form = useForm({
     resolver: zodResolver(missionSchema),
     defaultValues: defaultValues || {
@@ -59,7 +77,13 @@ export default function MissionForm({ editMode = false }: { editMode?: boolean }
       chauffeur: "",
       date: "",
       status: "",
-      description: ""
+      description: "",
+      type_de_marchandise: "",
+      volume: undefined,
+      poids: undefined,
+      lieu_enlevement: "",
+      lieu_livraison: "",
+      documents: []
     }
   });
 
@@ -75,27 +99,48 @@ export default function MissionForm({ editMode = false }: { editMode?: boolean }
   const onSubmit = async (values: any) => {
     setLoading(true);
     try {
+      let missionId = params.id;
+      // 1. Handle mission creation/updating (Mission)
       if (editMode && params.id) {
         const { error } = await supabase.from("missions").update({
           ...values,
           updated_at: new Date().toISOString()
         }).eq("id", params.id);
         if (error) throw error;
+        missionId = params.id;
         toast({ title: "Mission mise à jour", description: "Les modifications ont été enregistrées." });
         navigate(`/missions/${params.id}`);
       } else {
         const user = (await supabase.auth.getUser()).data.user;
         if (!user) throw new Error("Utilisateur non authentifié");
-        const { error } = await supabase.from("missions").insert({
+        const { data: insertData, error } = await supabase.from("missions").insert({
           ...values,
           user_id: user.id,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
-        });
+        }).select().single();
         if (error) throw error;
+        missionId = insertData.id;
         toast({ title: "Mission créée", description: "La mission a été ajoutée." });
-        navigate("/missions");
       }
+
+      // 2. Handle documents: save entries to missions_documents if present
+      if (documents.length > 0 && missionId) {
+        // Save only new documents that may not be already associated
+        for (const doc of documents) {
+          if (!doc.id) {
+            const user = (await supabase.auth.getUser()).data.user;
+            await supabase.from("missions_documents").insert({
+              mission_id: missionId,
+              user_id: user.id,
+              filename: doc.filename,
+              url: doc.url
+            });
+          }
+        }
+      }
+
+      navigate(editMode ? `/missions/${params.id}` : "/missions");
     } catch (e: any) {
       toast({ title: "Erreur", description: e.message, variant: "destructive" });
     } finally {
@@ -128,8 +173,22 @@ export default function MissionForm({ editMode = false }: { editMode?: boolean }
               fontFamily={fontFamily}
             />
           </MissionFormSection>
+          <MissionFormSection title="Informations marchandise" fontFamily={fontFamily}>
+            <TypeMarchandiseField control={form.control} fontFamily={fontFamily} />
+            <VolumePoidsFields control={form.control} fontFamily={fontFamily} />
+            <LieuFields control={form.control} fontFamily={fontFamily} />
+          </MissionFormSection>
           <MissionFormSection title="Description" fontFamily={fontFamily}>
             <DescriptionField control={form.control} fontFamily={fontFamily} />
+          </MissionFormSection>
+          <MissionFormSection title="Documents joints" fontFamily={fontFamily}>
+            <MissionDocumentsField
+              missionId={params.id}
+              documents={documents}
+              setDocuments={setDocuments}
+              fontFamily={fontFamily}
+              disabled={loading}
+            />
           </MissionFormSection>
           <MissionFormActions loading={loading} editMode={editMode} />
         </form>
