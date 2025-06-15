@@ -91,7 +91,7 @@ export default function Notifications() {
     enabled: !!user,
   });
 
-  // Mutation : envoie notification via email/sms et stocke dans Supabase
+  // Mutation : envoie notification via email/sms et stocke dans Supabase
   const { mutate: sendNotification, isPending: isSending } = useMutation({
     mutationFn: async (values: { mode: "email" | "sms"; target: string; message: string; mission_id?: string; trigger?: string }) => {
       if (!user) throw new Error("Non authentifié");
@@ -122,7 +122,7 @@ export default function Notifications() {
     },
     onSuccess: () => {
       toast({
-        title: "Notification envoyée !",
+        title: "Notification envoyée !",
         description: "Votre notification a été enregistrée et envoyée.",
       });
       form.reset({ mode, target: "", message: "", mission_id: "", trigger: "" });
@@ -149,9 +149,12 @@ export default function Notifications() {
 
   return (
     <RequireAuth>
-      <main className="container mx-auto pt-8 px-2 max-w-2xl">
+      <main className="container mx-auto pt-8 px-2 max-w-4xl">
         <div className="mb-8">
           <h1 className="text-2xl font-bold mb-2">Notifications</h1>
+          <p className="text-gray-600">
+            Envoyez des notifications par email ou SMS et consultez l'historique.
+          </p>
         </div>
         <NotificationForm
           form={form}
