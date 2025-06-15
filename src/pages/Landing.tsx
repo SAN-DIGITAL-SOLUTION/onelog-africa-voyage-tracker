@@ -7,6 +7,7 @@ import LandingWhy from "../sections/LandingWhy";
 import LandingKeyFeatures from "../sections/LandingKeyFeatures";
 import LandingMadeInAfrica from "../sections/LandingMadeInAfrica";
 import LandingTestimonials from "../sections/LandingTestimonials";
+import LandingCTA from "../sections/LandingCTA";
 
 export default function Landing() {
   return (
@@ -18,6 +19,7 @@ export default function Landing() {
         <LandingKeyFeatures />
         <LandingMadeInAfrica />
         <LandingTestimonials />
+        <LandingCTA />
         <LandingFeatures />
         <LandingAfrica />
       </main>
