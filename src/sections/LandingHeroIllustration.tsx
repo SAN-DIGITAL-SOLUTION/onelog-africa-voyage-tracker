@@ -2,22 +2,22 @@
 import React, { useRef, useEffect, useState } from "react";
 import { Truck } from "lucide-react";
 
-// Coordonnées à ajuster pour coller au trajet sur l'image (500x500px de base pour l'image)
-// Les valeurs sont données à titre indicatif pour placer 3 points sur la trajectoire noire.
+// 5 points pour suivre le parcours blanc interne sur la carte.
+// Les coordonnées sont ajustées à la main pour être cohérent (aide-toi du preview, affiner si besoin)
 const HUBS = [
-  { x: 0.16, y: 0.28 }, // Ouest
-  { x: 0.46, y: 0.35 }, // Centre du continent
-  { x: 0.54, y: 0.71 }, // Sud-Est
+  { x: 0.16, y: 0.28 }, // Ouest, entrée
+  { x: 0.34, y: 0.33 }, // Milieu Ouest
+  { x: 0.46, y: 0.39 }, // Centre du continent
+  { x: 0.62, y: 0.52 }, // Centre Sud-Est
+  { x: 0.54, y: 0.71 }, // Sud-Est sortie
 ];
 
 // Fonctions utiles
 function lerp(a: number, b: number, t: number) {
   return a + (b - a) * t;
 }
-// Interpolation sur segments multiples (array de points), t ∈ [0, 1], renvoie x,y intermédiaire.
 function interpolatePolyline(points: { x: number; y: number }[], t: number) {
   if (points.length < 2) return points[0];
-  // Découpage égal sur chaque segment (simple)
   const segments = points.length - 1;
   const segment = Math.min(Math.floor(t * segments), segments - 1);
   const localT = (t - segment / segments) * segments;
@@ -30,7 +30,12 @@ function interpolatePolyline(points: { x: number; y: number }[], t: number) {
 }
 
 // Animation pulsée des points GPS
-function GPSPulse({ left, top, size = 38, delayS = 0 }: { left: string, top: string; size?: number; delayS?: number }) {
+function GPSPulse({
+  left,
+  top,
+  size = 38,
+  delayS = 0,
+}: { left: string; top: string; size?: number; delayS?: number }) {
   return (
     <div
       className="absolute pointer-events-none"
@@ -111,7 +116,7 @@ function AnimatedTruck({ box }: { box: { width: number; height: number } }) {
         zIndex: 10,
         transition: "filter 0.2s",
         filter: "drop-shadow(0 3px 9px #26323833)",
-        pointerEvents: "none"
+        pointerEvents: "none",
       }}
       aria-label="Truck en mouvement"
     >
@@ -120,12 +125,13 @@ function AnimatedTruck({ box }: { box: { width: number; height: number } }) {
         strokeWidth={2.5}
         color="#E65100"
         style={{
-          background: "#fff8f0",
-          borderRadius: 8,
-          border: "2.5px solid #F9A825",
-          boxShadow: "0 1px 10px 1px #E6510030",
-          padding: 2,
-          // Légère vibration
+          // Style épuré : plus de fond, plus de contour carré, plus de border, padding, boxShadow, etc.
+          background: undefined,
+          borderRadius: undefined,
+          border: undefined,
+          boxShadow: undefined,
+          padding: 0,
+          // Vibrer légèrement
           transform: `scale(1.10) rotate(-10deg)`,
         }}
       />
@@ -168,8 +174,8 @@ export default function LandingHeroIllustration() {
           key={i}
           left={hub.x * 100 + "%"}
           top={hub.y * 100 + "%"}
-          delayS={i * 0.18}
-          size={38}
+          delayS={i * 0.16}
+          size={32}
         />
       ))}
     </div>
