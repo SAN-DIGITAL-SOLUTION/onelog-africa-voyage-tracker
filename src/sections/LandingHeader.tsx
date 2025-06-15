@@ -64,7 +64,7 @@ export default function LandingHeader() {
                 <rect x="1" y="15" width="19" height="12" rx="6" fill="#E65100">
                   <animate attributeName="x" values="1;14;1" dur="1.4s" repeatCount="indefinite" />
                 </rect>
-                <rect x="16" y="21" width="12" height="6" rx="3" fill="#009688" />
+                <rect x="16" y="21" width="12" height="6" rx="3" fill="#1A3C40" />
                 <ellipse cx="6" cy="33" rx="5" ry="4" fill="#1A3C40">
                   <animate attributeName="cx" values="6;18;6" dur="1.4s" repeatCount="indefinite" />
                 </ellipse>
@@ -76,9 +76,9 @@ export default function LandingHeader() {
             </span>
           </div>
           <nav className="hidden md:flex items-center gap-8 font-semibold text-base relative z-10">
-            <a href="#features" className="story-link" style={{ color: "#263238" }}>Fonctionnalités</a>
-            <a href="#secteurs" className="story-link" style={{ color: "#263238" }}>Secteurs desservis</a>
-            <a href="#about" className="story-link" style={{ color: "#263238" }}>À propos</a>
+            <a href="#features" className="story-link" style={{ color: "#1A3C40" }}>Fonctionnalités</a>
+            <a href="#secteurs" className="story-link" style={{ color: "#1A3C40" }}>Secteurs desservis</a>
+            <a href="#about" className="story-link" style={{ color: "#1A3C40" }}>À propos</a>
             <Button asChild variant="secondary" size="sm" className="font-bold" style={{ background: "#F9A825", color: "#1A3C40" }}>
               <a href="/auth">Connexion</a>
             </Button>
@@ -109,4 +109,3 @@ export default function LandingHeader() {
     </>
   );
 }
-

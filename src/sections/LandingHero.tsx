@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 
 export default function LandingHero() {
@@ -52,13 +53,13 @@ export default function LandingHero() {
             y1={140}
             x2={312}
             y2={140}
-            stroke="#009688"
+            stroke="#1A3C40"
             strokeWidth={3}
             strokeDasharray="8 8"
             initial={{ pathLength: 0 }}
             animate={{ pathLength: 1 }}
             transition={{ duration: 1.7, delay: 2.25 }}
-            style={{ filter: "drop-shadow(0 0 16px #009688a0)" }}
+            style={{ filter: "drop-shadow(0 0 16px #1A3C40a0)" }}
           />
           {/* African logistician with tablet */}
           <motion.g
