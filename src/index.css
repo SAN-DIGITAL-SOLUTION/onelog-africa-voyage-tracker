@@ -39,8 +39,9 @@
     @apply bg-accent text-white font-bold rounded-full px-7 py-3 shadow-cta transition-cta duration-300 hover:bg-accent-hover hover:shadow-lg focus:ring-4 focus:ring-secondary;
   }
   .banner-notif {
-    @apply w-full fixed z-40 top-0 left-0 text-base text-primary px-2 py-1 font-semibold bg-secondary border-b-2 border-accent shadow animate-fade-in;
+    @apply w-full fixed z-40 top-0 left-0 text-base text-primary px-2 py-1 font-semibold bg-secondary border-b-2 border-accent shadow;
     letter-spacing: 0.01em;
+    /* Instead of using @apply animate-fade-in, use the class in JSX */
   }
   .african-texture {
     @apply bg-african-pattern bg-repeat bg-[length:110px_110px];
@@ -48,4 +49,3 @@
     pointer-events: none;
   }
 }
-

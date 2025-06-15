@@ -60,6 +60,16 @@ export default {
       transitionProperty: {
         "cta": "background, box-shadow, border, color, transform",
       },
+      // Add these lines for the fade-in animation
+      keyframes: {
+        "fade-in": {
+          "0%": { opacity: "0", transform: "translateY(10px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+      },
+      animation: {
+        "fade-in": "fade-in 0.4s cubic-bezier(0.4,0,0.2,1) both",
+      },
     },
   },
   plugins: [
