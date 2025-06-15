@@ -3,8 +3,6 @@ import { motion } from "framer-motion";
 export default function LandingHero() {
   return (
     <section className="relative flex flex-col items-center justify-center min-h-[85vh] pt-40 pb-12 text-center select-none">
-      {/* Fond motif africain discret */}
-      <div className="absolute inset-0 w-full h-full african-texture pointer-events-none z-0" aria-hidden />
       {/* Animated SVG illustration for "wahou" effect" */}
       <motion.div
         initial={{ opacity: 0, y: 45, scale: 0.98 }}

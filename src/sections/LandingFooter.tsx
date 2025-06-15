@@ -2,7 +2,7 @@
 export default function LandingFooter() {
   return (
     <footer className="bg-primary text-dm-text py-8 px-6 border-t border-secondary/30 relative">
-      <div className="absolute inset-0 african-texture z-0" aria-hidden />
+      {/* Motif africain supprimé */}
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-5 relative z-10">
         <div className="flex items-center gap-3 mb-2 md:mb-0">
           <img src="/favicon.ico" alt="OneLog Africa logo" className="h-7 w-7 rounded" />
@@ -24,3 +24,4 @@ export default function LandingFooter() {
     </footer>
   );
 }
+
