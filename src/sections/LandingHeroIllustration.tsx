@@ -115,7 +115,6 @@ export default function LandingHeroIllustration() {
   // Positions truck sur la route
   const { x, y, angle } = getPosOnPath(pathRef.current, progress);
 
-  // Responsive container
   return (
     <svg
       viewBox="0 0 820 420"
@@ -176,23 +175,50 @@ export default function LandingHeroIllustration() {
         </filter>
       </defs>
 
-      {/* Hubs logistiques (effet pulsation) */}
+      {/* Hubs logistiques (effet pulsation accentué) */}
       {HUBS.map((hub, i) => (
-        <circle
-          key={i}
-          cx={hub.x}
-          cy={hub.y}
-          r="13"
-          fill="#009688"
-          stroke="#FFF"
-          strokeWidth={3}
-          className="animate-pulse"
-          style={{
-            animationDelay: `${i * 0.2}s`,
-            filter: "drop-shadow(0 0 8px #00968888)",
-            opacity: 0.80,
-          }}
-        />
+        <g key={i}>
+          {/* Cercles d'auréole pulsatiles */}
+          <circle
+            cx={hub.x}
+            cy={hub.y}
+            r="20"
+            fill="#F9A825"
+            opacity="0.20"
+            className="animate-pulse-gps"
+            style={{
+              animationDelay: `${i * 0.23}s`,
+              filter: "blur(3px)"
+            }}
+          />
+          <circle
+            cx={hub.x}
+            cy={hub.y}
+            r="14"
+            fill="#009688"
+            opacity="0.35"
+            className="animate-pulse-gps"
+            style={{
+              animationDelay: `${i * 0.23}s`,
+              filter: "blur(1.5px)"
+            }}
+          />
+          {/* Point central */}
+          <circle
+            cx={hub.x}
+            cy={hub.y}
+            r="11"
+            fill="#009688"
+            stroke="#FFF"
+            strokeWidth={3}
+            className="animate-pulse"
+            style={{
+              animationDelay: `${i * 0.23}s`,
+              filter: "drop-shadow(0 0 10px #009688bb)",
+              opacity: 0.88,
+            }}
+          />
+        </g>
       ))}
 
       {/* Camion animé */}
@@ -201,3 +227,5 @@ export default function LandingHeroIllustration() {
     </svg>
   );
 }
+
+// NOTE: Ce fichier approche 200 lignes : il commence à devenir trop long. Après cette étape, pensez à demander un refactoring pour séparer SVG, animations, hooks, etc.

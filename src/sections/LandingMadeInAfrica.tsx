@@ -4,10 +4,23 @@ import React from "react";
 export default function LandingMadeInAfrica() {
   return (
     <section
-      className="w-full bg-[#fff] border-b border-gray-100 py-14 md:py-24 px-3 sm:px-5 md:px-12 flex flex-col items-center"
+      className="relative w-full bg-[#fff] border-b border-gray-100 py-14 md:py-24 px-3 sm:px-5 md:px-12 flex flex-col items-center overflow-hidden"
       aria-labelledby="made-in-africa-title"
     >
-      <div className="w-full max-w-6xl flex flex-col-reverse md:flex-row items-center md:items-stretch gap-10 md:gap-16">
+      {/* Dégradé animé fond section */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <div
+          className="w-full h-full animate-african-gradient"
+          style={{
+            background:
+              "radial-gradient(circle at 65% 60%, #F9A82555 0%, #F9A82519 42%, #FFDAA733 70%, #FFF8F0 100%)",
+            filter: "blur(25px) brightness(1.05)",
+            opacity: 0.75,
+            animation: "african-gradient-move 12s ease-in-out infinite alternate"
+          }}
+        />
+      </div>
+      <div className="w-full max-w-6xl flex flex-col-reverse md:flex-row items-center md:items-stretch gap-10 md:gap-16 z-10 relative">
         {/* Bloc texte */}
         <div className="flex-1 flex flex-col justify-center md:justify-start">
           <h2

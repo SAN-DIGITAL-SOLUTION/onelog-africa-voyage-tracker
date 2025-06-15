@@ -23,7 +23,11 @@ export default function LandingCTA() {
         </p>
         <Button
           size="lg"
-          className="btn-cta flex items-center gap-2 animate-pulse hover:animate-none hover:scale-105 transition-transform duration-150"
+          className="btn-cta flex items-center gap-2 bg-[#F9A825] text-[#fff] shadow-cta animate-cta-pulse ring-2 ring-[#F9A825]/30 transition-transform duration-150 hover:scale-105 hover:brightness-110 focus:scale-[1.04]"
+          style={{
+            boxShadow: "0 0 0 0 #F9A82544, 0 4px 24px 0 #F9A82544",
+            textShadow: "0 2px 6px #E6510025",
+          }}
         >
           👉 Je teste gratuitement maintenant
           <ArrowRight className="ml-1" size={22} />

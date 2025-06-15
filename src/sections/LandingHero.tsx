@@ -6,10 +6,21 @@ import LandingHeroIllustration from "./LandingHeroIllustration";
 export default function LandingHero() {
   return (
     <section
-      className="relative flex items-center justify-center min-h-[730px] md:min-h-[88vh] pb-0 md:pb-8 lg:pb-12 pt-20 md:pt-32 bg-[#F4F4F4] select-none"
-      style={{ overflow: "hidden" }}
+      className="relative flex items-center justify-center min-h-[730px] md:min-h-[88vh] pb-0 md:pb-8 lg:pb-12 pt-20 md:pt-32 bg-[#F4F4F4] select-none overflow-hidden"
+      style={{}}
     >
-      {/* Halo effet */}
+      {/* Motif/lumière mouvante en fond (animation gradient africain) */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <div className="w-full h-full animate-african-glow pointer-events-none"
+          style={{
+            background: "radial-gradient(ellipse at 60% 38%, #F9A825bb 0%, #F9A82533 40%, #F4F4F400 75%)",
+            filter: "blur(38px) brightness(1.10)",
+            opacity: 0.70,
+            animation: "african-glow-move 8s ease-in-out infinite alternate"
+          }}
+        />
+      </div>
+      {/* Ancien halo effet conservé */}
       <div className="absolute left-1/2 top-[16%] -translate-x-1/2 z-0 pointer-events-none">
         <div
           className="w-[850px] h-[320px] rounded-full blur-[100px] opacity-25"
@@ -19,7 +30,6 @@ export default function LandingHero() {
           }}
         />
       </div>
-
       {/* FLEX CONTAINER : deux colonnes */}
       <div className="relative flex flex-col md:flex-row gap-y-12 md:gap-y-0 w-full max-w-[1340px] px-3 sm:px-5 md:px-10 z-10">
         {/* COLONNE : Texte */}

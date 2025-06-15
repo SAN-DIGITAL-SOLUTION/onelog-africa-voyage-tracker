@@ -49,4 +49,54 @@
     /* Instead of using @apply animate-fade-in, use the class in JSX */
   }
   /* SUPPRIMÉ : .african-texture (motif africain) */
+  /* Animation plus appuyée pour la pulsation du GPS */
+  .animate-pulse-gps {
+    animation: pulse-gps 1.9s cubic-bezier(0.4,0,0.6,1) infinite;
+  }
+}
+
+/* Animations personnalisées pour african motifs, gradients, GPS pulse, CTA pulse */
+@keyframes african-glow-move {
+  0%   { background-position: 60% 38%;}
+  100% { background-position: 67% 44%;}
+}
+@keyframes african-gradient-move {
+  0%   { background-position: 61% 40%;}
+  100% { background-position: 70% 63%;}
+}
+@keyframes pulse-gps {
+  0%, 100% {
+    opacity: 0.18;
+    transform: scale(1.0);
+  }
+  40% {
+    opacity: 0.34;
+    transform: scale(1.17);
+  }
+  55% {
+    opacity: 0.19;
+    transform: scale(1.03);
+  }
+  72% {
+    opacity: 0.12;
+    transform: scale(1.11);
+  }
+}
+/* Animation du bouton CTA */
+@keyframes cta-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 #F9A82544, 0 4px 24px 0 #F9A82544;
+    filter: brightness(1.04);
+  }
+  56% {
+    box-shadow: 0 0 0 10px #F9A82533, 0 8px 22px 0 #F9A82570;
+    filter: brightness(1.12);
+  }
+  81% {
+    box-shadow: 0 0 0 0 #F9A82544, 0 4px 18px 0 #F9A82533;
+    filter: brightness(1.07);
+  }
+}
+.animate-cta-pulse {
+  animation: cta-pulse 1.65s cubic-bezier(0.4,0,0.7,1) infinite;
 }
