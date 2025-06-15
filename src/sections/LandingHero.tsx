@@ -1,7 +1,5 @@
-
 import { motion } from "framer-motion";
 import { Truck } from "lucide-react";
-import LandingHeroIllustration from "./LandingHeroIllustration";
 
 export default function LandingHero() {
   return (
@@ -20,10 +18,8 @@ export default function LandingHero() {
         />
       </div>
 
-      {/* Illustration Afrique très large */}
-      <div className="mt-1 md:mb-2 max-w-[98vw] w-full flex items-center justify-center z-10 relative">
-        <LandingHeroIllustration />
-      </div>
+      {/* Emplacement pour nouveau visuel, ancien SVG supprimé */}
+      <div className="mt-1 md:mb-2 max-w-[98vw] w-full h-[110px] flex items-center justify-center z-10 relative" />
 
       {/* Texte/Headline */}
       <motion.h1
