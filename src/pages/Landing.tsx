@@ -4,6 +4,7 @@ import LandingFeatures from "../sections/LandingFeatures";
 import LandingAfrica from "../sections/LandingAfrica";
 import LandingFooter from "../sections/LandingFooter";
 import LandingWhy from "../sections/LandingWhy";
+import LandingKeyFeatures from "../sections/LandingKeyFeatures";
 
 export default function Landing() {
   return (
@@ -12,6 +13,7 @@ export default function Landing() {
       <main className="flex flex-col flex-1">
         <LandingHero />
         <LandingWhy />
+        <LandingKeyFeatures />
         <LandingFeatures />
         <LandingAfrica />
       </main>
