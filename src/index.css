@@ -43,9 +43,5 @@
     letter-spacing: 0.01em;
     /* Instead of using @apply animate-fade-in, use the class in JSX */
   }
-  .african-texture {
-    @apply bg-african-pattern bg-repeat bg-[length:110px_110px];
-    opacity: 0.26;
-    pointer-events: none;
-  }
+  /* SUPPRIMÉ : .african-texture (motif africain) */
 }

@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -51,12 +50,8 @@ export default {
       },
       boxShadow: {
         cta: "0 2px 16px 0 #E6510033",
-        "african-pattern": "0 0 0 3px #F9A82555",
       },
-      backgroundImage: {
-        // Motif géométrique africain en SVG inline
-        "african-pattern": "url(\"data:image/svg+xml,%3Csvg width='96' height='96' viewBox='0 0 96 96' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='96' height='96' fill='%23F4F4F4'/%3E%3Ccircle cx='48' cy='48' r='36' stroke='%23F9A825' stroke-width='3' fill='none'/%3E%3Cpath d='M24,24L72,72' stroke='%23E65100' stroke-width='2'/%3E%3Cpath d='M72,24L24,72' stroke='%23009688' stroke-width='2'/%3E%3C/svg%3E\")",
-      },
+      backgroundImage: {},
       transitionProperty: {
         "cta": "background, box-shadow, border, color, transform",
       },

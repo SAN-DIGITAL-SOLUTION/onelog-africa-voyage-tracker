@@ -43,8 +43,7 @@ export default function LandingHeader() {
       <NotificationBanner />
       <header className="fixed z-50 top-0 left-0 w-full bg-gradient-to-r from-primary/80 via-fresh/70 to-secondary/40 dark:from-dm-bg/90 dark:to-fresh/40 shadow-lg backdrop-blur-2xl mt-[36px]">
         <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-3 relative">
-          {/* Motif africain en fond */}
-          <div className="absolute inset-0 african-texture pointer-events-none" aria-hidden />
+          {/* Motif africain en fond SUPPRIMÉ */}
           <div className="flex items-center gap-3 relative z-10">
             {/* SVG camion animée */}
             <svg width="39" height="36" viewBox="0 0 48 38" className="h-9 w-9 shrink-0" aria-label="Logo camion OneLog Africa" fill="none">
@@ -97,3 +96,4 @@ export default function LandingHeader() {
     </>
   );
 }
+
