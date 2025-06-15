@@ -72,6 +72,12 @@ export default function Header() {
         </span>
       </div>
       <nav className="flex gap-4 font-semibold text-base items-center">
+        {/* Bouton Accueil OneLog Africa */}
+        <Button asChild variant="outline" size="sm">
+          <NavLink to="/" className="flex items-center">
+            Accueil OneLog Africa
+          </NavLink>
+        </Button>
         <ModeToggle />
         {user && (
           <Button
