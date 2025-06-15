@@ -1,5 +1,4 @@
-
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const ROAD_PATH =
   "M120,350 Q220,160 330,180 Q420,192 470,150 Q520,110 580,180 Q660,270 700,200"; // Chemin courbe sur la carte
@@ -72,7 +71,7 @@ function Camion({ x, y, angle }: { x: number; y: number; angle: number }) {
  */
 function useTruckAnimation() {
   const requestRef = useRef<number>();
-  const [progress, setProgress] = useRef({ v: 0 }); // progress de 0 à 1
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     let start: number | null = null;
@@ -81,9 +80,9 @@ function useTruckAnimation() {
     function animateTruck(ts: number) {
       if (!start) start = ts;
       const elapsed = (ts - start) % DURATION;
-      progress.v = elapsed / DURATION;
+      const prog = elapsed / DURATION;
 
-      setProgress({ ...progress });
+      setProgress(prog);
       requestRef.current = requestAnimationFrame(animateTruck);
     }
     requestRef.current = requestAnimationFrame(animateTruck);
@@ -91,7 +90,6 @@ function useTruckAnimation() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // On stocke la "v" dans un objet pour forcer le composant à rerendre :
   return progress;
 }
 
@@ -112,8 +110,7 @@ function getPosOnPath(pathRef: SVGPathElement | null, progress: number) {
 
 export default function LandingHeroIllustration() {
   const pathRef = useRef<SVGPathElement>(null);
-  const truckAnim = useTruckAnimation();
-  const progress = truckAnim.v;
+  const progress = useTruckAnimation();
 
   // Positions truck sur la route
   const { x, y, angle } = getPosOnPath(pathRef.current, progress);
