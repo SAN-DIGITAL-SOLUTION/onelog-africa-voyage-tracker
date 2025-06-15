@@ -15,6 +15,12 @@ type Mission = {
   date: string;
   status: string;
   description?: string;
+  // Champs ajoutés pour coller au schéma missions de la BDD
+  type_de_marchandise?: string;
+  volume?: number;
+  poids?: number;
+  lieu_enlevement?: string;
+  lieu_livraison?: string;
 };
 
 type MissionsTableProps = {
