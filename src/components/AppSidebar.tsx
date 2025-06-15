@@ -64,7 +64,7 @@ export default function AppSidebar() {
         <SidebarTrigger className="ml-auto" />
       </div>
       <SidebarContent>
-        <SidebarGroup open>
+        <SidebarGroup>
           <SidebarGroupLabel asChild>
             <div className="text-xs mb-2 font-semibold text-gray-400 dark:text-gray-500 pl-4">
               Navigation
