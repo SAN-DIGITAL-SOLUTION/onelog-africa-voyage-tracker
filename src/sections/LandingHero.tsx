@@ -1,55 +1,36 @@
+
 import { motion } from "framer-motion";
 import { Truck } from "lucide-react";
 import LandingHeroIllustration from "./LandingHeroIllustration";
 
 export default function LandingHero() {
-  // Coordonnées des hubs logistiques (points sur la carte)
-  const gpsPoints = [
-    { cx: 172, cy: 90, delay: 0.25 },
-    { cx: 150, cy: 124, delay: 0.38 },
-    { cx: 194, cy: 132, delay: 0.47 },
-    { cx: 218, cy: 100, delay: 0.55 },
-    { cx: 201, cy: 68, delay: 0.63 },
-    { cx: 243, cy: 130, delay: 0.72 },
-    { cx: 210, cy: 157, delay: 0.80 },
-    { cx: 140, cy: 77, delay: 0.89 },
-  ];
-
-  // Points pour le trajet du camion
-  const truckPath = "M135 60 Q185 100 217 170";
-
-  // Pour l'animation du camion sur la route
-  const truckPathMove = [
-    { x: 135, y: 60, r: -8 },
-    { x: 175, y: 100, r: 8 },
-    { x: 217, y: 170, r: 18 },
-  ];
-
   return (
     <section
-      className="relative flex flex-col items-center justify-center min-h-[92vh] pt-36 pb-14 text-center select-none"
-      style={{ background: "#F4F4F4" }}
+      className="relative flex flex-col items-center justify-center min-h-[700px] md:min-h-[88vh] pb-0 md:pb-8 lg:pb-12 pt-20 md:pt-32 bg-[#F4F4F4] text-center select-none"
+      style={{ overflow: "hidden" }}
     >
-      {/* Effet halo logistique */}
-      <div className="absolute left-1/2 top-[18%] -translate-x-1/2 z-0 pointer-events-none">
+      {/* Halo effet */}
+      <div className="absolute left-1/2 top-[23%] -translate-x-1/2 z-0 pointer-events-none">
         <div
-          className="w-[480px] h-[190px] rounded-full blur-[70px] opacity-30"
+          className="w-[900px] h-[340px] rounded-full blur-[80px] opacity-25"
           style={{
             background:
-              "radial-gradient(ellipse at center, #F9A82588 30%, #F4F4F4 75%, #F4F4F400 100%)",
+              "radial-gradient(ellipse at center, #F9A82577 20%, #F4F4F4 70%, #F4F4F400 100%)",
           }}
         />
       </div>
 
-      {/* Illustration Afrique + animation camion */}
-      <LandingHeroIllustration />
+      {/* Illustration Afrique très large */}
+      <div className="mt-1 md:mb-2 max-w-[98vw] w-full flex items-center justify-center z-10 relative">
+        <LandingHeroIllustration />
+      </div>
 
-      {/* Titre principal avec icône camion évocateur */}
+      {/* Texte/Headline */}
       <motion.h1
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1.05, delay: 1.7 }}
-        className="mt-8 mb-3 flex items-center justify-center gap-3 text-3xl md:text-5xl font-extrabold tracking-tighter drop-shadow-2xl font-montserrat leading-tight"
+        className="mt-8 mb-3 flex items-center justify-center gap-3 text-2xl sm:text-3xl md:text-5xl font-extrabold tracking-tighter drop-shadow-2xl font-montserrat leading-tight"
         style={{
           color: "#E65100",
           textShadow: "0 2px 18px #1A3C4033",
@@ -64,7 +45,7 @@ export default function LandingHero() {
         </span>
       </motion.h1>
 
-      {/* Slogan / sous-titre inspirant */}
+      {/* Slogan */}
       <motion.p
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
@@ -75,7 +56,7 @@ export default function LandingHero() {
         🌍 Conçue pour l’Afrique. Optimisée pour la logistique.
       </motion.p>
 
-      {/* Description / pitch synthétique */}
+      {/* Description */}
       <motion.p
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
@@ -87,7 +68,7 @@ export default function LandingHero() {
         Optimisez vos trajets, documentez sans stress, connectez aisément vos partenaires et vos clients.
       </motion.p>
 
-      {/* Micro-texte contextuel */}
+      {/* Tagline */}
       <motion.p
         initial={{ opacity: 0, y: 7 }}
         animate={{ opacity: 1, y: 0 }}
@@ -98,7 +79,7 @@ export default function LandingHero() {
         « Vous attendez encore sur WhatsApp ? Passez à la logistique de nouvelle génération. »
       </motion.p>
 
-      {/* CTA animé */}
+      {/* CTA */}
       <motion.a
         href="#demo"
         initial={{ opacity: 0, scale: 0.94, y: 11 }}
@@ -132,7 +113,7 @@ export default function LandingHero() {
         </div>
       </motion.a>
 
-      {/* Séparateur visuel arrondi en bas */}
+      {/* bas visuel */}
       <div
         className="absolute z-0 w-full left-0 bottom-0 h-16 pointer-events-none select-none"
         style={{
