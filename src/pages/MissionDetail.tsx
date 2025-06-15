@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -9,6 +8,7 @@ import { toast } from "@/components/ui/use-toast"; // Nettoyage : harmonisatio
 import MissionOverview from "./mission-detail/MissionOverview";
 import MissionTrackingHistory from "./mission-detail/MissionTrackingHistory";
 import MissionExtraDetails from "./mission-detail/MissionExtraDetails";
+import MissionStatusTimeline from "./mission-detail/MissionStatusTimeline";
 
 type TrackingPoint = {
   id: string | number;
@@ -124,6 +124,8 @@ export default function MissionDetail() {
           </Button>
         </div>
         <MissionOverview mission={mission} />
+        {/* Timeline */}
+        <MissionStatusTimeline missionId={id!} />
         <MissionTrackingHistory points={loadingTracking ? [] : trackingPoints || []} />
         <MissionExtraDetails mission={mission} />
       </div>

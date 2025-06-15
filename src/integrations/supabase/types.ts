@@ -78,6 +78,38 @@ export type Database = {
         }
         Relationships: []
       }
+      mission_status_history: {
+        Row: {
+          changed_at: string
+          id: string
+          mission_id: string
+          status: string
+          user_id: string | null
+        }
+        Insert: {
+          changed_at?: string
+          id?: string
+          mission_id: string
+          status: string
+          user_id?: string | null
+        }
+        Update: {
+          changed_at?: string
+          id?: string
+          mission_id?: string
+          status?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mission_status_history_mission_id_fkey"
+            columns: ["mission_id"]
+            isOneToOne: false
+            referencedRelation: "missions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       missions: {
         Row: {
           chauffeur: string | null
