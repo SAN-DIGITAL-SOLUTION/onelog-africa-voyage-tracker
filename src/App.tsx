@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -17,6 +16,7 @@ import { AuthProvider } from "@/hooks/useAuth";
 import { RoleProvider } from "@/hooks/useRole";
 import NoRole from "@/pages/NoRole";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
+import Landing from "./pages/Landing";
 
 const queryClient = new QueryClient();
 
@@ -34,7 +34,7 @@ const App = () => (
                 <SidebarInset>
                   <Header />
                   <Routes>
-                    <Route path="/" element={<Navigate to="/dashboard" />} />
+                    <Route path="/" element={<Landing />} />
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/auth" element={<Auth />} />
                     <Route path="/missions/*" element={<Missions />} />
