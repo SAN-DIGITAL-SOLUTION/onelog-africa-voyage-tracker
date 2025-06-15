@@ -142,7 +142,6 @@ export default function NotificationForm({
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="">Aucune mission</SelectItem>
                     {missions?.map((mission) => (
                       <SelectItem key={mission.id} value={mission.id}>
                         {mission.ref} - {mission.client} ({mission.status})
@@ -171,7 +170,6 @@ export default function NotificationForm({
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="">Aucun évènement</SelectItem>
                     {triggerOptions.map((option) => (
                       <SelectItem key={option.value} value={option.value}>
                         {option.label}

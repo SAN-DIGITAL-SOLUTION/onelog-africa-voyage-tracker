@@ -63,7 +63,6 @@ export default function NotificationFilters({
               <SelectValue placeholder="Tous" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Tous</SelectItem>
               <SelectItem value="email">Email</SelectItem>
               <SelectItem value="sms">SMS</SelectItem>
             </SelectContent>
@@ -79,7 +78,6 @@ export default function NotificationFilters({
               <SelectValue placeholder="Tous" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Tous</SelectItem>
               {triggerOptions.map((option) => (
                 <SelectItem key={option.value} value={option.value}>
                   {option.label}
