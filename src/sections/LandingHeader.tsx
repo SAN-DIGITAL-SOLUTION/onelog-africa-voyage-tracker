@@ -16,11 +16,14 @@ export function NotificationBanner() {
         borderBottom: "2px solid #E65100",
       }}
     >
-      Nouvelle version : Digitalisez votre logistique africaine ! 🚀
+      Découvrez la nouvelle génération de logistique digitale, conçue POUR l’Afrique. 🇦🇫🚀
     </div>
   );
 }
 
+/**
+ * Header revisité : claim renforcé, logo plus visible, menu clair et équilibré.
+ */
 export default function LandingHeader() {
   const [dark, setDark] = useState(() => {
     if (typeof window !== "undefined") {
@@ -53,12 +56,11 @@ export default function LandingHeader() {
       <header
         className="fixed z-50 top-0 left-0 w-full shadow-lg backdrop-blur-2xl mt-[36px]"
         style={{
-          background: "#1A3C40",
+          background: "#1A3C40"
         }}
       >
         <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-3 relative">
           <div className="flex items-center gap-3 relative z-10">
-            {/* SVG camion animée */}
             <svg width="39" height="36" viewBox="0 0 48 38" className="h-9 w-9 shrink-0" aria-label="Logo camion OneLog Africa" fill="none">
               <g>
                 <rect x="1" y="15" width="19" height="12" rx="6" fill="#E65100">
@@ -71,16 +73,16 @@ export default function LandingHeader() {
                 <ellipse cx="17" cy="33" rx="5" ry="4" fill="#263238" />
               </g>
             </svg>
-            <span className="font-montserrat font-bold text-2xl tracking-wide" style={{ color: "#1A3C40" }}>
+            <span className="font-montserrat font-extrabold text-2xl tracking-wide" style={{ color: "#fff", textShadow: "0 1px 8px #26323855" }}>
               OneLog Africa
             </span>
           </div>
           <nav className="hidden md:flex items-center gap-8 font-semibold text-base relative z-10">
-            <a href="#features" className="story-link" style={{ color: "#1A3C40" }}>Fonctionnalités</a>
-            <a href="#secteurs" className="story-link" style={{ color: "#1A3C40" }}>Secteurs desservis</a>
-            <a href="#about" className="story-link" style={{ color: "#1A3C40" }}>À propos</a>
+            <a href="#features" className="story-link" style={{ color: "#F9A825" }}>Fonctionnalités</a>
+            <a href="#secteurs" className="story-link" style={{ color: "#F9A825" }}>Secteurs</a>
+            <a href="#about" className="story-link" style={{ color: "#F9A825" }}>Notre histoire</a>
             <Button asChild variant="secondary" size="sm" className="font-bold" style={{ background: "#F9A825", color: "#1A3C40" }}>
-              <a href="/auth">Connexion</a>
+              <a href="/auth">Accès client</a>
             </Button>
           </nav>
           <div className="flex items-center gap-2 z-10">
@@ -88,14 +90,14 @@ export default function LandingHeader() {
               onClick={toggleTheme}
               className="p-2 rounded-full bg-white/20 hover:bg-secondary/40 outline-none focus:ring-4 focus:ring-secondary transition"
               aria-label="Basculer le mode sombre"
+              title={dark ? "Mode clair" : "Mode sombre"}
             >
               {dark ? <Sun size={20} /> : <Moon size={20} />}
             </button>
             <div className="ml-2 md:hidden">
-              {/* Hamburger mobile */}
               <Button variant="secondary" size="icon" asChild style={{ background: "#F9A825", color: "#1A3C40" }}>
                 <a href="/auth">
-                  <span className="sr-only">Connexion</span>
+                  <span className="sr-only">Accès client</span>
                   <svg width={22} height={22} fill="none" stroke="currentColor">
                     <rect x={5} y={7} width={12} height={2} rx={1} />
                     <rect x={5} y={13} width={12} height={2} rx={1} />

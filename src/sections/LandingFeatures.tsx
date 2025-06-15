@@ -2,10 +2,13 @@
 import { motion } from "framer-motion";
 import { useEffect, useRef } from "react";
 
+/**
+ * Nouveaux textes et répartition bénéfices concrets.
+ */
 const features = [
   {
-    title: "Suivi en temps réel",
-    desc: "Visualisez vos missions et vos camions à chaque instant sur la carte.",
+    title: "Présence en temps réel",
+    desc: "Repérez instantanément vos camions et marchandises où qu’ils soient, sur une carte lisible et réactive.",
     icon: (
       <span className="inline-block">
         <svg width="26" height="26" viewBox="0 0 26 26">
@@ -16,8 +19,8 @@ const features = [
     ),
   },
   {
-    title: "Gestion des missions",
-    desc: "Organisez, créez et suivez chaque opération en toute fluidité.",
+    title: "Orchestration simple",
+    desc: "Créez, confiez et suivez toutes vos missions sans effort — un vrai centre de commandement digitalisé.",
     icon: (
       <span className="inline-block">
         <svg width="26" height="26" viewBox="0 0 26 26">
@@ -28,8 +31,8 @@ const features = [
     ),
   },
   {
-    title: "Analyse de performance",
-    desc: "Statistiques et KPIs pour optimiser vos flux et coûts.",
+    title: "Analyse instantanée",
+    desc: "Surveillez vos performances, réduisez vos coûts, optimisez vos flux — grâce à des KPIs concrets.",
     icon: (
       <span className="inline-block">
         <svg width="26" height="26" viewBox="0 0 26 26">
@@ -41,8 +44,8 @@ const features = [
     ),
   },
   {
-    title: "Notifications intelligentes",
-    desc: "Soyez alerté en temps réel des incidents et actions à traiter.",
+    title: "Alertes intelligentes",
+    desc: "Recevez chaque notification « actionnable » : incidents, retards ou déchargements. Ne ratez plus rien.",
     icon: (
       <span className="inline-block">
         <svg width="26" height="26" viewBox="0 0 26 26">
@@ -86,7 +89,7 @@ export default function LandingFeatures() {
     if (!el) return;
     const elements = Array.from(el.querySelectorAll<HTMLDivElement>("[data-fade]"));
     function fadeIn() {
-      const windowHeight = window.innerHeight * 0.8;
+      const windowHeight = window.innerHeight * 0.9;
       for (const elem of elements) {
         const rect = elem.getBoundingClientRect();
         if (rect.top < windowHeight) {
@@ -103,39 +106,48 @@ export default function LandingFeatures() {
     <section
       id="features"
       ref={ref}
-      className="py-20 px-2 sm:px-6 md:px-12"
+      className="py-24 px-2 sm:px-6 md:px-12 transition-all"
       style={{
         background: "#1A3C40"
       }}
     >
       <div className="max-w-5xl mx-auto">
         <h2
-          className="text-2xl md:text-3xl lg:text-4xl font-bold mb-10 text-center font-montserrat"
-          style={{ color: "#fff" }}
+          className="text-3xl md:text-4xl lg:text-5xl font-extrabold mb-12 text-center font-montserrat drop-shadow"
+          style={{ color: "#F9A825" }}
         >
-          Fonctionnalités clés
+          Vos bénéfices<span className="hidden md:inline"> –</span> grâce à notre plateforme
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-7">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-9">
           {features.map((f, i) => (
             <div
               key={f.title}
               data-fade
-              className={`relative rounded-xl p-7 pt-10 flex flex-col gap-5 items-center bg-white transition-transform hover:scale-105 hover:shadow-xl min-h-[220px] border-2 ${themeColors[i].card} shadow`}
+              className={`relative rounded-xl p-8 pt-11 flex flex-col gap-6 items-center bg-white transition-transform hover:scale-105 hover:shadow-2xl min-h-[224px] border-2 ${themeColors[i].card} shadow group`}
               style={{
                 boxShadow: themeColors[i].shadow,
                 color: "#263238",
-                animationDelay: `${0.15 + i * 0.18}s`
+                animationDelay: `${0.16 + i * 0.18}s`
               }}
             >
-              <div className="rounded-full mb-2" style={{ marginBottom: "14px" }}>
+              <div className="rounded-full mb-2 group-hover:scale-110 transition-transform duration-200" style={{ marginBottom: "14px" }}>
                 {f.icon}
               </div>
-              <h3 className="text-lg font-extrabold text-center font-montserrat mb-2" style={{ color: "#1A3C40" }}>{f.title}</h3>
+              <h3 className="text-xl font-extrabold text-center font-montserrat mb-2" style={{ color: "#1A3C40" }}>{f.title}</h3>
               <p className="text-base text-center" style={{ color: "#263238" }}>{f.desc}</p>
             </div>
           ))}
         </div>
       </div>
+      {/* Séparateur vague */}
+      <div
+        className="w-full absolute left-0 bottom-0 z-0"
+        style={{
+          height: "42px",
+          background: "linear-gradient(to bottom,#1A3C40 55%, #F4F4F4 100%)",
+          borderBottomLeftRadius: "30px",
+          borderBottomRightRadius: "30px",
+        }} />
     </section>
   );
 }
