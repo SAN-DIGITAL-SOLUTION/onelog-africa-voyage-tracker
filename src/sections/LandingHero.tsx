@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 
 /**
@@ -139,6 +140,24 @@ export default function LandingHero() {
         <br className="hidden sm:inline" />
         l’Afrique du futur
       </motion.h1>
+      {/* CTA placé juste sous le titre principal, bien espacé et visible */}
+      <motion.a
+        href="#demo"
+        initial={{ opacity: 0, scale: 0.94, y: 7 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 1.07, delay: 2.38 }}
+        className="btn-cta mb-5 mt-2 md:mt-2 md:mb-6 px-8 py-3 rounded-full font-bold shadow-cta text-lg animate-fade-in hover:scale-105 transition-transform"
+        style={{
+          background: "#E65100",
+          color: "#fff",
+          boxShadow: "0 3px 20px 0 #E651004a",
+          fontSize: "1.15rem",
+          letterSpacing: "0.01em",
+          display: "inline-block",
+        }}
+      >
+        Tester gratuitement
+      </motion.a>
       {/* Baseline sous le slogan */}
       <motion.p
         initial={{ opacity: 0, y: 9 }}
@@ -149,23 +168,6 @@ export default function LandingHero() {
       >
         Pilotez chaque convoi — et chaque mission — avec une technologie accessible, humaine et pensée pour la réalité du terrain africain.
       </motion.p>
-      {/* CTA amélioré – remonté sous le texte */}
-      <motion.a
-        href="#demo"
-        initial={{ opacity: 0, scale: 0.94, y: 7 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ duration: 1.07, delay: 2.38 }}
-        className="btn-cta mt-1"
-        style={{
-          background: "#E65100",
-          color: "#fff",
-          boxShadow: "0 3px 20px 0 #E651004a",
-          fontSize: "1.19rem",
-          display: "inline-block",
-        }}
-      >
-        Tester gratuitement
-      </motion.a>
       {/* Séparateur visuel arrondi en bas */}
       <div
         className="absolute z-0 w-full left-0 bottom-0 h-16 pointer-events-none select-none"
