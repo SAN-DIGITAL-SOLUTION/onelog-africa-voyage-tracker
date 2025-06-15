@@ -7,7 +7,7 @@ import LandingFooter from "../sections/LandingFooter";
 
 export default function Landing() {
   return (
-    <div className="relative min-h-screen flex flex-col bg-gradient-to-br from-[#171C2E] via-[#222748] to-[#253d59] dark:from-[#171C2E] dark:via-[#222748] dark:to-[#253d59] transition-colors">
+    <div className="relative min-h-screen flex flex-col bg-background dark:bg-dm-bg transition-colors">
       <LandingHeader />
       <main className="flex flex-col flex-1">
         <LandingHero />
