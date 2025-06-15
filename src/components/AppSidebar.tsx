@@ -72,43 +72,47 @@ export default function AppSidebar() {
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {routes.map((r) => (
-                <SidebarMenuItem key={r.to}>
-                  <SidebarMenuButton asChild isActive={location.pathname.startsWith(r.to)}>
-                    <NavLink
-                      to={r.to}
-                      end={r.to === "/dashboard"}
-                      className={({ isActive }) =>
-                        `flex items-center gap-3 px-3 py-2 rounded hover:bg-accent/20 transition-colors group
-                        ${
-                          isActive
-                            ? "bg-white text-accent font-extrabold shadow-sm"
-                            : "text-white"
-                        }`
-                      }
-                    >
-                      <r.icon
-                        className={`h-5 w-5 shrink-0 transition-colors ${
-                          location.pathname.startsWith(r.to)
-                            ? "text-accent"
-                            : "text-white"
-                        }`}
-                      />
-                      {state !== "collapsed" && (
-                        <span
-                          className={`transition-colors ${
-                            location.pathname.startsWith(r.to)
+              {routes.map((r) => {
+                const isActive = location.pathname.startsWith(r.to);
+                return (
+                  <SidebarMenuItem key={r.to}>
+                    <SidebarMenuButton asChild isActive={isActive}>
+                      <NavLink
+                        to={r.to}
+                        end={r.to === "/dashboard"}
+                        className={({ isActive: navActive }) =>
+                          `
+                            flex items-center gap-3 px-3 py-2 rounded transition-colors group
+                            ${isActive
+                              ? "bg-white shadow-sm"
+                              : ""}
+                          `
+                        }
+                      >
+                        <r.icon
+                          className={`h-5 w-5 shrink-0 transition-colors
+                            ${isActive
                               ? "text-accent"
-                              : ""
-                          }`}
-                        >
-                          {r.label}
-                        </span>
-                      )}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+                              : "text-white group-hover:text-accent"}
+                          `}
+                        />
+                        {state !== "collapsed" && (
+                          <span
+                            className={`
+                              font-bold transition-colors 
+                              ${isActive 
+                                ? "text-white" 
+                                : "text-white group-hover:text-accent"}
+                            `}
+                          >
+                            {r.label}
+                          </span>
+                        )}
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
@@ -116,4 +120,3 @@ export default function AppSidebar() {
     </Sidebar>
   );
 }
-
