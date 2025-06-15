@@ -1,8 +1,9 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Header from "./components/Header";
 import AppSidebar from "./components/AppSidebar";
 import Dashboard from "./pages/Dashboard";
@@ -18,6 +19,36 @@ import NoRole from "@/pages/NoRole";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import Landing from "./pages/Landing";
 
+// Helper pour wrapper et avoir accès à useLocation dans App (hors Hooks principaux)
+function AppLayout() {
+  const location = useLocation();
+
+  // Affiche la sidebar partout sauf sur "/"
+  const showSidebar = location.pathname !== "/";
+
+  return (
+    <SidebarProvider>
+      <div className="flex min-h-screen w-full bg-gray-50 dark:bg-onelog-nuit">
+        {showSidebar && <AppSidebar />}
+        <SidebarInset>
+          <Header />
+          <Routes>
+            <Route path="/" element={<Landing />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/missions/*" element={<Missions />} />
+            <Route path="/tracking" element={<TrackingMap />} />
+            <Route path="/invoices" element={<Invoices />} />
+            <Route path="/notifications" element={<Notifications />} />
+            <Route path="/no-role" element={<NoRole />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </SidebarInset>
+      </div>
+    </SidebarProvider>
+  );
+}
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -28,25 +59,7 @@ const App = () => (
       <BrowserRouter>
         <RoleProvider>
           <AuthProvider>
-            <SidebarProvider>
-              <div className="flex min-h-screen w-full bg-gray-50 dark:bg-onelog-nuit">
-                <AppSidebar />
-                <SidebarInset>
-                  <Header />
-                  <Routes>
-                    <Route path="/" element={<Landing />} />
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/auth" element={<Auth />} />
-                    <Route path="/missions/*" element={<Missions />} />
-                    <Route path="/tracking" element={<TrackingMap />} />
-                    <Route path="/invoices" element={<Invoices />} />
-                    <Route path="/notifications" element={<Notifications />} />
-                    <Route path="/no-role" element={<NoRole />} />
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </SidebarInset>
-              </div>
-            </SidebarProvider>
+            <AppLayout />
           </AuthProvider>
         </RoleProvider>
       </BrowserRouter>
@@ -55,3 +68,4 @@ const App = () => (
 );
 
 export default App;
+
