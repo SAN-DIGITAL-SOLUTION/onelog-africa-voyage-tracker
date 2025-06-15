@@ -79,16 +79,32 @@ export default function AppSidebar() {
                       to={r.to}
                       end={r.to === "/dashboard"}
                       className={({ isActive }) =>
-                        `flex items-center gap-3 px-3 py-2 rounded hover:bg-secondary/30 transition-colors group
+                        `flex items-center gap-3 px-3 py-2 rounded hover:bg-accent/20 transition-colors group
                         ${
                           isActive
-                            ? "bg-secondary text-primary font-bold"
+                            ? "bg-white text-accent font-extrabold shadow-sm"
                             : "text-white"
                         }`
                       }
                     >
-                      <r.icon className="h-5 w-5 shrink-0" />
-                      {state !== "collapsed" && <span>{r.label}</span>}
+                      <r.icon
+                        className={`h-5 w-5 shrink-0 transition-colors ${
+                          location.pathname.startsWith(r.to)
+                            ? "text-accent"
+                            : "text-white"
+                        }`}
+                      />
+                      {state !== "collapsed" && (
+                        <span
+                          className={`transition-colors ${
+                            location.pathname.startsWith(r.to)
+                              ? "text-accent"
+                              : ""
+                          }`}
+                        >
+                          {r.label}
+                        </span>
+                      )}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
