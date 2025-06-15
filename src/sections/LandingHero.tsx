@@ -2,172 +2,265 @@
 import { motion } from "framer-motion";
 
 /**
- * Nouvelle Hero section : texte clarifié + effet visuel « halo » et transitions adoucies.
+ * Hero storytelling : claim refait, nouvelle illustration animée (map Afrique, points, camion), micro-texte et CTA.
  */
 export default function LandingHero() {
+  // Liste des points GPS pour l’Afrique (simplifiés)
+  const gpsPoints = [
+    { cx: 170, cy: 80, delay: 0.32 },
+    { cx: 155, cy: 115, delay: 0.54 },
+    { cx: 188, cy: 130, delay: 0.68 },
+    { cx: 220, cy: 98, delay: 0.78 },
+    { cx: 206, cy: 65, delay: 0.91 },
+    { cx: 252, cy: 120, delay: 1.03 },
+    { cx: 210, cy: 153, delay: 1.11 },
+    { cx: 135, cy: 66, delay: 1.19 },
+  ];
+
+  // Chemin du camion (ligne simple coupant l’Afrique, du nord-ouest vers le sud-est)
+  const camionPath = "M140 50 Q195 80 220 150";
+
   return (
     <section
-      className="relative flex flex-col items-center justify-center min-h-[90vh] pt-28 pb-12 text-center select-none"
+      className="relative flex flex-col items-center justify-center min-h-[92vh] pt-36 pb-14 text-center select-none"
       style={{ background: "#F4F4F4" }}
     >
-      {/* Halo effet derrière l’illustration principale */}
-      <div className="absolute left-1/2 top-[22%] -translate-x-1/2 z-0 pointer-events-none">
+      {/* Illustration/effet de halo derrière */}
+      <div className="absolute left-1/2 top-[18%] -translate-x-1/2 z-0 pointer-events-none">
         <div
-          className="w-[380px] h-[115px] rounded-full blur-[42px] opacity-45"
+          className="w-[430px] h-[170px] rounded-full blur-[60px] opacity-40"
           style={{
             background:
-              "radial-gradient(ellipse at center, #F9A82588 10%, #F4F4F4 60%, #F4F4F400 100%)",
+              "radial-gradient(ellipse at center, #F9A82599 20%, #F4F4F4 65%, #F4F4F400 100%)",
           }}
         />
       </div>
-      {/* Animated SVG illustration for "wahou" effect" */}
+      {/* Illustration Afrique + points + camion */}
       <motion.div
-        initial={{ opacity: 0, y: 32, scale: 0.98 }}
+        initial={{ opacity: 0, y: 25, scale: 0.96 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 1.05, ease: "easeOut" }}
-        className="relative w-full max-w-3xl mx-auto z-10"
+        transition={{ duration: 1, ease: "easeOut" }}
+        className="relative w-full max-w-2xl mx-auto z-10"
         style={{ marginTop: 0 }}
       >
-        {/* Camion, route, flows digitaux, logistique humaine */}
-        <motion.svg
-          width="420"
-          height="180"
-          viewBox="0 0 440 180"
+        <svg
+          width="400"
+          height="200"
+          viewBox="0 0 340 200"
           fill="none"
           className="mx-auto relative z-10"
-          style={{ position: "relative", top: "18px" }}
+          aria-label="Carte de l'Afrique, points GPS, camion animé"
         >
-          {/* Road */}
-          <motion.rect
-            x="50"
-            y="130"
-            width="330"
-            height="14"
-            rx="8"
-            fill="#263238"
-            opacity="0.88"
-            initial={{ x: 10 }}
-            animate={{ x: 0 }}
-            transition={{ duration: 0.9, delay: 1.05 }}
+          {/* Carte simplifiée de l’Afrique */}
+          <motion.path
+            d="M110,46 Q140,28 180,40 Q230,67 215,115 Q238,108 243,148 Q221,187 181,176 Q140,183 135,143 Q108,111 108,75 Q105,54 110,46 Z"
+            fill="#FFD740"
+            stroke="#263238"
+            strokeWidth="2.5"
+            initial={{ pathLength: 0, opacity: 0.4 }}
+            animate={{ pathLength: 1, opacity: 1 }}
+            transition={{ duration: 1.1, delay: 0.25 }}
+            style={{ filter: "drop-shadow(0 2px 18px #F9A82533)" }}
           />
-          {/* Truck (animated in) */}
-          <motion.g
-            initial={{ x: -100 }}
-            animate={{ x: 135 }}
-            transition={{
-              duration: 1.18,
-              delay: 1.22,
-              type: "spring",
-              stiffness: 28,
-            }}
-          >
-            <rect x="0" y="109" width="80" height="35" rx="7" fill="#E65100" />
-            <rect x="65" y="116" width="17" height="19" rx="3" fill="#F9A825" />
-            {/* Wheels */}
-            <ellipse cx="16" cy="149" rx="7" ry="7" fill="#1A3C40" />
-            <ellipse cx="59" cy="148" rx="7" ry="7" fill="#263238" />
-            {/* Cab window */}
-            <rect
-              x="7"
-              y="115"
-              width="26"
-              height="13"
-              rx="3"
-              fill="#F4F4F4"
-              opacity="0.85"
+          {/* Points GPS animés */}
+          {gpsPoints.map((pt, i) => (
+            <motion.circle
+              key={i}
+              cx={pt.cx}
+              cy={pt.cy}
+              r="6"
+              fill="#E65100"
+              stroke="#fff"
+              strokeWidth="2.5"
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 0.92 }}
+              transition={{ delay: pt.delay, type: "spring", stiffness: 170 }}
+              style={{ filter: "drop-shadow(0 0 8px #E6510080)" }}
             />
-          </motion.g>
-          {/* Digital flows (dotted line animating rightwards) */}
-          <motion.line
-            x1={132}
-            y1={140}
-            x2={312}
-            y2={140}
+          ))}
+          {/* Chemin du camion */}
+          <motion.path
+            d={camionPath}
+            fill="none"
             stroke="#1A3C40"
-            strokeWidth={3}
-            strokeDasharray="8 8"
+            strokeWidth="3.3"
+            strokeDasharray="7 9"
             initial={{ pathLength: 0 }}
             animate={{ pathLength: 1 }}
-            transition={{ duration: 1.55, delay: 2.05 }}
-            style={{ filter: "drop-shadow(0 0 16px #1A3C40a0)" }}
+            transition={{ duration: 1.09, delay: 1.25 }}
+            style={{ filter: "drop-shadow(0 0 8px #1A3C4040)" }}
           />
-          {/* African logistician with tablet */}
+          {/* Camion animé suivant le chemin */}
           <motion.g
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.08, delay: 1.82, type: "spring" }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.37, duration: 0.3 }}
           >
-            <ellipse cx="332" cy="98" rx="21" ry="28" fill="#263238" opacity="0.92" />
-            {/* Head */}
-            <ellipse cx="332" cy="88" rx="12" ry="14" fill="#F9A825" />
-            {/* Tablet (glowing effect) */}
-            <rect
-              x="321"
-              y="108"
-              width="22"
-              height="12"
-              rx="3"
-              fill="#009688"
-              style={{ filter: "drop-shadow(0 0 10px #009688)" }}
+            <motion.rect
+              // Animation de déplacement du camion sur le chemin
+              width="35"
+              height="17"
+              rx="4"
+              fill="#E65100"
+              style={{
+                filter: "drop-shadow(0 2px 8px #E6510020)",
+              }}
+              initial={false}
+              animate={{
+                x: [140, 180, 217],
+                y: [41, 73, 142],
+                rotate: [0, 16, 27],
+              }}
+              transition={{
+                duration: 2.1,
+                delay: 1.36,
+                repeat: Infinity,
+                repeatType: "mirror",
+                times: [0, 0.48, 1],
+                ease: "easeInOut",
+              }}
             />
-            {/* Tablet screen line */}
-            <rect
-              x="326"
-              y="112"
-              width="12"
-              height="2"
-              rx="1"
-              fill="#F4F4F4"
+            {/* Cabine du camion */}
+            <motion.rect
+              width="11"
+              height="8"
+              rx="2"
+              fill="#F9A825"
+              initial={false}
+              animate={{
+                x: [165, 205, 241],
+                y: [44, 76, 146],
+                rotate: [0, 16, 27],
+              }}
+              transition={{
+                duration: 2.1,
+                delay: 1.36,
+                repeat: Infinity,
+                repeatType: "mirror",
+                times: [0, 0.48, 1],
+                ease: "easeInOut",
+              }}
+            />
+            {/* Roue avant */}
+            <motion.ellipse
+              rx="3"
+              ry="3"
+              fill="#263238"
+              initial={false}
+              animate={{
+                cx: [147, 187, 224],
+                cy: [57, 89, 158],
+              }}
+              transition={{
+                duration: 2.1,
+                delay: 1.36,
+                repeat: Infinity,
+                repeatType: "mirror",
+                times: [0, 0.48, 1],
+                ease: "easeInOut",
+              }}
+            />
+            {/* Roue arrière */}
+            <motion.ellipse
+              rx="3"
+              ry="3"
+              fill="#1A3C40"
+              initial={false}
+              animate={{
+                cx: [161, 201, 237],
+                cy: [57, 89, 158],
+              }}
+              transition={{
+                duration: 2.1,
+                delay: 1.36,
+                repeat: Infinity,
+                repeatType: "mirror",
+                times: [0, 0.48, 1],
+                ease: "easeInOut",
+              }}
             />
           </motion.g>
-        </motion.svg>
+        </svg>
       </motion.div>
-      {/* Nouveau slogan, plus percutant et contrasté */}
+      {/* Titre principal ergonomique */}
       <motion.h1
-        initial={{ opacity: 0, y: 22 }}
+        initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1.25, delay: 2.15 }}
-        className="mt-8 mb-3 text-4xl md:text-6xl font-extrabold tracking-tighter drop-shadow-2xl font-montserrat leading-tight"
+        transition={{ duration: 1.12, delay: 1.54 }}
+        className="mt-8 mb-3 text-3xl md:text-5xl font-extrabold tracking-tighter drop-shadow-2xl font-montserrat leading-tight"
         style={{
           color: "#E65100",
           textShadow: "0 2px 18px #1A3C4033",
           letterSpacing: "-0.01em",
         }}
       >
-        La logistique
-        <br className="hidden md:inline" />
-        conçue pour
-        <br className="hidden sm:inline" />
-        l’Afrique du futur
+        🚛 Le futur de la logistique africaine<br className="hidden md:inline" /> commence ici
       </motion.h1>
-      {/* CTA placé juste sous le titre principal, bien espacé et visible */}
+      {/* Slogan / sous-titre inspirant */}
+      <motion.p
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1.05, delay: 1.92 }}
+        className="max-w-xl mx-auto mb-2 text-xl md:text-2xl font-bold text-primary"
+        style={{ color: "#263238", opacity: 0.98 }}
+      >
+        🌍 Pensée en Afrique. Construite pour l’Afrique.
+      </motion.p>
+      {/* Description / pitch synthétique */}
+      <motion.p
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1.05, delay: 2.10 }}
+        className="max-w-xl mx-auto mb-3 text-base md:text-xl font-semibold text-primary"
+        style={{ color: "#1A3C40", opacity: 0.89 }}
+      >
+        OneLog Africa est la solution digitale panafricaine qui réinvente le transport et la logistique, avec fierté, efficacité et technologie.<br className="hidden md:inline" />
+        Fini les silences radio, les documents perdus, les camions fantômes.<br className="hidden md:inline" />
+        🎯 Pilotez vos flux, tracez vos colis, optimisez vos coûts. En temps réel.
+      </motion.p>
+      {/* Micro-texte contextuel */}
+      <motion.p
+        initial={{ opacity: 0, y: 7 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1, delay: 2.38 }}
+        className="max-w-lg mx-auto mb-7 text-[1.1rem] md:text-lg text-secondary font-medium"
+        style={{ color: "#E65100", opacity: 0.91 }}
+      >
+        « Vous attendez encore sur WhatsApp pour savoir où est votre marchandise ? Il est temps de passer au niveau supérieur. »
+      </motion.p>
+      {/* CTA animé */}
       <motion.a
         href="#demo"
-        initial={{ opacity: 0, scale: 0.94, y: 7 }}
+        initial={{ opacity: 0, scale: 0.94, y: 10 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ duration: 1.07, delay: 2.38 }}
-        className="btn-cta mb-5 mt-2 md:mt-2 md:mb-6 px-8 py-3 rounded-full font-bold shadow-cta text-lg animate-fade-in hover:scale-105 transition-transform"
+        transition={{ duration: 0.98, delay: 2.64 }}
+        className="btn-cta mb-1 px-8 py-3 rounded-full font-bold shadow-cta text-lg hover:scale-105 transition-transform animate-fade-in"
         style={{
           background: "#E65100",
           color: "#fff",
           boxShadow: "0 3px 20px 0 #E651004a",
-          fontSize: "1.15rem",
+          fontSize: "1.12rem",
           letterSpacing: "0.01em",
           display: "inline-block",
         }}
       >
-        Tester gratuitement
+        <motion.span
+          initial={{ scale: 1 }}
+          animate={{ scale: [1, 1.10, 1] }}
+          transition={{
+            repeat: Infinity,
+            repeatType: "reverse",
+            duration: 1.7,
+            ease: "easeInOut",
+          }}
+          className="inline-block"
+        >
+          👉 Démarrer gratuitement&nbsp;–&nbsp;14&nbsp;jours sans engagement
+        </motion.span>
+        <div className="block text-xs mt-1 font-semibold" style={{ opacity: 0.98 }}>
+          <span className="text-[#F9A825]">Essai sans CB</span>, support local inclus.
+        </div>
       </motion.a>
-      {/* Baseline sous le slogan */}
-      <motion.p
-        initial={{ opacity: 0, y: 9 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, delay: 2.28 }}
-        className="max-w-xl mx-auto mb-5 text-lg md:text-2xl font-semibold text-primary"
-        style={{ color: "#263238", opacity: 0.93 }}
-      >
-        Pilotez chaque convoi — et chaque mission — avec une technologie accessible, humaine et pensée pour la réalité du terrain africain.
-      </motion.p>
       {/* Séparateur visuel arrondi en bas */}
       <div
         className="absolute z-0 w-full left-0 bottom-0 h-16 pointer-events-none select-none"
