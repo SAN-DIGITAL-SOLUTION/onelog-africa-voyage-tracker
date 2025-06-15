@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,17 +19,44 @@ const notificationSchema = z.object({
   trigger: z.string().optional(),
 });
 
-// Pour le SMS, à brancher si tu veux faire une API Edge function Supabase plus tard
+// For demo: continues to use fake SMS
 async function sendSMS(target: string, message: string, user_id: string) {
-  // Simule l'envoi : intégrer une edge function + Twilio si tu veux le vrai
-  // Lance un toast pour info
   return { success: true };
 }
 
-// Simple "fake send" pour email : à brancher pour usage réel
-async function sendEmail(target: string, message: string, user_id: string) {
-  // Simule l'envoi, tu peux brancher une vraie edge function plus tard
-  return { success: true };
+// MailerSend email sending via edge function
+async function sendEmailEdge({ target, message, user_id, mission_id, trigger }: { target: string, message: string, user_id: string, mission_id?: string, trigger?: string }) {
+  // Minimal HTML for mail content
+  const message_html = `<p>${message}</p>`;
+  const message_text = message;
+  const body = {
+    recipient_email: target,
+    message_html,
+    message_text,
+    user_id,
+    mission_id: mission_id || null,
+    trigger: trigger || null,
+  };
+  const url = `https://fhiegxnqgjlgpbywujzo.functions.supabase.co/send-notification-email`;
+
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(body)
+  });
+
+  if (!res.ok) {
+    let err;
+    try {
+      err = await res.json();
+    } catch {
+      err = { error: await res.text() };
+    }
+    throw new Error(err.error || "Erreur lors de l'envoi via MailerSend.");
+  }
+  return await res.json();
 }
 
 export default function Notifications() {
@@ -67,11 +95,18 @@ export default function Notifications() {
   const { mutate: sendNotification, isPending: isSending } = useMutation({
     mutationFn: async (values: { mode: "email" | "sms"; target: string; message: string; mission_id?: string; trigger?: string }) => {
       if (!user) throw new Error("Non authentifié");
-      // 1. Envoi (email/sms)
+      // 1. Envoi (edge/email/sms)
       if (values.mode === "sms") {
         await sendSMS(values.target, values.message, user.id);
       } else {
-        await sendEmail(values.target, values.message, user.id);
+        // Mode email: call edge function
+        await sendEmailEdge({
+          target: values.target,
+          message: values.message,
+          user_id: user.id,
+          mission_id: values.mission_id,
+          trigger: values.trigger,
+        });
       }
       // 2. Enregistrement Supabase (inclut mission_id et trigger)
       const { error } = await supabase.from("notifications").insert({
@@ -102,7 +137,6 @@ export default function Notifications() {
     },
   });
 
-  // Quand on change l’onglet (email/sms), maj le form
   function handleMode(newMode: "email" | "sms") {
     setMode(newMode);
     form.setValue("mode", newMode);
