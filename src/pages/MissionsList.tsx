@@ -1,69 +1,129 @@
-import React from "react";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { ChevronRight } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Plus } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 import { useMissions } from "./missions/useMissions";
-import MissionsTable from "./missions/MissionsTable";
 import MissionFilters from "./missions/MissionFilters";
+import MissionsTable from "./missions/MissionsTable";
 import MissionsPagination from "./missions/MissionsPagination";
 import MissionsExportDropdown from "./missions/MissionsExportDropdown";
+import { useRealtimeMissions } from "@/hooks/useRealtimeMissions";
+import RealtimeStatusIndicator from "@/components/RealtimeStatusIndicator";
 
 export default function MissionsList() {
-  const navigate = useNavigate();
+  const { user } = useAuth();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [clientFilter, setClientFilter] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
+
+  // Hook pour les mises à jour temps réel
+  useRealtimeMissions();
+
+  // Utilisation du hook personnalisé pour récupérer les missions
   const {
-    missionsPage,
+    data: missions,
     isLoading,
     error,
-    page,
-    setPage,
-    search,
-    setSearch,
-    filterClient,
-    setFilterClient,
-    filterStatus,
-    setFilterStatus,
-    pageCount,
-    refetchKey,
-  } = useMissions();
+    totalCount,
+    refetch,
+  } = useMissions({
+    searchTerm,
+    statusFilter,
+    clientFilter,
+    currentPage,
+    pageSize,
+  });
 
-  // Reset pagination when filters change
-  React.useEffect(() => { setPage(1); }, [search, filterClient, filterStatus]);
+  const handleDeleteMission = async (id: string) => {
+    try {
+      const { error } = await supabase.from("missions").delete().eq("id", id);
+      if (error) throw new Error(error.message);
+      refetch();
+    } catch (error: any) {
+      console.error("Erreur lors de la suppression:", error.message);
+    }
+  };
+
+  const clearFilters = () => {
+    setSearchTerm("");
+    setStatusFilter("");
+    setClientFilter("");
+    setCurrentPage(1);
+  };
+
+  const hasActiveFilters = searchTerm !== "" || statusFilter !== "" || clientFilter !== "";
+
+  if (isLoading) {
+    return (
+      <main className="container mx-auto pt-8">
+        <div className="flex justify-center items-center h-64">
+          <span className="animate-spin h-8 w-8 border-4 border-onelog-bleu border-t-transparent rounded-full" />
+        </div>
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main className="container mx-auto pt-8">
+        <div className="text-center text-red-600">
+          Erreur lors du chargement des missions
+        </div>
+      </main>
+    );
+  }
 
   return (
-    <main className="container mx-auto pt-6">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-3">
-        <h1 className="text-2xl font-bold" style={{ fontFamily: "'PT Sans',sans-serif" }}>Missions</h1>
-        <div className="flex gap-1">
-          <MissionsExportDropdown missions={missionsPage} />
-          <Button onClick={() => navigate("/missions/new")} className="bg-onelog-bleu text-white font-bold px-4">
-            <ChevronRight size={18} className="mr-2" /> Nouvelle mission
+    <main className="container mx-auto pt-8 px-4">
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h1 className="text-2xl font-bold mb-2">Mes missions</h1>
+          <p className="text-gray-600">
+            Gérez vos missions de transport et logistique
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <MissionsExportDropdown missions={missions || []} />
+          <Button asChild>
+            <Link to="/missions/new">
+              <Plus size={16} className="mr-1" />
+              Nouvelle mission
+            </Link>
           </Button>
         </div>
       </div>
+
       <MissionFilters
-        search={search}
-        setSearch={setSearch}
-        filterClient={filterClient}
-        setFilterClient={setFilterClient}
-        filterStatus={filterStatus}
-        setFilterStatus={setFilterStatus}
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        statusFilter={statusFilter}
+        onStatusFilterChange={setStatusFilter}
+        clientFilter={clientFilter}
+        onClientFilterChange={setClientFilter}
+        onClearFilters={clearFilters}
+        hasActiveFilters={hasActiveFilters}
       />
-      <div className="overflow-x-auto">
-        <MissionsTable
-          missionsPage={missionsPage}
-          isLoading={isLoading}
-          error={error}
-          refetchKey={refetchKey}
-        />
-      </div>
+
+      <MissionsTable
+        missions={missions || []}
+        onDeleteMission={handleDeleteMission}
+      />
+
       <MissionsPagination
-        currentPage={page}
-        totalPages={pageCount}
-        onPageChange={setPage}
+        currentPage={currentPage}
+        totalCount={totalCount || 0}
+        pageSize={pageSize}
+        onPageChange={setCurrentPage}
+        hasActiveFilters={hasActiveFilters}
+        filteredCount={missions?.length || 0}
       />
-      {error && <div className="text-red-600 mt-2">Erreur : {error.message}</div>}
+
+      <RealtimeStatusIndicator />
     </main>
   );
 }
-
-// Note: This file is now refactored. If it grows again, consider further splitting into smaller components.

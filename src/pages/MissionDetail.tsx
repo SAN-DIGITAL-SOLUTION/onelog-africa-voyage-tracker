@@ -1,17 +1,18 @@
-
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, Edit, FileText } from "lucide-react";
-import { toast } from "@/components/ui/use-toast"; // Nettoyage : harmonisation
+import { toast } from "@/hooks/use-toast";
 import MissionOverview from "./mission-detail/MissionOverview";
 import MissionTrackingHistory from "./mission-detail/MissionTrackingHistory";
 import MissionExtraDetails from "./mission-detail/MissionExtraDetails";
 import MissionStatusTimeline from "./mission-detail/MissionStatusTimeline";
 import MissionFeedback from "./mission-detail/MissionFeedback";
 import FeedbackForm from "./mission-detail/FeedbackForm";
+import RealtimeStatusIndicator from "@/components/RealtimeStatusIndicator";
+import { useRealtimeMissions } from "@/hooks/useRealtimeMissions";
 
 type TrackingPoint = {
   id: string | number;
@@ -24,6 +25,9 @@ export default function MissionDetail() {
   const navigate = useNavigate();
   const [generating, setGenerating] = React.useState(false);
   const [showFeedbackForm, setShowFeedbackForm] = React.useState(false);
+
+  // Hook pour les mises à jour temps réel
+  useRealtimeMissions();
 
   // Fetch mission data
   const { data: mission, isLoading, error } = useQuery({
@@ -144,6 +148,8 @@ export default function MissionDetail() {
         open={showFeedbackForm}
         onClose={() => setShowFeedbackForm(false)}
       />
+
+      <RealtimeStatusIndicator />
     </main>
   );
 }

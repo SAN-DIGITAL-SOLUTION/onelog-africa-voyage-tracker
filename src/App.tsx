@@ -1,71 +1,56 @@
-
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-import Header from "./components/Header";
-import AppSidebar from "./components/AppSidebar";
-import Dashboard from "./pages/Dashboard";
-import Auth from "./pages/Auth";
-import Missions from "./pages/Missions";
-import TrackingMap from "./pages/TrackingMap";
-import Invoices from "./pages/Invoices";
-import Notifications from "./pages/Notifications";
-import NotFound from "./pages/NotFound";
 import { AuthProvider } from "@/hooks/useAuth";
-import { RoleProvider } from "@/hooks/useRole";
+import { Toaster } from "@/components/ui/toaster";
+import Index from "@/pages/Index";
+import Auth from "@/pages/Auth";
+import Dashboard from "@/pages/Dashboard";
+import Missions from "@/pages/Missions";
+import Notifications from "@/pages/Notifications";
+import Invoices from "@/pages/Invoices";
+import TrackingMap from "@/pages/TrackingMap";
+import Landing from "@/pages/Landing";
 import NoRole from "@/pages/NoRole";
-import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
-import Landing from "./pages/Landing";
+import NotFound from "@/pages/NotFound";
+import NotificationToast from "@/components/NotificationToast";
+import "./App.css";
 
-// Helper pour wrapper et avoir accès à useLocation dans App (hors Hooks principaux)
-function AppLayout() {
-  const location = useLocation();
+// React Query setup
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      retry: 1,
+    },
+  },
+});
 
-  // Affiche la sidebar partout sauf sur "/"
-  const showSidebar = location.pathname !== "/";
-
+function App() {
   return (
-    <SidebarProvider>
-      <div className="flex min-h-screen w-full bg-gray-50 dark:bg-onelog-nuit">
-        {showSidebar && <AppSidebar />}
-        <SidebarInset>
-          <Header />
-          <Routes>
-            <Route path="/" element={<Landing />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/missions/*" element={<Missions />} />
-            <Route path="/tracking" element={<TrackingMap />} />
-            <Route path="/invoices" element={<Invoices />} />
-            <Route path="/notifications" element={<Notifications />} />
-            <Route path="/no-role" element={<NoRole />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </SidebarInset>
-      </div>
-    </SidebarProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <Router>
+          <div className="min-h-screen bg-gray-50">
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/landing" element={<Landing />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/missions/*" element={<Missions />} />
+              <Route path="/notifications" element={<Notifications />} />
+              <Route path="/invoices" element={<Invoices />} />
+              <Route path="/tracking" element={<TrackingMap />} />
+              <Route path="/no-role" element={<NoRole />} />
+              <Route path="/404" element={<NotFound />} />
+              <Route path="*" element={<Navigate to="/404" replace />} />
+            </Routes>
+            <Toaster />
+            <NotificationToast />
+          </div>
+        </Router>
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }
 
-const queryClient = new QueryClient();
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <RoleProvider>
-          <AuthProvider>
-            <AppLayout />
-          </AuthProvider>
-        </RoleProvider>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
-
 export default App;
-
