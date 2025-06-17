@@ -1,6 +1,8 @@
+
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "@/hooks/useAuth";
+import { RoleProvider } from "@/hooks/useRole";
 import { Toaster } from "@/components/ui/toaster";
 import Index from "@/pages/Index";
 import Auth from "@/pages/Auth";
@@ -28,27 +30,29 @@ const queryClient = new QueryClient({
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <Router>
-          <div className="min-h-screen bg-gray-50">
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/landing" element={<Landing />} />
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/missions/*" element={<Missions />} />
-              <Route path="/notifications" element={<Notifications />} />
-              <Route path="/invoices" element={<Invoices />} />
-              <Route path="/tracking" element={<TrackingMap />} />
-              <Route path="/no-role" element={<NoRole />} />
-              <Route path="/404" element={<NotFound />} />
-              <Route path="*" element={<Navigate to="/404" replace />} />
-            </Routes>
-            <Toaster />
-            <NotificationToast />
-          </div>
-        </Router>
-      </AuthProvider>
+      <RoleProvider>
+        <AuthProvider>
+          <Router>
+            <div className="min-h-screen bg-gray-50">
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/landing" element={<Landing />} />
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/missions/*" element={<Missions />} />
+                <Route path="/notifications" element={<Notifications />} />
+                <Route path="/invoices" element={<Invoices />} />
+                <Route path="/tracking" element={<TrackingMap />} />
+                <Route path="/no-role" element={<NoRole />} />
+                <Route path="/404" element={<NotFound />} />
+                <Route path="*" element={<Navigate to="/404" replace />} />
+              </Routes>
+              <Toaster />
+              <NotificationToast />
+            </div>
+          </Router>
+        </AuthProvider>
+      </RoleProvider>
     </QueryClientProvider>
   );
 }

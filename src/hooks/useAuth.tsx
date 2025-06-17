@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useCallback, createContext, useContext } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { User, Session } from "@supabase/supabase-js";
@@ -20,8 +21,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Ajout du contexte de rôle pour hydrater après connexion
-  const { setRole, setLoadingRole } = useRole ? useRole() : { setRole: () => {}, setLoadingRole: () => {} };
+  // Get role context functions
+  const { setRole, setLoadingRole } = useRole();
 
   useEffect(() => {
     // 1. Set up auth state listener first
@@ -31,14 +32,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       // Charger le rôle _uniquement_ si l'utilisateur est connecté
       if (session?.user) {
-        setLoadingRole?.(true);
+        setLoadingRole(true);
         fetchUserRole(session.user.id).then((role) => {
-          setRole?.(role);
-          setLoadingRole?.(false);
+          setRole(role);
+          setLoadingRole(false);
         });
       } else {
-        setRole?.(null);
-        setLoadingRole?.(false);
+        setRole(null);
+        setLoadingRole(false);
       }
       setLoading(false);
     });
@@ -50,14 +51,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       // Idem ici
       if (session?.user) {
-        setLoadingRole?.(true);
+        setLoadingRole(true);
         fetchUserRole(session.user.id).then((role) => {
-          setRole?.(role);
-          setLoadingRole?.(false);
+          setRole(role);
+          setLoadingRole(false);
         });
       } else {
-        setRole?.(null);
-        setLoadingRole?.(false);
+        setRole(null);
+        setLoadingRole(false);
       }
 
       setLoading(false);
