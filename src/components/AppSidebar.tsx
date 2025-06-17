@@ -19,6 +19,7 @@ import {
   Bell,
   Truck,
 } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const routes = [
   {
@@ -51,14 +52,17 @@ const routes = [
 export default function AppSidebar() {
   const { state } = useSidebar();
   const location = useLocation();
+  const isMobile = useIsMobile();
 
   return (
-    <Sidebar className="min-h-screen border-r bg-primary dark:bg-primary pt-4 w-56 data-[state=collapsed]:w-14 transition-all duration-200">
+    <Sidebar className={`min-h-screen border-r bg-primary dark:bg-primary pt-4 transition-all duration-200 ${
+      state === "collapsed" ? "w-14" : "w-56"
+    } ${isMobile ? "fixed z-50" : ""}`}>
       <div className="flex items-center gap-2 px-4 mb-8">
         <img src="/favicon.ico" alt="logo" className="h-7 w-7" />
         {state !== "collapsed" && (
           <span className="font-bold text-lg tracking-tight text-white">
-            OneLog Africa
+            {isMobile ? "OneLog" : "OneLog Africa"}
           </span>
         )}
         <SidebarTrigger className="ml-auto" />
@@ -99,9 +103,9 @@ export default function AppSidebar() {
                         {state !== "collapsed" && (
                           <span
                             className={`
-                              font-bold transition-colors 
+                              font-bold transition-colors text-sm
                               ${isActive 
-                                ? "text-white" 
+                                ? "text-primary" 
                                 : "text-white group-hover:text-accent"}
                             `}
                           >

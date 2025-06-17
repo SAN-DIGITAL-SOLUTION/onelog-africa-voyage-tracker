@@ -33,7 +33,7 @@ function App() {
       <RoleProvider>
         <AuthProvider>
           <Router>
-            <div className="min-h-screen bg-gray-50">
+            <div className="min-h-screen bg-gray-50 w-full overflow-x-hidden">
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/landing" element={<Landing />} />

@@ -2,10 +2,18 @@
 import React from "react";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Eye, Edit, Trash2 } from "lucide-react";
+import { Eye, Edit, Trash2, MoreVertical } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useIsMobile } from "@/hooks/use-mobile";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 type Mission = {
   id: string;
@@ -15,7 +23,6 @@ type Mission = {
   date: string;
   status: string;
   description?: string;
-  // Champs ajoutés pour coller au schéma missions de la BDD
   type_de_marchandise?: string;
   volume?: number;
   poids?: number;
@@ -31,6 +38,81 @@ type MissionsTableProps = {
   refetchKey: any[];
 };
 
+// Composant pour mobile - format carte
+function MissionCard({ mission, onEdit, onView, onDelete, isDeleting }: {
+  mission: Mission;
+  onEdit: () => void;
+  onView: () => void;
+  onDelete: () => void;
+  isDeleting: boolean;
+}) {
+  return (
+    <div className="bg-white rounded-lg border p-4 mb-4 shadow-sm">
+      <div className="flex justify-between items-start mb-3">
+        <div>
+          <h3 className="font-semibold text-lg">{mission.ref}</h3>
+          <p className="text-gray-600">{mission.client}</p>
+        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="sm">
+              <MoreVertical size={16} />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={onView}>
+              <Eye size={16} className="mr-2" />
+              Voir
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={onEdit}>
+              <Edit size={16} className="mr-2" />
+              Éditer
+            </DropdownMenuItem>
+            <DropdownMenuItem 
+              onClick={onDelete}
+              disabled={isDeleting}
+              className="text-red-600"
+            >
+              <Trash2 size={16} className="mr-2" />
+              Supprimer
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+      
+      <div className="grid grid-cols-2 gap-2 text-sm">
+        <div>
+          <span className="text-gray-500">Date:</span>
+          <p>{mission.date}</p>
+        </div>
+        <div>
+          <span className="text-gray-500">Statut:</span>
+          <span className={"px-2 py-1 rounded text-xs font-semibold " +
+            (mission.status === "En cours"
+              ? "bg-yellow-200 text-yellow-800"
+              : mission.status === "Terminée"
+                ? "bg-green-200 text-green-800"
+                : "bg-red-200 text-red-700")}>
+            {mission.status}
+          </span>
+        </div>
+        {mission.chauffeur && (
+          <div>
+            <span className="text-gray-500">Chauffeur:</span>
+            <p>{mission.chauffeur}</p>
+          </div>
+        )}
+        {mission.type_de_marchandise && (
+          <div>
+            <span className="text-gray-500">Type:</span>
+            <p>{mission.type_de_marchandise}</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function MissionsTable({
   missionsPage,
   isLoading,
@@ -40,11 +122,11 @@ export default function MissionsTable({
 }: MissionsTableProps) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const isMobile = useIsMobile();
 
   const { mutate: deleteMission, isPending: isDeleting } = useMutation({
     mutationFn: async (id: string) => {
-      // @ts-ignore
-      const { error } = await window.supabase.from("missions").delete().eq("id", id);
+      const { error } = await supabase.from("missions").delete().eq("id", id);
       if (error) throw new Error(error.message);
     },
     onSuccess: () => {
@@ -57,6 +139,53 @@ export default function MissionsTable({
     },
   });
 
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center py-8">
+        <span className="animate-spin h-7 w-7 border-4 border-onelog-bleu border-t-transparent rounded-full" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-8 text-red-600">
+        Erreur lors du chargement des missions
+      </div>
+    );
+  }
+
+  // Vue mobile - format cartes
+  if (isMobile) {
+    if (missionsPage.length === 0) {
+      return (
+        <div className="text-center py-8 text-gray-500">
+          Aucune mission trouvée.
+        </div>
+      );
+    }
+
+    return (
+      <div className="space-y-4">
+        {missionsPage.map((mission) => (
+          <MissionCard
+            key={mission.id}
+            mission={mission}
+            onView={() => navigate(`/missions/${mission.id}`)}
+            onEdit={() => navigate(`/missions/${mission.id}/edit`)}
+            onDelete={() => {
+              if (confirm("Voulez-vous vraiment supprimer cette mission ?")) {
+                deleteMission(mission.id);
+              }
+            }}
+            isDeleting={isDeleting}
+          />
+        ))}
+      </div>
+    );
+  }
+
+  // Vue desktop - tableau
   return (
     <Table>
       <TableHeader>
@@ -76,42 +205,36 @@ export default function MissionsTable({
         </TableRow>
       </TableHeader>
       <TableBody>
-        {isLoading ? (
-          <TableRow>
-            <TableCell colSpan={12} className="text-center py-8">
-              <span className="animate-spin h-7 w-7 border-4 border-onelog-bleu border-t-transparent rounded-full inline-block" />
-            </TableCell>
-          </TableRow>
-        ) : (missionsPage.length > 0 ? missionsPage.map((m) => (
+        {missionsPage.length > 0 ? missionsPage.map((m) => (
           <TableRow key={m.id} className="hover:bg-onelog-bleu/10">
-            <TableCell style={{ fontFamily: "'PT Sans',sans-serif" }}>{m.ref}</TableCell>
-            <TableCell style={{ fontFamily: "'PT Sans',sans-serif" }}>{m.client}</TableCell>
-            <TableCell style={{ fontFamily: "'PT Sans',sans-serif" }}>{m.chauffeur || <span className="italic text-onelog-nuit/40">Aucun</span>}</TableCell>
-            <TableCell style={{ fontFamily: "'PT Sans',sans-serif" }}>{m.date}</TableCell>
+            <TableCell>{m.ref}</TableCell>
+            <TableCell>{m.client}</TableCell>
+            <TableCell>{m.chauffeur || <span className="italic text-gray-400">Aucun</span>}</TableCell>
+            <TableCell>{m.date}</TableCell>
             <TableCell>
               <span className={"px-2 py-1 rounded text-sm font-semibold " +
                 (m.status === "En cours"
-                  ? "bg-onelog-citron/60 text-onelog-nuit"
+                  ? "bg-yellow-200 text-yellow-800"
                   : m.status === "Terminée"
                     ? "bg-green-200 text-green-800"
                     : "bg-red-200 text-red-700")}>
                 {m.status}
               </span>
             </TableCell>
-            <TableCell style={{ fontFamily: "'PT Sans',sans-serif" }}>
-              {m.type_de_marchandise || <span className="italic text-onelog-nuit/40">-</span>}
+            <TableCell>
+              {m.type_de_marchandise || <span className="italic text-gray-400">-</span>}
             </TableCell>
-            <TableCell style={{ fontFamily: "'PT Sans',sans-serif" }}>
-              {typeof m.volume === "number" ? m.volume : <span className="italic text-onelog-nuit/40">-</span>}
+            <TableCell>
+              {typeof m.volume === "number" ? m.volume : <span className="italic text-gray-400">-</span>}
             </TableCell>
-            <TableCell style={{ fontFamily: "'PT Sans',sans-serif" }}>
-              {typeof m.poids === "number" ? m.poids : <span className="italic text-onelog-nuit/40">-</span>}
+            <TableCell>
+              {typeof m.poids === "number" ? m.poids : <span className="italic text-gray-400">-</span>}
             </TableCell>
-            <TableCell style={{ fontFamily: "'PT Sans',sans-serif" }}>
-              {m.lieu_enlevement || <span className="italic text-onelog-nuit/40">-</span>}
+            <TableCell>
+              {m.lieu_enlevement || <span className="italic text-gray-400">-</span>}
             </TableCell>
-            <TableCell style={{ fontFamily: "'PT Sans',sans-serif" }}>
-              {m.lieu_livraison || <span className="italic text-onelog-nuit/40">-</span>}
+            <TableCell>
+              {m.lieu_livraison || <span className="italic text-gray-400">-</span>}
             </TableCell>
             <TableCell>
               {m.description && m.description.length > 50 ?
@@ -119,7 +242,7 @@ export default function MissionsTable({
                   {m.description.slice(0, 47)}…
                 </span>
                 :
-                <span>{m.description || <span className="italic text-onelog-nuit/40">Aucune</span>}</span>
+                <span>{m.description || <span className="italic text-gray-400">Aucune</span>}</span>
               }
             </TableCell>
             <TableCell className="flex gap-1">
@@ -130,7 +253,7 @@ export default function MissionsTable({
                 <Edit size={16} />
               </Button>
               <Button size="sm" variant="destructive" disabled={isDeleting} title="Supprimer" onClick={() => {
-                if (confirm("Voulez-vous vraiment supprimer cette mission ?")) deleteMission(m.id);
+                if (confirm("Voulez-vous vraiment supprimer cette mission ?")) deleteMission(m.id);
               }}>
                 <Trash2 size={16} />
               </Button>
@@ -138,11 +261,11 @@ export default function MissionsTable({
           </TableRow>
         )) : (
           <TableRow>
-            <TableCell colSpan={12} className="text-center py-8 text-onelog-nuit/60" style={{ fontFamily: "'PT Sans',sans-serif" }}>
+            <TableCell colSpan={12} className="text-center py-8 text-gray-500">
               Aucune mission trouvée.
             </TableCell>
           </TableRow>
-        ))}
+        )}
       </TableBody>
     </Table>
   );
