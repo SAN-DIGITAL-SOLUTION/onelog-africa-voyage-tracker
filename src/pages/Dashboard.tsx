@@ -1,70 +1,191 @@
 
-import { FileText, Truck, Bell, LayoutDashboard } from "lucide-react";
-import RequireAuth from "@/components/RequireAuth";
-
-const stats = [
-  {
-    title: "Missions actives",
-    value: 12,
-    icon: Truck,
-    color: "bg-fresh/10 text-fresh",
-    iconBg: "bg-fresh/20",
-  },
-  {
-    title: "Factures émises",
-    value: 23,
-    icon: FileText,
-    color: "bg-secondary/10 text-secondary",
-    iconBg: "bg-secondary/20",
-  },
-  {
-    title: "Notifications envoyées",
-    value: 37,
-    icon: Bell,
-    color: "bg-primary/10 text-primary",
-    iconBg: "bg-primary/10",
-  },
-];
+import { useEffect } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { useRole } from "@/hooks/useRole";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { 
+  Truck, 
+  FileText, 
+  Bell, 
+  Map, 
+  TrendingUp, 
+  Calendar,
+  Package,
+  Clock
+} from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function Dashboard() {
+  const { user } = useAuth();
+  const { role, loadingRole } = useRole();
+  const navigate = useNavigate();
+
+  // Gérer la redirection selon le rôle
+  useEffect(() => {
+    if (!loadingRole && user) {
+      console.log("Dashboard - Rôle de l'utilisateur:", role);
+      
+      // Si l'utilisateur n'a pas de rôle, on le redirige vers la page no-role
+      if (role === null) {
+        navigate("/no-role", { replace: true });
+        return;
+      }
+      
+      // Pour l'instant, on reste sur le dashboard pour tous les rôles
+      // Plus tard, on pourra créer des dashboards spécifiques par rôle
+    }
+  }, [role, loadingRole, user, navigate]);
+
+  if (loadingRole) {
+    return (
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <span className="animate-spin h-7 w-7 border-4 border-onelog-bleu border-t-transparent rounded-full" />
+      </div>
+    );
+  }
+
+  // Si pas de rôle, on laisse l'useEffect gérer la redirection
+  if (role === null) {
+    return null;
+  }
+
   return (
-    <RequireAuth>
-      <main className="container mx-auto pt-12 max-w-4xl animate-fade-in">
-        <div className="flex items-center gap-2 mb-5">
-          <span className="inline-flex items-center justify-center rounded-full bg-secondary/20 text-secondary p-2">
-            <LayoutDashboard size={28} aria-hidden className="text-secondary" />
-          </span>
-          <h1 className="text-3xl font-extrabold tracking-tight font-montserrat text-primary">Tableau de bord</h1>
-        </div>
-        <p className="text-lg text-primary/80 mb-8 max-w-2xl">
-          Gérez vos missions, suivez vos chauffeurs en temps réel et facilitez votre facturation sur votre espace OneLog Africa.
+    <main className="container mx-auto pt-8 px-4">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold mb-2">Tableau de bord</h1>
+        <p className="text-gray-600">
+          Bienvenue sur OneLog Africa - Gérez vos opérations logistiques
         </p>
-        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          {stats.map((s, idx) => (
-            <div
-              key={idx}
-              className={`group rounded-xl p-5 flex items-center gap-4 shadow-lg border border-gray-100 hover:scale-[1.03] hover:border-secondary/40 transition-transform duration-200 bg-white cursor-pointer ${s.color}`}
-            >
-              <div className={`rounded-full ${s.iconBg} p-3 shadow-sm group-hover:scale-105 transition-transform`}>
-                <s.icon size={30} className="shrink-0" />
-              </div>
-              <div>
-                <span className="block text-3xl font-extrabold leading-tight mb-1 font-montserrat">{s.value}</span>
-                <span className="block text-base text-primary font-medium">{s.title}</span>
-              </div>
+      </div>
+
+      {/* Stats rapides */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="bg-white rounded-lg p-6 shadow-sm border">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-blue-100 rounded-lg">
+              <Truck className="h-6 w-6 text-blue-600" />
             </div>
-          ))}
-        </section>
-        <div className="bg-gradient-to-br from-primary/90 to-fresh/90 rounded-lg p-6 text-dm-text font-semibold shadow-md flex flex-col md:flex-row md:items-center justify-between gap-3">
-          <span className="text-base md:text-lg">Vous débutez ? Consultez la rubrique missions pour créer votre première opération.</span>
-          <a
-            href="/missions"
-            className="inline-flex items-center gap-1 bg-accent text-white font-bold font-montserrat px-5 py-2 rounded-full shadow hover:scale-105 transition-all hover:bg-accent-hover focus:ring-4 focus:ring-secondary focus:outline-none"
-          >
-            <Truck className="mr-1" size={18} /> Nouvelle mission
-          </a>
+            <div>
+              <p className="text-sm text-gray-600">Missions actives</p>
+              <p className="text-2xl font-bold">12</p>
+            </div>
+          </div>
         </div>
-      </main>
-    </RequireAuth>
+
+        <div className="bg-white rounded-lg p-6 shadow-sm border">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-green-100 rounded-lg">
+              <Package className="h-6 w-6 text-green-600" />
+            </div>
+            <div>
+              <p className="text-sm text-gray-600">Missions terminées</p>
+              <p className="text-2xl font-bold">48</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg p-6 shadow-sm border">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-yellow-100 rounded-lg">
+              <Clock className="h-6 w-6 text-yellow-600" />
+            </div>
+            <div>
+              <p className="text-sm text-gray-600">En attente</p>
+              <p className="text-2xl font-bold">6</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg p-6 shadow-sm border">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-purple-100 rounded-lg">
+              <TrendingUp className="h-6 w-6 text-purple-600" />
+            </div>
+            <div>
+              <p className="text-sm text-gray-600">Performance</p>
+              <p className="text-2xl font-bold">96%</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Actions rapides */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="bg-white rounded-lg p-6 shadow-sm border">
+          <h3 className="text-lg font-semibold mb-4">Actions rapides</h3>
+          <div className="space-y-3">
+            <Button asChild className="w-full justify-start" variant="outline">
+              <Link to="/missions/new">
+                <Truck className="mr-2 h-4 w-4" />
+                Nouvelle mission
+              </Link>
+            </Button>
+            <Button asChild className="w-full justify-start" variant="outline">
+              <Link to="/missions">
+                <FileText className="mr-2 h-4 w-4" />
+                Voir toutes les missions
+              </Link>
+            </Button>
+            <Button asChild className="w-full justify-start" variant="outline">
+              <Link to="/tracking">
+                <Map className="mr-2 h-4 w-4" />
+                Suivi en temps réel
+              </Link>
+            </Button>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg p-6 shadow-sm border">
+          <h3 className="text-lg font-semibold mb-4">Notifications récentes</h3>
+          <div className="space-y-3">
+            <div className="p-3 bg-blue-50 rounded-lg">
+              <p className="text-sm font-medium">Mission M-2024-001</p>
+              <p className="text-xs text-gray-600">Livraison terminée avec succès</p>
+            </div>
+            <div className="p-3 bg-yellow-50 rounded-lg">
+              <p className="text-sm font-medium">Mission M-2024-002</p>
+              <p className="text-xs text-gray-600">En cours de livraison</p>
+            </div>
+            <Button asChild className="w-full" variant="outline" size="sm">
+              <Link to="/notifications">
+                <Bell className="mr-2 h-4 w-4" />
+                Voir toutes
+              </Link>
+            </Button>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg p-6 shadow-sm border">
+          <h3 className="text-lg font-semibold mb-4">Missions du jour</h3>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div>
+                <p className="text-sm font-medium">M-2024-003</p>
+                <p className="text-xs text-gray-600">Dakar → Thiès</p>
+              </div>
+              <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
+                En cours
+              </span>
+            </div>
+            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div>
+                <p className="text-sm font-medium">M-2024-004</p>
+                <p className="text-xs text-gray-600">Saint-Louis → Dakar</p>
+              </div>
+              <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                Planifiée
+              </span>
+            </div>
+            <Button asChild className="w-full" variant="outline" size="sm">
+              <Link to="/missions">
+                <Calendar className="mr-2 h-4 w-4" />
+                Voir planning
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </div>
+    </main>
   );
 }

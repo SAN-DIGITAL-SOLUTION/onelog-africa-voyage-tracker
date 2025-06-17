@@ -16,11 +16,6 @@ import { toast } from "@/hooks/use-toast";
 
 export default function MissionsList() {
   const { user } = useAuth();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
-  const [clientFilter, setClientFilter] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 10;
 
   // Hook pour les mises à jour temps réel
   useRealtimeMissions();
@@ -28,23 +23,28 @@ export default function MissionsList() {
   // Utilisation du hook personnalisé pour récupérer les missions
   const {
     missions,
+    missionsPage,
     isLoading,
     error,
-    totalCount,
-    refetch,
-  } = useMissions({
-    searchTerm,
-    statusFilter,
-    clientFilter,
-    currentPage,
-    pageSize,
-  });
+    page,
+    setPage,
+    search,
+    setSearch,
+    filterClient,
+    setFilterClient,
+    filterStatus,
+    setFilterStatus,
+    pageCount,
+    refetchKey,
+  } = useMissions();
 
   const handleDeleteMission = async (id: string) => {
     try {
       const { error } = await supabase.from("missions").delete().eq("id", id);
       if (error) throw new Error(error.message);
-      refetch();
+      // Trigger re-fetch by updating search (this will cause the query to re-run)
+      setSearch(search + " ");
+      setTimeout(() => setSearch(search), 100);
       toast({ title: "Mission supprimée", description: "La mission a été supprimée avec succès." });
     } catch (error: any) {
       console.error("Erreur lors de la suppression:", error.message);
@@ -53,13 +53,13 @@ export default function MissionsList() {
   };
 
   const clearFilters = () => {
-    setSearchTerm("");
-    setStatusFilter("");
-    setClientFilter("");
-    setCurrentPage(1);
+    setSearch("");
+    setFilterStatus("");
+    setFilterClient("");
+    setPage(1);
   };
 
-  const hasActiveFilters = searchTerm !== "" || statusFilter !== "" || clientFilter !== "";
+  const hasActiveFilters = search !== "" || filterStatus !== "" || filterClient !== "";
 
   if (isLoading) {
     return (
@@ -102,33 +102,38 @@ export default function MissionsList() {
       </div>
 
       <MissionFilters
-        searchTerm={searchTerm}
-        onSearchChange={setSearchTerm}
-        statusFilter={statusFilter}
-        onStatusFilterChange={setStatusFilter}
-        clientFilter={clientFilter}
-        onClientFilterChange={setClientFilter}
+        search={search}
+        onSearchChange={setSearch}
+        statusFilter={filterStatus}
+        onStatusFilterChange={setFilterStatus}
+        clientFilter={filterClient}
+        onClientFilterChange={setFilterClient}
         onClearFilters={clearFilters}
         hasActiveFilters={hasActiveFilters}
       />
 
       <div className="overflow-x-auto">
         <MissionsTable
-          missionsPage={missions || []}
+          missionsPage={missionsPage || []}
           isLoading={isLoading}
           error={error}
-          onDeleteSuccess={refetch}
-          refetchKey={['missions', searchTerm, statusFilter, clientFilter, currentPage]}
+          onDeleteSuccess={() => {
+            // Trigger re-fetch
+            setSearch(search + " ");
+            setTimeout(() => setSearch(search), 100);
+          }}
+          refetchKey={refetchKey}
         />
       </div>
 
       <MissionsPagination
-        currentPage={currentPage}
-        totalCount={totalCount || 0}
-        pageSize={pageSize}
-        onPageChange={setCurrentPage}
+        currentPage={page}
+        totalCount={missions?.length || 0}
+        pageSize={10}
+        onPageChange={setPage}
         hasActiveFilters={hasActiveFilters}
-        filteredCount={missions?.length || 0}
+        filteredCount={missionsPage?.length || 0}
+        pageCount={pageCount}
       />
 
       <RealtimeStatusIndicator />

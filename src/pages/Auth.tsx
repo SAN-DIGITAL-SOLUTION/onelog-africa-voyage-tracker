@@ -1,8 +1,9 @@
+
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useRole } from "@/hooks/useRole";
 import { useNavigate, useLocation } from "react-router-dom";
-import { toast } from "@/components/ui/use-toast"; // Nettoyage, remplacement ancien import
+import { toast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
@@ -16,20 +17,15 @@ export default function Auth() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Redirection selon le rôle dès qu'on a tout chargé
+  // Redirection dès qu'on a un utilisateur connecté
   useEffect(() => {
     if (user && !loading && !loadingRole) {
-      if (role === "admin") {
-        navigate("/admin", { replace: true });
-      } else if (role === "exploiteur") {
-        navigate("/exploiteur", { replace: true });
-      } else if (role === "chauffeur") {
-        navigate("/chauffeur", { replace: true });
-      } else if (role === null) {
-        navigate("/no-role", { replace: true });
-      }
+      console.log("Utilisateur connecté, rôle:", role);
+      // Rediriger d'abord vers le dashboard, qui gérera la logique des rôles
+      const from = (location.state as any)?.from?.pathname || "/dashboard";
+      navigate(from, { replace: true });
     }
-  }, [user, loading, role, loadingRole, navigate]);
+  }, [user, loading, role, loadingRole, navigate, location]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -52,7 +48,6 @@ export default function Auth() {
           ? "Bienvenue sur OneLog Africa !"
           : "Vérifiez vos emails pour activer votre compte.",
       });
-      // On redirige, ou on attend la validation email
     }
   }
 
@@ -104,18 +99,18 @@ export default function Auth() {
         <div className="text-sm text-onelog-nuit mt-4 text-center">
           {isLogin ? (
             <>
-              Pas encore de compte ?{" "}
+              Pas encore de compte ?{" "}
               <button
                 className="text-onelog-bleu font-semibold underline"
                 disabled={processing}
                 onClick={() => setIsLogin(false)}
               >
-                S’inscrire
+                S'inscrire
               </button>
             </>
           ) : (
             <>
-              Déjà inscrit ?{" "}
+              Déjà inscrit ?{" "}
               <button
                 className="text-onelog-bleu font-semibold underline"
                 disabled={processing}
