@@ -103,13 +103,11 @@ export default function MissionsList() {
 
       <MissionFilters
         search={search}
-        onSearchChange={setSearch}
-        statusFilter={filterStatus}
-        onStatusFilterChange={setFilterStatus}
-        clientFilter={filterClient}
-        onClientFilterChange={setFilterClient}
-        onClearFilters={clearFilters}
-        hasActiveFilters={hasActiveFilters}
+        setSearch={setSearch}
+        filterClient={filterClient}
+        setFilterClient={setFilterClient}
+        filterStatus={filterStatus}
+        setFilterStatus={setFilterStatus}
       />
 
       <div className="overflow-x-auto">
@@ -128,12 +126,8 @@ export default function MissionsList() {
 
       <MissionsPagination
         currentPage={page}
-        totalCount={missions?.length || 0}
-        pageSize={10}
+        totalPages={pageCount}
         onPageChange={setPage}
-        hasActiveFilters={hasActiveFilters}
-        filteredCount={missionsPage?.length || 0}
-        pageCount={pageCount}
       />
 
       <RealtimeStatusIndicator />
