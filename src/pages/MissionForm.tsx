@@ -1,3 +1,4 @@
+
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -152,7 +153,7 @@ export default function MissionForm({ editMode = false }: { editMode?: boolean }
   const fontFamily = "'PT Sans',sans-serif";
 
   return (
-    <main className="container mx-auto pt-8 max-w-xl">
+    <div className="container mx-auto pt-8 max-w-xl">
       <h1 className="text-2xl font-bold mb-6" style={{ fontFamily }}>
         {editMode ? "Éditer la mission" : "Nouvelle mission"}
       </h1>
@@ -193,6 +194,6 @@ export default function MissionForm({ editMode = false }: { editMode?: boolean }
           <MissionFormActions loading={loading} editMode={editMode} />
         </form>
       </Form>
-    </main>
+    </div>
   );
 }

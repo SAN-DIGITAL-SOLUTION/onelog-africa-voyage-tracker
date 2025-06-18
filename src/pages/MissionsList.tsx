@@ -63,26 +63,26 @@ export default function MissionsList() {
 
   if (isLoading) {
     return (
-      <main className="container mx-auto pt-8">
+      <div className="container mx-auto pt-8">
         <div className="flex justify-center items-center h-64">
           <span className="animate-spin h-8 w-8 border-4 border-onelog-bleu border-t-transparent rounded-full" />
         </div>
-      </main>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <main className="container mx-auto pt-8">
+      <div className="container mx-auto pt-8">
         <div className="text-center text-red-600">
           Erreur lors du chargement des missions
         </div>
-      </main>
+      </div>
     );
   }
 
   return (
-    <main className="container mx-auto pt-8 px-4">
+    <div className="container mx-auto pt-8 px-4">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <div>
           <h1 className="text-2xl font-bold mb-2">Mes missions</h1>
@@ -131,6 +131,6 @@ export default function MissionsList() {
       />
 
       <RealtimeStatusIndicator />
-    </main>
+    </div>
   );
 }

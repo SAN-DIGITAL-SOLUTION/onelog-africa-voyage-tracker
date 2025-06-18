@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "@/hooks/useAuth";
 import { RoleProvider } from "@/hooks/useRole";
 import { Toaster } from "@/components/ui/toaster";
+import AppLayout from "@/components/AppLayout";
 import Index from "@/pages/Index";
 import Auth from "@/pages/Auth";
 import Dashboard from "@/pages/Dashboard";
@@ -38,13 +39,14 @@ function App() {
                 <Route path="/" element={<Index />} />
                 <Route path="/landing" element={<Landing />} />
                 <Route path="/auth" element={<Auth />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/missions/*" element={<Missions />} />
-                <Route path="/notifications" element={<Notifications />} />
-                <Route path="/invoices" element={<Invoices />} />
-                <Route path="/tracking" element={<TrackingMap />} />
                 <Route path="/no-role" element={<NoRole />} />
                 <Route path="/404" element={<NotFound />} />
+                {/* Pages authentifiées avec layout */}
+                <Route path="/dashboard" element={<AppLayout><Dashboard /></AppLayout>} />
+                <Route path="/missions/*" element={<AppLayout><Missions /></AppLayout>} />
+                <Route path="/notifications" element={<AppLayout><Notifications /></AppLayout>} />
+                <Route path="/invoices" element={<AppLayout><Invoices /></AppLayout>} />
+                <Route path="/tracking" element={<AppLayout><TrackingMap /></AppLayout>} />
                 <Route path="*" element={<Navigate to="/404" replace />} />
               </Routes>
               <Toaster />
