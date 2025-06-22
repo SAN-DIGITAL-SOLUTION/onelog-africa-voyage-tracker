@@ -21,8 +21,8 @@ export default function MissionsList() {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
 
-  // Hook pour les mises à jour temps réel
-  useRealtimeMissions();
+  // Appel direct du hook (la logique interne doit protéger si user est null)
+  useRealtimeMissions(user);
 
   // Utilisation du hook personnalisé pour récupérer les missions
   const {
@@ -57,6 +57,16 @@ export default function MissionsList() {
   };
 
   const hasActiveFilters = searchTerm !== "" || statusFilter !== "" || clientFilter !== "";
+
+  if (!user) {
+    return (
+      <main className="container mx-auto pt-8">
+        <div className="flex justify-center items-center h-64">
+          <span className="text-gray-500">Chargement de l'utilisateur...</span>
+        </div>
+      </main>
+    );
+  }
 
   if (isLoading) {
     return (

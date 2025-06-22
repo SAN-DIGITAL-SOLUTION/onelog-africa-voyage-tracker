@@ -29,7 +29,8 @@ const stats = [
 export default function Dashboard() {
   return (
     <RequireAuth>
-      <main className="container mx-auto pt-12 max-w-4xl animate-fade-in">
+      <main className="flex-1 pt-12 animate-fade-in">
+        <div className="mx-auto max-w-4xl">
         <div className="flex items-center gap-2 mb-5">
           <span className="inline-flex items-center justify-center rounded-full bg-secondary/20 text-secondary p-2">
             <LayoutDashboard size={28} aria-hidden className="text-secondary" />
@@ -63,6 +64,7 @@ export default function Dashboard() {
           >
             <Truck className="mr-1" size={18} /> Nouvelle mission
           </a>
+        </div>
         </div>
       </main>
     </RequireAuth>

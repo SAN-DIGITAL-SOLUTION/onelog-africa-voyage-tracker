@@ -1,0 +1,155 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 3,
+    "passes": 0,
+    "pending": 0,
+    "failures": 3,
+    "start": "2025-06-22T06:17:04.685Z",
+    "end": "2025-06-22T06:17:10.105Z",
+    "duration": 5420,
+    "testsRegistered": 3,
+    "passPercent": 0,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "5185aeb2-254e-47cf-9046-22335755aaea",
+      "title": "",
+      "fullFile": "cypress\\e2e\\onboarding_modes.cy.ts",
+      "file": "cypress\\e2e\\onboarding_modes.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "8548b3f5-4d4e-46cd-823f-638c847b7a96",
+          "title": "Onboarding - Modes d'attribution de rôle",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Bloque l'accès dashboard si aucun rôle",
+              "fullTitle": "Onboarding - Modes d'attribution de rôle Bloque l'accès dashboard si aucun rôle",
+              "timedOut": null,
+              "duration": 1590,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.login(users.norole.email, users.norole.password);\ncy.visit('/dashboard');\ncy.contains('Aucun rôle attribué').should('exist');\ncy.url().should('include', '/onboarding');",
+              "err": {
+                "message": "CypressError: `cy.request()` failed trying to load:\n\nhttps://your_supabase_project.supabase.co/auth/v1/token?grant_type=password\n\nWe attempted to make an http request to this URL but the request failed without a response.\n\nWe received this error at the network level:\n\n  > Error: getaddrinfo ENOTFOUND your_supabase_project.supabase.co\n\n-----------------------------------------------------------\n\nThe request we sent was:\n\nMethod: POST\nURL: https://your_supabase_project.supabase.co/auth/v1/token?grant_type=password\n\n-----------------------------------------------------------\n\nCommon situations why this would fail:\n  - you don't have internet access\n  - you forgot to run / boot your web server\n  - your web server isn't accessible\n  - you have weird network configuration settings on your computer\n\nhttps://on.cypress.io/request",
+                "estack": "CypressError: `cy.request()` failed trying to load:\n\nhttps://your_supabase_project.supabase.co/auth/v1/token?grant_type=password\n\nWe attempted to make an http request to this URL but the request failed without a response.\n\nWe received this error at the network level:\n\n  > Error: getaddrinfo ENOTFOUND your_supabase_project.supabase.co\n\n-----------------------------------------------------------\n\nThe request we sent was:\n\nMethod: POST\nURL: https://your_supabase_project.supabase.co/auth/v1/token?grant_type=password\n\n-----------------------------------------------------------\n\nCommon situations why this would fail:\n  - you don't have internet access\n  - you forgot to run / boot your web server\n  - your web server isn't accessible\n  - you have weird network configuration settings on your computer\n\nhttps://on.cypress.io/request\n    at <unknown> (http://localhost:5173/__cypress/runner/cypress_runner.js:133151:70)\n    at tryCatcher (http://localhost:5173/__cypress/runner/cypress_runner.js:1807:23)\n    at <unknown> (http://localhost:5173/__cypress/runner/cypress_runner.js:4203:37)\n    at tryCatcher (http://localhost:5173/__cypress/runner/cypress_runner.js:1807:23)\n    at Promise._settlePromiseFromHandler (http://localhost:5173/__cypress/runner/cypress_runner.js:1519:31)\n    at Promise._settlePromise (http://localhost:5173/__cypress/runner/cypress_runner.js:1576:18)\n    at Promise._settlePromise0 (http://localhost:5173/__cypress/runner/cypress_runner.js:1621:10)\n    at Promise._settlePromises (http://localhost:5173/__cypress/runner/cypress_runner.js:1697:18)\n    at _drainQueueStep (http://localhost:5173/__cypress/runner/cypress_runner.js:2407:12)\n    at _drainQueue (http://localhost:5173/__cypress/runner/cypress_runner.js:2400:9)\n    at Async._drainQueues (http://localhost:5173/__cypress/runner/cypress_runner.js:2416:5)\n    at Async.drainQueues (http://localhost:5173/__cypress/runner/cypress_runner.js:2286:14)\nFrom Your Spec Code:\n    at Context.eval (webpack://vite_react_shadcn_ts/./cypress/support/commands.ts:16:0)\n\nFrom Node.js Internals:\n  RequestError: Error: getaddrinfo ENOTFOUND your_supabase_project.supabase.co\n      at new r (<embedded>:1831:404372)\n      at ee.callback (<embedded>:1831:410373)\n      at e.callback.s.callback [as _callback] (<embedded>:1831:409819)\n      at s._callback.s.callback.s.callback (<embedded>:2049:91633)\n      at ee.emit (node:events:514:28)\n      at ee.onRequestError (<embedded>:2049:100575)\n      at ClientRequest.emit (node:events:526:35)\n      at TLSSocket.socketErrorListener (node:_http_client:501:9)\n      at TLSSocket.emit (node:events:514:28)\n      at emitErrorNT (node:internal/streams/destroy:151:8)\n      at emitErrorCloseNT (node:internal/streams/destroy:116:3)\n      at process.processTicksAndRejections (node:internal/process/task_queues:82:21)",
+                "diff": null
+              },
+              "uuid": "96794921-bd6c-44f5-942d-f26592467a1b",
+              "parentUUID": "8548b3f5-4d4e-46cd-823f-638c847b7a96",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Bloque dashboard si role_status = pending (hybrid)",
+              "fullTitle": "Onboarding - Modes d'attribution de rôle Bloque dashboard si role_status = pending (hybrid)",
+              "timedOut": null,
+              "duration": 2248,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.login(users.pending.email, users.pending.password);\ncy.visit('/dashboard');\ncy.contains('Votre demande est en attente').should('exist');",
+              "err": {
+                "message": "CypressError: `cy.request()` failed trying to load:\n\nhttps://your_supabase_project.supabase.co/auth/v1/token?grant_type=password\n\nWe attempted to make an http request to this URL but the request failed without a response.\n\nWe received this error at the network level:\n\n  > Error: getaddrinfo ENOTFOUND your_supabase_project.supabase.co\n\n-----------------------------------------------------------\n\nThe request we sent was:\n\nMethod: POST\nURL: https://your_supabase_project.supabase.co/auth/v1/token?grant_type=password\n\n-----------------------------------------------------------\n\nCommon situations why this would fail:\n  - you don't have internet access\n  - you forgot to run / boot your web server\n  - your web server isn't accessible\n  - you have weird network configuration settings on your computer\n\nhttps://on.cypress.io/request",
+                "estack": "CypressError: `cy.request()` failed trying to load:\n\nhttps://your_supabase_project.supabase.co/auth/v1/token?grant_type=password\n\nWe attempted to make an http request to this URL but the request failed without a response.\n\nWe received this error at the network level:\n\n  > Error: getaddrinfo ENOTFOUND your_supabase_project.supabase.co\n\n-----------------------------------------------------------\n\nThe request we sent was:\n\nMethod: POST\nURL: https://your_supabase_project.supabase.co/auth/v1/token?grant_type=password\n\n-----------------------------------------------------------\n\nCommon situations why this would fail:\n  - you don't have internet access\n  - you forgot to run / boot your web server\n  - your web server isn't accessible\n  - you have weird network configuration settings on your computer\n\nhttps://on.cypress.io/request\n    at <unknown> (http://localhost:5173/__cypress/runner/cypress_runner.js:133151:70)\n    at tryCatcher (http://localhost:5173/__cypress/runner/cypress_runner.js:1807:23)\n    at <unknown> (http://localhost:5173/__cypress/runner/cypress_runner.js:4203:37)\n    at tryCatcher (http://localhost:5173/__cypress/runner/cypress_runner.js:1807:23)\n    at Promise._settlePromiseFromHandler (http://localhost:5173/__cypress/runner/cypress_runner.js:1519:31)\n    at Promise._settlePromise (http://localhost:5173/__cypress/runner/cypress_runner.js:1576:18)\n    at Promise._settlePromise0 (http://localhost:5173/__cypress/runner/cypress_runner.js:1621:10)\n    at Promise._settlePromises (http://localhost:5173/__cypress/runner/cypress_runner.js:1697:18)\n    at _drainQueueStep (http://localhost:5173/__cypress/runner/cypress_runner.js:2407:12)\n    at _drainQueue (http://localhost:5173/__cypress/runner/cypress_runner.js:2400:9)\n    at Async._drainQueues (http://localhost:5173/__cypress/runner/cypress_runner.js:2416:5)\n    at Async.drainQueues (http://localhost:5173/__cypress/runner/cypress_runner.js:2286:14)\nFrom Your Spec Code:\n    at Context.eval (webpack://vite_react_shadcn_ts/./cypress/support/commands.ts:16:0)\n\nFrom Node.js Internals:\n  RequestError: Error: getaddrinfo ENOTFOUND your_supabase_project.supabase.co\n      at new r (<embedded>:1831:404372)\n      at ee.callback (<embedded>:1831:410373)\n      at e.callback.s.callback [as _callback] (<embedded>:1831:409819)\n      at s._callback.s.callback.s.callback (<embedded>:2049:91633)\n      at ee.emit (node:events:514:28)\n      at ee.onRequestError (<embedded>:2049:100575)\n      at ClientRequest.emit (node:events:526:35)\n      at TLSSocket.socketErrorListener (node:_http_client:501:9)\n      at TLSSocket.emit (node:events:514:28)\n      at emitErrorNT (node:internal/streams/destroy:151:8)\n      at emitErrorCloseNT (node:internal/streams/destroy:116:3)\n      at process.processTicksAndRejections (node:internal/process/task_queues:82:21)",
+                "diff": null
+              },
+              "uuid": "96948eee-7fa6-4042-a8e3-84083458c813",
+              "parentUUID": "8548b3f5-4d4e-46cd-823f-638c847b7a96",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Accès dashboard si role validé (self_service)",
+              "fullTitle": "Onboarding - Modes d'attribution de rôle Accès dashboard si role validé (self_service)",
+              "timedOut": null,
+              "duration": 1153,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.login(users.self.email, users.self.password);\ncy.visit('/dashboard');\ncy.contains('Bienvenue').should('exist');",
+              "err": {
+                "message": "CypressError: `cy.request()` failed trying to load:\n\nhttps://your_supabase_project.supabase.co/auth/v1/token?grant_type=password\n\nWe attempted to make an http request to this URL but the request failed without a response.\n\nWe received this error at the network level:\n\n  > Error: getaddrinfo ENOTFOUND your_supabase_project.supabase.co\n\n-----------------------------------------------------------\n\nThe request we sent was:\n\nMethod: POST\nURL: https://your_supabase_project.supabase.co/auth/v1/token?grant_type=password\n\n-----------------------------------------------------------\n\nCommon situations why this would fail:\n  - you don't have internet access\n  - you forgot to run / boot your web server\n  - your web server isn't accessible\n  - you have weird network configuration settings on your computer\n\nhttps://on.cypress.io/request",
+                "estack": "CypressError: `cy.request()` failed trying to load:\n\nhttps://your_supabase_project.supabase.co/auth/v1/token?grant_type=password\n\nWe attempted to make an http request to this URL but the request failed without a response.\n\nWe received this error at the network level:\n\n  > Error: getaddrinfo ENOTFOUND your_supabase_project.supabase.co\n\n-----------------------------------------------------------\n\nThe request we sent was:\n\nMethod: POST\nURL: https://your_supabase_project.supabase.co/auth/v1/token?grant_type=password\n\n-----------------------------------------------------------\n\nCommon situations why this would fail:\n  - you don't have internet access\n  - you forgot to run / boot your web server\n  - your web server isn't accessible\n  - you have weird network configuration settings on your computer\n\nhttps://on.cypress.io/request\n    at <unknown> (http://localhost:5173/__cypress/runner/cypress_runner.js:133151:70)\n    at tryCatcher (http://localhost:5173/__cypress/runner/cypress_runner.js:1807:23)\n    at <unknown> (http://localhost:5173/__cypress/runner/cypress_runner.js:4203:37)\n    at tryCatcher (http://localhost:5173/__cypress/runner/cypress_runner.js:1807:23)\n    at Promise._settlePromiseFromHandler (http://localhost:5173/__cypress/runner/cypress_runner.js:1519:31)\n    at Promise._settlePromise (http://localhost:5173/__cypress/runner/cypress_runner.js:1576:18)\n    at Promise._settlePromise0 (http://localhost:5173/__cypress/runner/cypress_runner.js:1621:10)\n    at Promise._settlePromises (http://localhost:5173/__cypress/runner/cypress_runner.js:1697:18)\n    at _drainQueueStep (http://localhost:5173/__cypress/runner/cypress_runner.js:2407:12)\n    at _drainQueue (http://localhost:5173/__cypress/runner/cypress_runner.js:2400:9)\n    at Async._drainQueues (http://localhost:5173/__cypress/runner/cypress_runner.js:2416:5)\n    at Async.drainQueues (http://localhost:5173/__cypress/runner/cypress_runner.js:2286:14)\nFrom Your Spec Code:\n    at Context.eval (webpack://vite_react_shadcn_ts/./cypress/support/commands.ts:16:0)\n\nFrom Node.js Internals:\n  RequestError: Error: getaddrinfo ENOTFOUND your_supabase_project.supabase.co\n      at new r (<embedded>:1831:404372)\n      at ee.callback (<embedded>:1831:410373)\n      at e.callback.s.callback [as _callback] (<embedded>:1831:409819)\n      at s._callback.s.callback.s.callback (<embedded>:2049:91633)\n      at ee.emit (node:events:514:28)\n      at ee.onRequestError (<embedded>:2049:100575)\n      at ClientRequest.emit (node:events:526:35)\n      at TLSSocket.socketErrorListener (node:_http_client:501:9)\n      at TLSSocket.emit (node:events:514:28)\n      at emitErrorNT (node:internal/streams/destroy:151:8)\n      at emitErrorCloseNT (node:internal/streams/destroy:116:3)\n      at process.processTicksAndRejections (node:internal/process/task_queues:82:21)",
+                "diff": null
+              },
+              "uuid": "c4489987-f345-4839-8c7e-c9bdb72ddbfb",
+              "parentUUID": "8548b3f5-4d4e-46cd-823f-638c847b7a96",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [],
+          "failures": [
+            "96794921-bd6c-44f5-942d-f26592467a1b",
+            "96948eee-7fa6-4042-a8e3-84083458c813",
+            "c4489987-f345-4839-8c7e-c9bdb72ddbfb"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 4991,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.0.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": false,
+        "json": true
+      },
+      "version": "6.2.0"
+    }
+  }
+}

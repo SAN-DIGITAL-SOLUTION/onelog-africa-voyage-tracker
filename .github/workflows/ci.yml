@@ -1,0 +1,69 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install dependencies
+        run: npm ci
+      - name: Run unit tests
+        run: npm run test
+      - name: Build app
+        run: npm run build
+      - name: Deploy preview (Netlify)
+        if: github.event_name == 'pull_request'
+        uses: nwtgck/actions-netlify@v2.0
+        with:
+          publish-dir: ./dist
+          production-deploy: false
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+
+  supabase-seed-qa:
+    name: Seed Supabase QA
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/qa' || github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Supabase CLI
+        run: npm install -g supabase
+      - name: Seed QA database
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL_QA }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY_QA }}
+        run: |
+          supabase db remote set $SUPABASE_DB_URL
+          supabase db execute ./scripts/seed_qa_supabase.sql
+
+  supabase-audit-rls:
+    name: Audit RLS Policies
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/qa' || github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Supabase CLI
+        run: npm install -g supabase
+      - name: Audit RLS policies
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL_QA }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY_QA }}
+        run: |
+          supabase db remote set $SUPABASE_DB_URL
+          supabase db execute ./scripts/audit_rls_policies.sql > rls_audit_report.txt
+      - name: Upload RLS audit report
+        uses: actions/upload-artifact@v3
+        with:
+          name: rls-audit-report
+          path: rls_audit_report.txt

@@ -6,10 +6,14 @@ import { useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import RequireAuth from "@/components/RequireAuth";
+import { SlideDownHeader } from "@/components/SlideDownHeader";
+import { CardFade } from "@/components/CardFade";
+import { AnimatedAfrica } from "@/components/AnimatedAfrica";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
 import NotificationForm from "./notifications/NotificationForm";
 import NotificationHistory from "./notifications/NotificationHistory";
+import "@/styles/animations.css";
 
 const notificationSchema = z.object({
   mode: z.union([z.literal("email"), z.literal("sms")]),
@@ -149,24 +153,31 @@ export default function Notifications() {
 
   return (
     <RequireAuth>
-      <main className="container mx-auto pt-8 px-2 max-w-4xl">
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold mb-2">Notifications</h1>
-          <p className="text-gray-600">
-            Envoyez des notifications par email ou SMS et consultez l'historique.
-          </p>
-        </div>
-        <NotificationForm
-          form={form}
-          mode={mode}
-          isSending={isSending}
-          onSubmit={handleFormSubmit}
-          onModeChange={handleMode}
+      <main className="container mx-auto pt-8 px-2 max-w-4xl flex flex-col gap-8">
+        <SlideDownHeader
+          title="Notifications"
+          illustration={<AnimatedAfrica />}
+          onBack={() => window.history.back()}
         />
-        <NotificationHistory
-          notifications={notifications || []}
-          isLoading={isLoading}
-        />
+        <section>
+          <CardFade>
+            <NotificationForm
+              form={form}
+              mode={mode}
+              isSending={isSending}
+              onSubmit={handleFormSubmit}
+              onModeChange={handleMode}
+            />
+          </CardFade>
+        </section>
+        <section>
+          <CardFade>
+            <NotificationHistory
+              notifications={notifications || []}
+              isLoading={isLoading}
+            />
+          </CardFade>
+        </section>
       </main>
     </RequireAuth>
   );

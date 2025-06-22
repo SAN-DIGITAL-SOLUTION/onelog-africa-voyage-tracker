@@ -1,6 +1,6 @@
 
 import { NavLink, useNavigate } from "react-router-dom";
-import { BadgeCheck, LogOut } from "lucide-react";
+import { BadgeCheck } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "./ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
@@ -52,6 +52,17 @@ function ModeToggle() {
   );
 }
 
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/Avatar";
+import { User, UserCog, Repeat, LogOut } from "lucide-react";
+
 export default function Header() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
@@ -61,8 +72,12 @@ export default function Header() {
     navigate("/auth");
   };
 
+  const handleProfile = () => navigate("/profile");
+  const handleOnboarding = () => navigate("/onboarding");
+  const handleSwitchRole = () => navigate("/switch-role");
+
   return (
-    <header className="flex items-center justify-between py-3 px-4 border-b bg-white dark:bg-onelog-nuit z-10">
+    <header className="flex items-center justify-between py-3 px-4 border-b bg-white dark:bg-onelog-nuit z-10" aria-label="Header principal">
       <div className="flex items-center gap-2">
         {/* SidebarTrigger toujours visible sur mobile/desktop */}
         <SidebarTrigger className="md:hidden" />
@@ -80,15 +95,41 @@ export default function Header() {
         </Button>
         <ModeToggle />
         {user && (
-          <Button
-            variant="outline"
-            size="sm"
-            className="ml-4 flex gap-2 items-center"
-            onClick={handleLogout}
-          >
-            <LogOut size={18} />
-            <span className="hidden sm:inline">Déconnexion</span>
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                className="ml-4 flex items-center focus:outline-none focus:ring-2 focus:ring-accent rounded-full"
+                aria-label="Ouvrir le menu utilisateur"
+              >
+                <Avatar>
+                  <AvatarImage src={user.user_metadata?.avatar_url} alt={user.email} />
+                  <AvatarFallback>{user.email?.[0]?.toUpperCase() || "U"}</AvatarFallback>
+                </Avatar>
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuLabel className="flex flex-col gap-1">
+                <span className="font-bold truncate">{user.email}</span>
+                <span className="text-xs text-muted-foreground">{user.user_metadata?.role || "Utilisateur"}</span>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onSelect={handleProfile} className="flex items-center gap-2 cursor-pointer">
+                <User size={16} /> Profil
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={handleOnboarding} className="flex items-center gap-2 cursor-pointer">
+                <Repeat size={16} /> Revoir l’onboarding
+              </DropdownMenuItem>
+              {user.user_metadata?.roles?.length > 1 && (
+                <DropdownMenuItem onSelect={handleSwitchRole} className="flex items-center gap-2 cursor-pointer">
+                  <UserCog size={16} /> Changer de rôle
+                </DropdownMenuItem>
+              )}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onSelect={handleLogout} className="flex items-center gap-2 cursor-pointer text-red-600">
+                <LogOut size={16} /> Déconnexion
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         )}
       </nav>
     </header>

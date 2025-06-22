@@ -3,9 +3,11 @@ import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Wifi, WifiOff } from "lucide-react";
 import { useRealtimeMissions } from "@/hooks/useRealtimeMissions";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function RealtimeStatusIndicator() {
-  const { realtimeUpdates } = useRealtimeMissions();
+  const { user } = useAuth();
+  const { realtimeUpdates } = useRealtimeMissions(user);
   const [isConnected, setIsConnected] = React.useState(true);
 
   React.useEffect(() => {

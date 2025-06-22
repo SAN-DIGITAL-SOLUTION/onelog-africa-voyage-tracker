@@ -56,7 +56,7 @@ export default function Inscription() {
       email: form.email,
       password: form.password,
       options: {
-        emailRedirectTo: window.location.origin + "/dashboard",
+        emailRedirectTo: window.location.origin + "/onboarding",
       },
     });
 

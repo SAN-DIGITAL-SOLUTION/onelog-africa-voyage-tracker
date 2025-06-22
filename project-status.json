@@ -1,0 +1,85 @@
+{
+  "project": "OneLog Africa",
+  "version": "1.0.0",
+  "status": "delivered",
+  "qa": "passed",
+  "feedback": [],
+  "issues": [],
+  "next_roadmap": "v1.1.0",
+  "last_update": "2025-06-20T19:05:00Z",
+  "progression": 70,
+  "modules": [
+    {
+      "name": "Landing Page",
+      "status": "done",
+      "details": "Tous les composants sont présents et fonctionnels."
+    },
+    {
+      "name": "Authentification",
+      "status": "done",
+      "details": "Supabase Auth avec gestion des rôles et protection des routes."
+    },
+    {
+      "name": "Base de données",
+      "status": "done",
+      "details": "7 tables principales migrées et utilisées dans le code."
+    },
+    {
+      "name": "Infrastructure",
+      "status": "in_progress",
+      "progress": 95,
+      "details": "Stack technique bien installée, edge functions en place."
+    },
+    {
+      "name": "Application SaaS",
+      "status": "in_progress",
+      "progress": 40,
+      "submodules": [
+        {
+          "name": "Missions",
+          "status": "in_progress",
+          "details": "Formulaires et composants présents, logique métier partiellement implémentée."
+        },
+        {
+          "name": "Tracking",
+          "status": "in_progress",
+          "details": "Composants GoogleMap présents, suivi live en cours."
+        },
+        {
+          "name": "Facturation",
+          "status": "in_progress",
+          "details": "PDF et email edge functions en place, UI à finaliser."
+        },
+        {
+          "name": "Notifications",
+          "status": "in_progress",
+          "details": "Structure existante, templates à compléter."
+        },
+        {
+          "name": "Profils utilisateurs",
+          "status": "done",
+          "details": "Module complet : création, édition, rôles, avatar, synchronisation Supabase, QA et tests unitaires validés."
+        }
+      ]
+    },
+    {
+      "name": "Tests et documentation",
+      "status": "not_started",
+      "details": "Tests unitaires, monitoring, et documentation technique absents ou incomplets."
+    }
+  ],
+  "missing_files": [
+    "roadmap.md",
+    "supabase-schema.sql",
+    "supabase/rls.sql"
+  ],
+  "next_steps": [
+    "Finaliser la logique métier pour les missions",
+    "Intégrer le suivi Google Maps temps réel",
+    "Compléter la facturation (UI + logique)",
+    "Mettre en place le système de notifications",
+    "Développer la gestion des profils utilisateurs",
+    "Configurer les tests unitaires avec Vitest/Jest",
+    "Compléter la documentation technique"
+  ]
+}

@@ -64,6 +64,7 @@ export default function LandingHeader() {
         style={{
           background: "#1A3C40"
         }}
+        data-testid="landing-header"
       >
         <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-3 relative">
           <div className="flex items-center gap-3 relative z-10">

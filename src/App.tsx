@@ -1,18 +1,26 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { AuthProvider } from "@/hooks/useAuth";
+import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { Toaster } from "@/components/ui/toaster";
 import Index from "@/pages/Index";
 import Auth from "@/pages/Auth";
 import Dashboard from "@/pages/Dashboard";
 import Missions from "@/pages/Missions";
+import MissionsChauffeur from "@/pages/MissionsChauffeur";
 import Notifications from "@/pages/Notifications";
 import Invoices from "@/pages/Invoices";
 import TrackingMap from "@/pages/TrackingMap";
+import QADashboard from "@/pages/QADashboard";
+import ClientDashboard from "@/pages/ClientDashboard";
+import ChauffeurDashboard from "@/pages/ChauffeurDashboard";
+import AdminDashboard from "@/pages/AdminDashboard";
+import MissionTracking from "@/pages/MissionTracking";
 import Landing from "@/pages/Landing";
 import NoRole from "@/pages/NoRole";
 import NotFound from "@/pages/NotFound";
 import NotificationToast from "@/components/NotificationToast";
+import Onboarding from "@/pages/Onboarding";
+import RoleRequests from "@/pages/Admin/RoleRequests";
 import "./App.css";
 
 // React Query setup
@@ -25,28 +33,93 @@ const queryClient = new QueryClient({
   },
 });
 
+import MainLayout from "@/components/MainLayout";
+
+function RequireRole({ children }: { children: JSX.Element }) {
+  const { user, loading } = useAuth();
+  const location = useLocation();
+  if (loading) return null;
+  if (user && !user.role && location.pathname !== "/onboarding") {
+    return <Navigate to="/onboarding" replace />;
+  }
+  return children;
+}
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <Router>
-          <div className="min-h-screen bg-gray-50">
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/landing" element={<Landing />} />
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/missions/*" element={<Missions />} />
-              <Route path="/notifications" element={<Notifications />} />
-              <Route path="/invoices" element={<Invoices />} />
-              <Route path="/tracking" element={<TrackingMap />} />
-              <Route path="/no-role" element={<NoRole />} />
-              <Route path="/404" element={<NotFound />} />
-              <Route path="*" element={<Navigate to="/404" replace />} />
-            </Routes>
-            <Toaster />
-            <NotificationToast />
-          </div>
+          <Routes>
+            {/* Route publique landing page */}
+            <Route path="/" element={<Landing />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/onboarding" element={<Onboarding />} />
+            <Route path="/admin/role-requests" element={<RequireRole><RoleRequests /></RequireRole>} />
+            <Route path="/no-role" element={<NoRole />} />
+            <Route path="/404" element={<NotFound />} />
+            {/* Routes authentifiées sous MainLayout (sidebar + header) */}
+            <Route element={<MainLayout />}>
+              <Route path="/dashboard" element={
+                <RequireRole>
+                  <Dashboard />
+                </RequireRole>
+              } />
+              <Route path="/qa-dashboard" element={
+                <RequireRole>
+                  <QADashboard />
+                </RequireRole>
+              } />
+              <Route path="/client-dashboard" element={
+                <RequireRole>
+                  <ClientDashboard />
+                </RequireRole>
+              } />
+              <Route path="/chauffeur-dashboard" element={
+                <RequireRole>
+                  <ChauffeurDashboard />
+                </RequireRole>
+              } />
+              <Route path="/admin-dashboard" element={
+                <RequireRole>
+                  <AdminDashboard />
+                </RequireRole>
+              } />
+              <Route path="/missions/*" element={
+                <RequireRole>
+                  <Missions />
+                </RequireRole>
+              } />
+              <Route path="/missions-chauffeur" element={
+                <RequireRole>
+                  <MissionsChauffeur />
+                </RequireRole>
+              } />
+              <Route path="/notifications" element={
+                <RequireRole>
+                  <Notifications />
+                </RequireRole>
+              } />
+              <Route path="/invoices" element={
+                <RequireRole>
+                  <Invoices />
+                </RequireRole>
+              } />
+              <Route path="/tracking" element={
+                <RequireRole>
+                  <TrackingMap />
+                </RequireRole>
+              } />
+              <Route path="/missions/:id/tracking" element={
+                <RequireRole>
+                  <MissionTracking />
+                </RequireRole>
+              } />
+            </Route>
+            <Route path="*" element={<Navigate to="/404" replace />} />
+          </Routes>
+          <Toaster />
+          <NotificationToast />
         </Router>
       </AuthProvider>
     </QueryClientProvider>

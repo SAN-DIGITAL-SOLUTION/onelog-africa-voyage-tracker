@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { MarkerClusterer } from "@googlemaps/markerclusterer";
 
 type TrackingPoint = {
   id: string;
@@ -18,6 +19,7 @@ type GoogleMapProps = {
 
 // Specify the type directly instead of using the google.maps types before they are loaded
 const DEFAULT_CENTER = { lat: 7.3775, lng: 12.3547 }; // Centrée Afrique centrale
+const MAX_MARKERS = 100;
 
 const GoogleMap: React.FC<GoogleMapProps> = ({
   apiKey,
@@ -28,6 +30,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
   const mapRef = useRef<HTMLDivElement>(null);
   const googleMap = useRef<google.maps.Map | null>(null);
   const markerRefs = useRef<google.maps.Marker[]>([]);
+  const clustererRef = useRef<MarkerClusterer | null>(null);
 
   // Charge Google Maps JS API dynamiquement
   useEffect(() => {
@@ -57,10 +60,10 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
     if (!googleMap.current || !markers) return;
     if (!(window.google && window.google.maps)) return; // Defensive for types
     // Supprime markers précédents
-    markerRefs.current.forEach((marker) => marker.setMap(null));
-    markerRefs.current = [];
-    // Place les markers
-    markers.forEach((pt) => {
+    if (clustererRef.current) {
+      clustererRef.current.clearMarkers();
+    }
+    const newMarkers = markers.slice(0, MAX_MARKERS).map((pt) => {
       const marker = new window.google.maps.Marker({
         position: { lat: pt.latitude, lng: pt.longitude },
         map: googleMap.current!,
@@ -78,7 +81,11 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
       marker.addListener("click", () => {
         infowindow.open({ anchor: marker, map: googleMap.current! });
       });
-      markerRefs.current.push(marker);
+      return marker;
+    });
+    clustererRef.current = new MarkerClusterer({
+      map: googleMap.current,
+      markers: newMarkers,
     });
     // Auto-center map
     if (markers.length > 0) {

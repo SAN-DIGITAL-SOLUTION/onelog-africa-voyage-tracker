@@ -1,0 +1,24 @@
+# Fiche QA – Parcours Client
+
+| **ID** | **Scénario**                               | **Préconditions**                                               | **Étapes**                                                                                                                     | **Résultat attendu**                                                                                             | **Statut** |
+| :----- | :----------------------------------------- | :-------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------- | :--------- |
+| C1     | Inscription & confirmation e‑mail          | Aucun compte existant                                           | 1. Visiter `/signup`<br>2. Saisir email & mot de passe<br>3. Cliquer sur “S’inscrire”<br>4. Cliquer sur lien reçu par e‑mail   | 1. Redirection automatique vers `/onboarding`<br>2. Message “Complétez votre profil”                             | À faire    |
+| C2     | Onboarding – Choix de rôle (hybrid)        | Utilisateur connecté via confirmation email, sans rôle          | 1. Sur `/onboarding`<br>2. Sélectionner rôle “Client”<br>3. Cliquer sur “Envoyer la demande”                                   | 1. L’état `role_status = pending` en base<br>2. Message “Votre demande est en attente de validation”             | À faire    |
+| C3     | Onboarding – Choix de rôle (self_service)  | Mode self_service activé, utilisateur connecté sans rôle        | 1. Sur `/onboarding`<br>2. Sélectionner rôle “Client”<br>3. Cliquer sur “Valider”                                              | 1. `role_status = approved` en base<br>2. Redirection vers `/dashboard`                                          | À faire    |
+| C4     | Dashboard Client – vue missions            | Compte Client validé (`approved`), au moins 1 mission existante | 1. Se connecter en Client<br>2. Visiter `/dashboard`                                                                           | 1. Liste des missions affichée<br>2. Bouton “Détails” pour chaque mission                                        | À faire    |
+| C5     | Dashboard Client – vue factures            | Compte Client validé (`approved`), au moins 1 facture existante | 1. Se connecter en Client<br>2. Visiter `/dashboard`<br>3. Aller à la section “Factures récentes”                              | 1. Liste des factures affichée avec montant et statut<br>2. Lien de téléchargement PDF                           | À faire    |
+| C6     | Dashboard Client – vue notifications       | Compte Client validé, notifications pré‑enregistrées            | 1. Se connecter en Client<br>2. Visiter `/dashboard`<br>3. Aller à la section “Notifications”                                  | 1. Liste des notifications affichée<br>2. Notification “lue” en gris, “non lue” en surbrillance                  | À faire    |
+| C7     | Création d’une nouvelle demande de mission | Compte Client validé (`approved`), aucune demande en cours      | 1. Se connecter en Client<br>2. Visiter `/demandes/new`<br>3. Remplir le formulaire (tous champs obligatoires)<br>4. Soumettre | 1. Redirection vers confirmation avec `trackingId`<br>2. Nouvelle ligne dans table `demandes` (status = pending) | À faire    |
+| C8     | Suivi d’une demande (tracking public)      | Demande validée et mission créée, `trackingId` disponible       | 1. Copier le lien public `/track/{trackingId}`<br>2. Visiter ce lien                                                           | 1. Carte live ou timeline des points GPS affichée<br>2. Aucune modification possible                             | À faire    |
+| C9     | Edition du profil utilisateur              | Compte Client connecté                                          | 1. Se connecter en Client<br>2. Visiter `/profile`<br>3. Modifier prénom, téléphone<br>4. Enregistrer                          | 1. Page affiche message “Profil mis à jour”<br>2. Champs en base mis à jour                                      | À faire    |
+| C10    | Déconnexion & accès protégé                | Compte Client connecté                                          | 1. Se connecter en Client<br>2. Cliquer sur “Déconnexion”<br>3. Visiter `/dashboard` sans cookie                               | 1. Redirection vers `/login`<br>2. Message “Veuillez vous connecter”                                             | À faire    |
+
+---
+
+## Instructions d’utilisation
+
+1. **Manuel** : Suivre chaque scénario dans un navigateur sur mobile et desktop.
+2. **Automatisé** : Transcrire chaque ligne du tableau dans un test Cypress/Vitest.
+3. **Suivi** : Mettre à jour la colonne **Statut** à chaque validation.
+
+N’hésite pas à compléter ou adapter ces cas selon tes besoins métier !

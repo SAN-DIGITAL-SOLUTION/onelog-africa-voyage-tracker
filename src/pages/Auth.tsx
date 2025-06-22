@@ -2,31 +2,35 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useRole } from "@/hooks/useRole";
 import { useNavigate, useLocation } from "react-router-dom";
-import { toast } from "@/components/ui/use-toast"; // Nettoyage, remplacement ancien import
+import { toast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import OnboardingStepper from "./OnboardingStepper";
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
   const [form, setForm] = useState({ email: "", password: "" });
   const [processing, setProcessing] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   const { user, signIn, signUp, loading } = useAuth();
   const { role, loadingRole } = useRole();
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Redirection selon le rôle dès qu'on a tout chargé
+  // Vérifie si l'utilisateur doit voir l'onboarding (1ère connexion)
   useEffect(() => {
     if (user && !loading && !loadingRole) {
-      if (role === "admin") {
-        navigate("/admin", { replace: true });
-      } else if (role === "exploiteur") {
-        navigate("/exploiteur", { replace: true });
-      } else if (role === "chauffeur") {
-        navigate("/chauffeur", { replace: true });
-      } else if (role === null) {
-        navigate("/no-role", { replace: true });
+      const onboardingDone = localStorage.getItem("onelog_onboarding_done");
+      if (!onboardingDone) {
+        setShowOnboarding(true);
+      } else {
+        // Redirige tous les rôles métiers connus vers le dashboard
+        if (["admin", "exploiteur", "chauffeur"].includes(role)) {
+          navigate("/dashboard", { replace: true });
+        } else if (role === null) {
+          navigate("/no-role", { replace: true });
+        }
       }
     }
   }, [user, loading, role, loadingRole, navigate]);
@@ -52,8 +56,30 @@ export default function Auth() {
           ? "Bienvenue sur OneLog Africa !"
           : "Vérifiez vos emails pour activer votre compte.",
       });
-      // On redirige, ou on attend la validation email
+      // Affiche l'onboarding après connexion/inscription réussie
+      setShowOnboarding(true);
+      localStorage.removeItem("onelog_onboarding_done");
     }
+  }
+
+  // Affiche l'onboarding si nécessaire
+  if (showOnboarding) {
+    return (
+      <OnboardingStepper
+        key="onboarding-stepper"
+        // callback appelé à la fin de l'onboarding
+        onFinish={() => {
+          localStorage.setItem("onelog_onboarding_done", "1");
+          setShowOnboarding(false);
+          // Redirige l'utilisateur après onboarding selon son rôle
+          if (["admin", "exploiteur", "chauffeur"].includes(role)) {
+            navigate("/dashboard", { replace: true });
+          } else if (role === null) {
+            navigate("/no-role", { replace: true });
+          }
+        }}
+      />
+    );
   }
 
   return (

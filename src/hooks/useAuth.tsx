@@ -11,9 +11,17 @@ type AuthContextType = {
   signUp: (email: string, password: string) => Promise<{ error: string | null }>;
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
+  refreshUser?: () => Promise<void>;
 };
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextType>({
+  user: null,
+  session: null,
+  loading: true,
+  signUp: async () => ({ error: null }),
+  signIn: async () => ({ error: null }),
+  signOut: async () => {},
+});
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -35,6 +43,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         fetchUserRole(session.user.id).then((role) => {
           setRole?.(role);
           setLoadingRole?.(false);
+          // Identification PostHog
+          import('../lib/posthog').then(({ default: posthog }) => {
+            posthog.identify(session.user.id, {
+              email: session.user.email,
+              role,
+            });
+          });
         });
       } else {
         setRole?.(null);
@@ -54,6 +69,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         fetchUserRole(session.user.id).then((role) => {
           setRole?.(role);
           setLoadingRole?.(false);
+          // Identification PostHog
+          import('../lib/posthog').then(({ default: posthog }) => {
+            posthog.identify(session.user.id, {
+              email: session.user.email,
+              role,
+            });
+          });
         });
       } else {
         setRole?.(null);
@@ -70,7 +92,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signUp = useCallback(async (email: string, password: string) => {
     setLoading(true);
-    const redirectTo = `${window.location.origin}/`;
+    const redirectTo = `${window.location.origin}/onboarding`;
     const { error } = await supabase.auth.signUp({
       email,
       password,
@@ -96,9 +118,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setLoading(false);
   }, []);
 
+  // Méthode pour rafraîchir le user et le rôle après onboarding
+  const refreshUser = useCallback(async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    setSession(session);
+    setUser(session?.user ?? null);
+    if (session?.user) {
+      setLoadingRole?.(true);
+      const role = await fetchUserRole(session.user.id);
+      setRole?.(role);
+      setLoadingRole?.(false);
+    } else {
+      setRole?.(null);
+      setLoadingRole?.(false);
+    }
+  }, [setRole, setLoadingRole]);
+
   return (
     <AuthContext.Provider
-      value={{ user, session, loading, signUp, signIn, signOut }}
+      value={{ user, session, loading, signUp, signIn, signOut, refreshUser }}
     >
       {children}
     </AuthContext.Provider>
