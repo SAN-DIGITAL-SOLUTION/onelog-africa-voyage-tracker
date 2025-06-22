@@ -31,7 +31,7 @@ jobs:
           timeout: 60
 
       - name: Run Cypress fast-tests (headless)
-        run: npx cypress run --spec "cypress/e2e/onboarding_modes.cy.ts,cypress/e2e/client_dashboard.cy.ts,cypress/e2e/mission_tracking.cy.ts,cypress/e2e/admin_role_moderation.cy.ts,cypress/e2e/chauffeur_tracking.cy.ts,cypress/e2e/route_protection.cy.ts"
+        run: npx cypress run --browser chrome --headless --spec "cypress/e2e/onboarding_modes.cy.ts,cypress/e2e/client_dashboard.cy.ts,cypress/e2e/mission_tracking.cy.ts,cypress/e2e/admin_role_moderation.cy.ts,cypress/e2e/chauffeur_tracking.cy.ts,cypress/e2e/route_protection.cy.ts"
 
       - name: Audit couverture tests (fail si modules critiques non couverts)
         run: npm run audit:tests
