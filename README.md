@@ -1,7 +1,11 @@
 # 🚚 OneLog Africa – Suivi du Développement
 
-![E2E Tests](https://github.com/sergeahiwa/OneLogAfrica/actions/workflows/e2e-ci.yml/badge.svg)
-[![E2E Report](https://img.shields.io/badge/E2E%20Report-HTML-blue?logo=githubpages)](https://sergeahiwa.github.io/OneLogAfrica/mochawesome-report.html)
+![E2E Tests](https://github.com/sergeahiwa/OneLogAfrica/actions/workflows/e2e-selfhosted.yml/badge.svg)
+[![E2E Report](https://github.com/sergeahiwa/OneLogAfrica/actions/workflows/publish-e2e-report.yml/badge.svg)](https://sergeahiwa.github.io/OneLogAfrica/mochawesome-report.html)
+
+## CI Self-Hosted Runner
+Pour installer et exécuter le runner GitHub Actions sur Windows, suivez le guide détaillé dans [docs/SELF_HOSTED_RUNNER.md](docs/SELF_HOSTED_RUNNER.md).
+
 
 <p align="center">
   <img src="public/onelog-africa-logo-transparent.png" alt="Logo OneLog Africa (fond transparent)" width="180"/>
