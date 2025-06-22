@@ -1,73 +1,84 @@
-# Welcome to your Lovable project
+# 🚚 OneLog Africa – Suivi du Développement
 
-## Project info
+![E2E Tests](https://github.com/sergeahiwa/OneLogAfrica/actions/workflows/e2e-ci.yml/badge.svg)
+[![E2E Report](https://img.shields.io/badge/E2E%20Report-HTML-blue?logo=githubpages)](https://sergeahiwa.github.io/OneLogAfrica/mochawesome-report.html)
 
-**URL**: https://lovable.dev/projects/e02a4ae6-1faa-440e-88d9-245d9533155a
+<p align="center">
+  <img src="public/onelog-africa-logo-transparent.png" alt="Logo OneLog Africa (fond transparent)" width="180"/>
+</p>
 
-## How can I edit this code?
+---
 
-There are several ways of editing your application.
+## 🚀 **Annonce officielle – Version 1.0.0 livrée !**
 
-**Use Lovable**
+- La version **v1.0.0** de OneLog Africa est officiellement livrée : modules Profils, Facturation, Notifications, Tracking, QA et sécurité validés.
+- Consultez le [CHANGELOG.md](CHANGELOG.md) pour le détail des livraisons.
+- La **roadmap v1.1.0** est lancée : priorités UX, performance, avatars dynamiques, historique, etc. ([ROADMAP.md](ROADMAP.md))
+- Contribuez ou suivez l’évolution en temps réel via les issues et le suivi projet.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/e02a4ae6-1faa-440e-88d9-245d9533155a) and start prompting.
+---
 
-Changes made via Lovable will be committed automatically to this repo.
+<p align="center">
+  <img src="public/onelog-africa-logo-whitebg.png" alt="Logo OneLog Africa (fond blanc)" width="180"/>
+</p>
 
-**Use your preferred IDE**
+> Logos disponibles dans `/public` :
+> - [Logo fond transparent](public/onelog-africa-logo-transparent.png)
+> - [Logo fond blanc](public/onelog-africa-logo-whitebg.png)
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+OneLog Africa est une plateforme logistique panafricaine innovante. Ce document fournit un aperçu du développement actuel, des fonctionnalités livrées, des éléments en cours et des prochaines étapes.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+---
+## ✅ Avancement Global : **80 %**
 
-Follow these steps:
+---
+## 🧩 État par module
+###  Landing Page
+- **Statut** : done
+- **Détails** : Tous les composants sont présents et fonctionnels.
+---
+###  Authentification
+- **Statut** : done
+- **Détails** : Supabase Auth avec gestion des rôles et protection des routes.
+---
+###  Base de données
+- **Statut** : done
+- **Détails** : 7 tables principales migrées et utilisées dans le code.
+---
+###  Infrastructure
+- **Statut** : done
+- **Détails** : Stack technique installée, edge functions et clustering Google Maps opérationnels.
+---
+###  Application SaaS
+- **Statut** : in_progress
+- **Détails** :
+  - Exports PDF/CSV opérationnels
+  - Système de notifications en cours
+  - Refonte du footer terminée
+  - Tracking des missions intégré
+---
+###  Tests et documentation
+- **Statut** : in_progress
+- **Détails** :
+  - Documentation technique en cours
+  - Tests unitaires à compléter
+---
+## 💶 Module Facturation
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+- Affichage, export PDF/CSV et envoi email des factures
+- Source : table Supabase `invoices`
+- Voir la documentation complète : [docs/factures-doc.md](docs/factures-doc.md)
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+## 📍 Prochaines étapes
+1. Finaliser la logique métier pour les missions
+2. Terminer l'intégration du système de notifications
+3. Compléter la facturation (UI + logique)
+4. Développer la gestion des profils utilisateurs
+5. Finaliser les tests unitaires avec Vitest/Jest
+6. Compléter la documentation technique
+7. Préparer la phase de QA et de tests utilisateurs
+---
+## 🧭 Suivi automatique
+Ce fichier est généré à partir d’un modèle JSON de suivi de projet. Il peut être mis à jour automatiquement à l’aide d’un script d’analyse du code + fichiers Supabase.
 
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/e02a4ae6-1faa-440e-88d9-245d9533155a) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+---
