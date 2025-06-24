@@ -2,6 +2,7 @@
 
 ![E2E Tests](https://github.com/sergeahiwa/OneLogAfrica/actions/workflows/e2e-selfhosted.yml/badge.svg)
 [![E2E Report](https://github.com/sergeahiwa/OneLogAfrica/actions/workflows/publish-e2e-report.yml/badge.svg)](https://sergeahiwa.github.io/OneLogAfrica/mochawesome-report.html)
+![Avancement](https://img.shields.io/static/v1?label=Avancement&message=0%25&color=informational&style=flat-square)
 
 ## CI Self-Hosted Runner
 Pour installer et exécuter le runner GitHub Actions sur Windows, suivez le guide détaillé dans [docs/SELF_HOSTED_RUNNER.md](docs/SELF_HOSTED_RUNNER.md).
@@ -60,7 +61,67 @@ OneLog Africa est une plateforme logistique panafricaine innovante. Ce document 
   - Système de notifications en cours
   - Refonte du footer terminée
   - Tracking des missions intégré
+
 ---
+## 🔔 Système de templates de notifications
+
+Le moteur de notifications OneLog Africa utilise un système de templates de fichiers pour générer dynamiquement tous les messages (WhatsApp, SMS, Email), multilingue et multi-canal, avec fallback automatique.
+
+### 📂 Structure des templates
+```
+templates/
+  mission/
+    created/
+      whatsapp/
+        fr.txt
+        en.txt
+      sms/
+        fr.txt
+        en.txt
+      email/
+        fr.html
+        en.html
+  default/
+    whatsapp/
+      fr.txt
+      en.txt
+    sms/
+      fr.txt
+      en.txt
+    email/
+      fr.txt
+      en.txt
+    global.txt
+```
+
+- Chaque fichier correspond à un événement, un canal et une langue.
+- Les templates par défaut sont utilisés si un template spécifique n’est pas trouvé (fallback).
+
+### ➕ Ajouter un nouveau template
+1. Créer le fichier correspondant dans le bon dossier (ex: `templates/mission/created/sms/en.txt`)
+2. Utiliser des placeholders entre `{{...}}` pour les variables dynamiques (ex: `{{clientName}}`, `{{missionId}}`)
+3. Les nouveaux canaux/langues suivent la même logique de dossier/fichier.
+
+### 🧑‍💻 Exemple d’appel au moteur
+```ts
+import { TemplateEngine } from './src/services/templateEngine';
+const msg = TemplateEngine.render('mission/created', 'sms', 'fr', {
+  clientName: 'Jean',
+  missionId: '12345',
+  date: '2025-06-23',
+});
+console.log(msg);
+```
+
+### 🌍 Ajouter un canal ou une langue
+- Ajouter un sous-dossier (ex: `whatsapp`, `sms`, `email`) ou un fichier langue (ex: `en.txt`, `fr.txt`)
+- Le fallback automatique s’applique si le template demandé n’existe pas
+
+### 🔬 Automatisation des tests de templates
+- Script : `npx ts-node scripts/validate-templates.ts`
+- Parcourt tous les templates, tente un rendu avec des données factices, détecte les placeholders non remplacés et log les erreurs dans `logs/test-results.log`
+- À lancer après chaque modification ou ajout de template
+
 ###  Tests et documentation
 - **Statut** : in_progress
 - **Détails** :
