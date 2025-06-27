@@ -8,14 +8,14 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 export default function MainLayout() {
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen bg-gray-50">
+      <div className="grid grid-cols-12 min-h-screen bg-gray-50">
         <AppSidebar />
-        <div className="flex-1 flex flex-col min-h-screen">
-          <Header />
-          <SidebarInset className="flex-1">
-            <Outlet />
-          </SidebarInset>
-        </div>
+        <div className="col-span-10 col-start-2 flex flex-col min-h-screen w-full max-w-full md:col-span-10 md:col-start-2 lg:col-span-10 lg:col-start-2">
+  <Header />
+  <SidebarInset className="flex-1">
+    <Outlet />
+  </SidebarInset>
+</div>
       </div>
     </SidebarProvider>
   );

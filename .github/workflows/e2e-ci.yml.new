@@ -1,0 +1,94 @@
+name: E2E Tests (Cypress)
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  fast-tests:
+    runs-on: [self-hosted, windows-latest]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci --no-optional
+
+      - name: Start Vite (background)
+        run: npm run dev &
+
+
+      - name: Wait for Vite
+        uses: jakejarvis/wait-action@v0.1.1
+        with:
+          target: http://localhost:5173
+          interval: '10s'
+          timeout: '60s'
+
+      - name: Run Cypress fast-tests (headless)
+        run: npx cypress run --browser chrome --headless --spec "cypress/e2e/onboarding_modes.cy.ts,cypress/e2e/client_dashboard.cy.ts,cypress/e2e/mission_tracking.cy.ts,cypress/e2e/admin_role_moderation.cy.ts,cypress/e2e/chauffeur_tracking.cy.ts,cypress/e2e/route_protection.cy.ts"
+
+      - name: Audit couverture tests (fail si modules critiques non couverts)
+        run: npm run audit:tests
+
+  notify-on-failure:
+    needs: fast-tests
+    if: failure()
+    runs-on: [self-hosted, windows-latest]
+    steps:
+      - name: Send Slack notification
+        uses: slackapi/slack-github-action@v1.23.0
+        with:
+          payload: |
+            {
+              "text": ":x: Fast E2E tests failed in *OneLog Africa*! Check the workflow: ${{ github.workflow }} #${{ github.run_number }}",
+              "channel": "#ci-alerts"
+            }
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+  full-tests:
+    needs: fast-tests
+    runs-on: [self-hosted, windows-latest]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci --no-optional
+
+      - name: Start Vite (background)
+        run: npm run dev &
+
+      - name: Wait for Vite
+        uses: jakejarvis/wait-action@v0.1.1
+        with:
+          target: http://localhost:5173
+          interval: '10s'
+          timeout: '60s'
+      - name: Run Cypress full-tests (headless)
+        run: npm run test:e2e:ci
+
+      - name: Merge Mochawesome reports
+        run: npx mochawesome-merge cypress/reports/*.json > cypress/reports/merged-report.json
+
+      - name: Generate HTML report
+        run: npx marge cypress/reports/merged-report.json -f mochawesome-report -o cypress/reports
+
+      - name: Upload HTML report as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mochawesome-html-report
+          path: cypress/reports/mochawesome-report.html

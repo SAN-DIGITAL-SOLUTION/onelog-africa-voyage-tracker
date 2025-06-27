@@ -1,3 +1,115 @@
+// Types de base pour les rôles utilisateurs
+/**
+ * Rôles principaux du système OneLog Africa
+ * @see ROLES_SYSTEME_ONELOG.md pour la documentation complète des rôles
+ */
+export type UserRole = 
+  | 'client'           // Création de demandes, suivi, facturation
+  | 'chauffeur'        // Exécution des missions, mises à jour GPS
+  | 'admin'            // Administration complète du système
+  | 'gestionnaire_client'  // Gestion des comptes clients
+  | 'responsable_securite' // Surveillance et sécurité
+  | 'comptable';           // Facturation et comptabilité
+
+/**
+ * Interface pour le profil utilisateur dans la table 'profiles'
+ */
+export interface UserProfile {
+  id: string;            // ID unique de l'utilisateur (lié à auth.users)
+  role: UserRole;        // Rôle principal de l'utilisateur
+  email?: string;         // Email de l'utilisateur
+  full_name?: string;     // Nom complet de l'utilisateur
+  phone?: string;         // Numéro de téléphone (optionnel)
+  company?: string;      // Entreprise (pour les clients)
+  created_at: string;    // Date de création
+  updated_at: string;     // Date de dernière mise à jour
+  last_login?: string;    // Dernière connexion
+  is_active: boolean;     // Si le compte est actif
+  metadata?: Record<string, any>; // Métadonnées supplémentaires
+}
+
+/**
+ * Permissions disponibles dans le système
+ */
+export enum Permission {
+  // Permissions générales
+  VIEW_DASHBOARD = 'view_dashboard',
+  
+  // Permissions clients
+  CREATE_DEMANDE = 'create_demande',
+  VIEW_OWN_DEMANDES = 'view_own_demandes',
+  TRACK_MISSIONS = 'track_missions',
+  VIEW_OWN_FACTURES = 'view_own_factures',
+  PAY_ONLINE = 'pay_online',
+  RATE_DRIVER = 'rate_driver',
+  
+  // Permissions chauffeurs
+  VIEW_ASSIGNED_MISSIONS = 'view_assigned_missions',
+  UPDATE_GPS_LOCATION = 'update_gps_location',
+  REPORT_INCIDENT = 'report_incident',
+  CONFIRM_DELIVERY = 'confirm_delivery',
+  
+  // Permissions admin/exploitant
+  MANAGE_MISSIONS = 'manage_missions',
+  MANAGE_FLEET = 'manage_fleet',
+  MANAGE_DRIVERS = 'manage_drivers',
+  MANAGE_CLIENTS = 'manage_clients',
+  VIEW_ALL_DEMANDES = 'view_all_demandes',
+  VIEW_ALL_FACTURES = 'view_all_factures',
+  
+  // Permissions responsable sécurité
+  MANAGE_SECURITY = 'manage_security',
+  VIEW_SECURITY_ALERTS = 'view_security_alerts',
+  MANAGE_RISK_ZONES = 'manage_risk_zones',
+  
+  // Permissions comptable
+  MANAGE_INVOICES = 'manage_invoices',
+  PROCESS_PAYMENTS = 'process_payments',
+  GENERATE_REPORTS = 'generate_reports',
+}
+
+/**
+ * Mappage des rôles vers les permissions
+ */
+export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
+  client: [
+    Permission.VIEW_DASHBOARD,
+    Permission.CREATE_DEMANDE,
+    Permission.VIEW_OWN_DEMANDES,
+    Permission.TRACK_MISSIONS,
+    Permission.VIEW_OWN_FACTURES,
+    Permission.PAY_ONLINE,
+    Permission.RATE_DRIVER,
+  ],
+  chauffeur: [
+    Permission.VIEW_DASHBOARD,
+    Permission.VIEW_ASSIGNED_MISSIONS,
+    Permission.UPDATE_GPS_LOCATION,
+    Permission.REPORT_INCIDENT,
+    Permission.CONFIRM_DELIVERY,
+  ],
+  admin: Object.values(Permission), // Toutes les permissions
+  gestionnaire_client: [
+    Permission.VIEW_DASHBOARD,
+    Permission.MANAGE_CLIENTS,
+    Permission.VIEW_ALL_DEMANDES,
+    Permission.VIEW_ALL_FACTURES,
+  ],
+  responsable_securite: [
+    Permission.VIEW_DASHBOARD,
+    Permission.MANAGE_SECURITY,
+    Permission.VIEW_SECURITY_ALERTS,
+    Permission.MANAGE_RISK_ZONES,
+  ],
+  comptable: [
+    Permission.VIEW_DASHBOARD,
+    Permission.MANAGE_INVOICES,
+    Permission.PROCESS_PAYMENTS,
+    Permission.GENERATE_REPORTS,
+    Permission.VIEW_ALL_FACTURES,
+  ],
+};
+
 export type Json =
   | string
   | number
@@ -480,7 +592,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "exploiteur", "chauffeur"],
+      app_role: ["admin", "client", "chauffeur", "gestionnaire_client", "responsable_securite", "comptable"],
     },
   },
 } as const

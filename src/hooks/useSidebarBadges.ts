@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { useAuth } from "@/hooks/useAuth";
+import { useRole } from "@/hooks/useRole";
 
 /**
  * Fournit les compteurs dynamiques pour la sidebar :
@@ -10,24 +11,23 @@ import { useAuth } from "@/hooks/useAuth";
  */
 export function useSidebarBadges() {
   const { user } = useAuth();
+  const { role } = useRole();
   const [missionCount, setMissionCount] = useState<number | null>(null);
   const [notifCount, setNotifCount] = useState<number | null>(null);
   const [pendingCount, setPendingCount] = useState<number | null>(null);
-  const [role, setRole] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) return;
-    // 1. Récupérer le rôle utilisateur (depuis user_metadata)
-    setRole(user.user_metadata?.role || null);
+    
     // 2. Missions en cours
     let missionQuery;
-    if (user.user_metadata?.role === "client") {
+    if (role === "client") {
       missionQuery = supabase
         .from("missions")
         .select("id", { count: "exact", head: true })
         .eq("client", user.id)
         .in("status", ["en_cours", "assignée", "à_livrer"]);
-    } else if (user.user_metadata?.role === "chauffeur") {
+    } else if (role === "chauffeur") {
       missionQuery = supabase
         .from("missions")
         .select("id", { count: "exact", head: true })
@@ -48,14 +48,14 @@ export function useSidebarBadges() {
       .eq("read", false)
       .then(({ count }) => setNotifCount(count ?? 0));
     // 4. Demandes admin en attente
-    if (user.user_metadata?.role === "admin") {
+    if (role === "admin") {
       supabase
         .from("role_requests")
         .select("id", { count: "exact", head: true })
         .eq("status", "pending")
         .then(({ count }) => setPendingCount(count ?? 0));
     }
-  }, [user]);
+  }, [user, role]);
 
   return { missionCount, notifCount, pendingCount, role };
 }

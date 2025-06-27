@@ -25,5 +25,21 @@ Au 20 juin 2025, après correction automatique (`npm audit fix --force`), il sub
 
 ---
 
-Dernière mise à jour : 20/06/2025
+## Sécurité du Webhook Twilio
+
+Le endpoint `/api/webhooks/twilio` applique les contrôles suivants :
+
+- **Content-Type strict** : seuls `application/json` et `application/x-www-form-urlencoded` sont acceptés. Toute autre valeur est rejetée (415).
+- **Signature Twilio** : chaque requête POST doit être signée (header `x-twilio-signature`). Toute signature invalide est rejetée (403) et logguée.
+- **Rate limiting** : 60 requêtes/minute par IP (protection anti-abus, code 429).
+- **Validation Zod** : le payload est validé par un schéma Zod strict. Toute erreur de structure ou champ manquant est rejetée (400).
+- **Anti-replay** : chaque `MessageSid` Twilio est vérifié dans la base. Un doublon est rejeté (409) et loggué.
+- **Gestion des erreurs** : chaque rejet est accompagné d’un code HTTP explicite et d’un message JSON clair.
+- **Logging** : chaque événement (succès, rejet, erreur) est enregistré dans la table `notification_logs` pour traçabilité et audit.
+
+Cf. `src/pages/api/webhooks/twilio.ts` pour l’implémentation complète.
+
+---
+
+Dernière mise à jour : 25/06/2025
 Responsable : Équipe technique OneLog Africa

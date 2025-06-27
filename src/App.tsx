@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
+import { useRole } from "@/hooks/useRole";
 import { Toaster } from "@/components/ui/toaster";
 import Index from "@/pages/Index";
 import Auth from "@/pages/Auth";
@@ -20,6 +21,7 @@ import NoRole from "@/pages/NoRole";
 import NotFound from "@/pages/NotFound";
 import NotificationToast from "@/components/NotificationToast";
 import Onboarding from "@/pages/Onboarding";
+import WaitingApproval from "@/pages/WaitingApproval";
 import RoleRequests from "@/pages/Admin/RoleRequests";
 import "./App.css";
 
@@ -36,12 +38,44 @@ const queryClient = new QueryClient({
 import MainLayout from "@/components/MainLayout";
 
 function RequireRole({ children }: { children: JSX.Element }) {
-  const { user, loading } = useAuth();
+  const { user, loading: authLoading } = useAuth();
+  const { role, loadingRole } = useRole();
   const location = useLocation();
-  if (loading) return null;
-  if (user && !user.role && location.pathname !== "/onboarding") {
-    return <Navigate to="/onboarding" replace />;
+  const currentPath = location.pathname;
+  
+  // Afficher un indicateur de chargement pendant la vérification de l'authentification et du rôle
+  if (authLoading || loadingRole) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+      </div>
+    );
   }
+  
+  // Si l'utilisateur n'est pas connecté, rediriger vers la page de connexion
+  if (!user) {
+    // Ne pas rediriger si on est déjà sur la page d'authentification
+    if (currentPath !== '/auth') {
+      return <Navigate to="/auth" state={{ from: location }} replace />;
+    }
+    return children;
+  }
+  
+  // Si l'utilisateur est sur la page d'onboarding, on le laisse y accéder
+  if (currentPath === "/onboarding") {
+    return children;
+  }
+  
+  // Si l'utilisateur n'a pas de rôle, rediriger vers l'onboarding
+  if (!role) {
+    // Ne pas rediriger si on est déjà sur la page d'onboarding
+    if (currentPath !== '/onboarding') {
+      return <Navigate to="/onboarding" replace />;
+    }
+    return children;
+  }
+  
+  // Si l'utilisateur a un rôle valide, afficher le contenu protégé
   return children;
 }
 
@@ -52,9 +86,11 @@ function App() {
         <Router>
           <Routes>
             {/* Route publique landing page */}
-            <Route path="/" element={<Landing />} />
+            <Route path="/" element={<Index />} />
+            <Route path="/landing" element={<Landing />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/onboarding" element={<Onboarding />} />
+            <Route path="/waiting-approval" element={<WaitingApproval />} />
             <Route path="/admin/role-requests" element={<RequireRole><RoleRequests /></RequireRole>} />
             <Route path="/no-role" element={<NoRole />} />
             <Route path="/404" element={<NotFound />} />

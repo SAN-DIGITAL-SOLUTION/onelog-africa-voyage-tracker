@@ -1,0 +1,8 @@
+❌ Vérification notifications : ECHEC
+❌ Migration SQL échouée: Command failed: psql < supabase/migrations/notifications_triggers.sql
+'psql' n'est pas reconnu en tant que commande interne
+ou externe, un programme ex�cutable ou un fichier de commandes.
+
+✅ Canal Supabase Realtime accessible (mocké)
+✅ Webhook Twilio sécurisé (signature rejetée)
+✅ UI NotificationsCenter détectée (mock)

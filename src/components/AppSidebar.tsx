@@ -23,37 +23,16 @@ import {
 import { supabase } from "@/lib/supabaseClient";
 
 import { useEffect, useState } from "react";
+import { useRole } from "@/hooks/useRole";
 
-// Hook pour récupérer le rôle utilisateur via Supabase v2
+// Hook pour récupérer le rôle utilisateur via le contexte
 function useUserRole() {
-  const [role, setRole] = useState(null);
-
-  useEffect(() => {
-    let isMounted = true;
-    async function fetchRole() {
-      const { data: { user } } = await supabase.auth.getUser();
-      // Ici, on suppose que le rôle est dans user.user_metadata.role (adapter selon ta structure)
-      if (user && user.user_metadata && user.user_metadata.role) {
-        if (isMounted) setRole(user.user_metadata.role);
-      } else {
-        if (isMounted) setRole(null);
-      }
-    }
-    fetchRole();
-    // Optionnel : écoute les changements d'auth
-    const { data: listener } = supabase.auth.onAuthStateChange(() => {
-      fetchRole();
-    });
-    return () => {
-      isMounted = false;
-      listener?.subscription.unsubscribe();
-    };
-  }, []);
+  const { role } = useRole();
   return role;
 }
 
 // Tableau de routes de base, sans "Mes missions"
-import { Users, UserCheck, UserCog, ShieldCheck, Activity } from "lucide-react";
+import { UserCheck, UserCog, ShieldCheck, Activity } from "lucide-react";
 import { useSidebarBadges } from "@/hooks/useSidebarBadges";
 
 const QA_DASHBOARD_RELEASE_DATE = new Date("2025-06-22T00:00:00Z");
@@ -180,12 +159,12 @@ export default function AppSidebar() {
   return (
     <Sidebar className="min-h-screen border-r bg-primary dark:bg-primary pt-4 w-56 data-[state=collapsed]:w-14 transition-all duration-200" aria-label="Sidebar principale">
       <div className="flex items-center gap-2 px-4 mb-8">
-        <img src="/favicon.ico" alt="logo" className="h-7 w-7" />
-        {state !== "collapsed" && (
-          <span className="font-bold text-lg tracking-tight text-white">
-            OneLog Africa
-          </span>
-        )}
+        <img src="/onelog-africa-logo-transparent.png" alt="Logo OneLog Africa" className="h-8 w-8 rounded bg-white shadow" />
+{state !== "collapsed" && (
+  <span className="font-bold text-lg tracking-tight" style={{color: '#1A3C40'}}>
+    OneLog <span style={{color: '#F9A825'}}>Africa</span>
+  </span>
+) }
         <SidebarTrigger className="ml-auto" />
       </div>
       <SidebarContent>

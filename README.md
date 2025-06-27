@@ -1,8 +1,15 @@
 # 🚚 OneLog Africa – Suivi du Développement
 
+## Configuration Twilio
+- `TWILIO_WHATSAPP_FROM` : numéro WhatsApp (format `whatsapp:+XYZ`)
+- `TWILIO_SMS_FROM` : numéro SMS (format `+XYZ`)
+
+[![E2E](https://img.shields.io/badge/E2E-Cypress-green)](./cypress/e2e/rbac-auth.spec.ts)
+[![Sécurité validée](https://img.shields.io/badge/Sécurité-RBAC%20validée-brightgreen)](./docs/ADMIN_DASHBOARD.md)
 ![E2E Tests](https://github.com/sergeahiwa/OneLogAfrica/actions/workflows/e2e-selfhosted.yml/badge.svg)
 [![E2E Report](https://github.com/sergeahiwa/OneLogAfrica/actions/workflows/publish-e2e-report.yml/badge.svg)](https://sergeahiwa.github.io/OneLogAfrica/mochawesome-report.html)
 ![Avancement](https://img.shields.io/static/v1?label=Avancement&message=0%25&color=informational&style=flat-square)
+![Analytics](https://img.shields.io/badge/Analytics-Advanced-blue?style=flat-square)
 
 ## CI Self-Hosted Runner
 Pour installer et exécuter le runner GitHub Actions sur Windows, suivez le guide détaillé dans [docs/SELF_HOSTED_RUNNER.md](docs/SELF_HOSTED_RUNNER.md).
@@ -20,6 +27,26 @@ Pour installer et exécuter le runner GitHub Actions sur Windows, suivez le guid
 - Consultez le [CHANGELOG.md](CHANGELOG.md) pour le détail des livraisons.
 - La **roadmap v1.1.0** est lancée : priorités UX, performance, avatars dynamiques, historique, etc. ([ROADMAP.md](ROADMAP.md))
 - Contribuez ou suivez l’évolution en temps réel via les issues et le suivi projet.
+
+---
+
+## 🧩 Réutiliser StepIndicator (barre de progression)
+
+Le composant `<StepIndicator />` permet d’industrialiser tous vos workflows multi-étapes (onboarding, création de mission, etc.).
+
+Exemple :
+
+```tsx
+import { StepIndicator } from '@/components/StepIndicator';
+
+const steps = [
+  { title: 'Étape 1', completed: true },
+  { title: 'Étape 2', completed: false },
+];
+<StepIndicator steps={steps} />
+```
+
+➡️ Voir la doc détaillée dans `INTEGRATION_UI.md`.
 
 ---
 
@@ -57,6 +84,8 @@ OneLog Africa est une plateforme logistique panafricaine innovante. Ce document 
 ###  Application SaaS
 - **Statut** : in_progress
 - **Détails** :
+  - Analytics avancés (utilisateurs, missions, notifications, exports CSV)
+  - RBAC/Auth (rôles, permissions, UI attribution, RLS)
   - Exports PDF/CSV opérationnels
   - Système de notifications en cours
   - Refonte du footer terminée
@@ -143,7 +172,44 @@ console.log(msg);
 6. Compléter la documentation technique
 7. Préparer la phase de QA et de tests utilisateurs
 ---
-## 🧭 Suivi automatique
+
+*Dernière génération automatique : 2025-06-23*
+
+## ⚠️ Limitations d’environnement local Windows
+
+> **Blocage critique Cypress**
+>
+> Sur certains environnements Windows, Cypress refuse de démarrer (erreur `bad option: --smoke-test` ou `--ping` injectée à l’exécutable) malgré purge du cache, réinstallation, et rétrogradation de version. Ce problème est dû à une pollution externe du système (antivirus, hook, proxy, etc.) et ne dépend pas du projet.
+>
+> **Solution recommandée :**
+> - Utilisez le fichier `docker-compose.e2e.yml` (fourni à la racine) pour lancer les tests E2E Cypress dans un conteneur Linux isolé.
+> - Commande : `docker-compose -f docker-compose.e2e.yml up`
+> - Le conteneur utilise l’image officielle `cypress/included:13.7.3` et monte le code source local.
+>
+> **Avantages :**
+> - Aucun risque de pollution environnementale
+> - Résultats reproductibles, compatibles CI/CD
+> - Pas de dépendances système à installer côté Windows
+
+Pour toute contribution ou exécution locale, privilégiez l’usage du conteneur Docker pour les E2E.
+
+---
+
+### 🐳 Pré-pull des images Docker recommandé
+
+Avant de lancer les E2E, pour éviter les erreurs réseau/EOF :
+```bash
+docker pull node:18
+docker pull cypress/included:13.7.3
+docker pull postgres:15
+```
+
+Puis lancez :
+```bash
+docker-compose -f docker-compose.e2e.yml up --exit-code-from cypress
+```
+
+---
 Ce fichier est généré à partir d’un modèle JSON de suivi de projet. Il peut être mis à jour automatiquement à l’aide d’un script d’analyse du code + fichiers Supabase.
 
 ---

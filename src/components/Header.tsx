@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Button } from "./ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useEffect, useState } from "react";
+import NotificationDropdown from "@/modules/adminDashboard/components/NotificationDropdown";
 
 // Toggle light/dark (Tailwind config)
 function ModeToggle() {
@@ -63,6 +64,27 @@ import {
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/Avatar";
 import { User, UserCog, Repeat, LogOut } from "lucide-react";
 
+import { Link, useLocation } from 'react-router-dom';
+
+function Breadcrumb() {
+  const location = useLocation();
+  const pathnames = location.pathname.split('/').filter(Boolean);
+  return (
+    <nav aria-label="breadcrumb" className="flex items-center gap-2 text-sm">
+      <Link to="/" className="font-bold text-[#1A3C40] hover:text-[#F9A825]">Accueil</Link>
+      {pathnames.map((name, idx) => {
+        const routeTo = '/' + pathnames.slice(0, idx + 1).join('/');
+        return (
+          <span key={routeTo} className="flex items-center gap-2">
+            <span className="mx-1 text-gray-400">/</span>
+            <Link to={routeTo} className="capitalize text-[#1A3C40] hover:text-[#F9A825]">{name.replace(/-/g, ' ')}</Link>
+          </span>
+        );
+      })}
+    </nav>
+  );
+}
+
 export default function Header() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
@@ -78,14 +100,10 @@ export default function Header() {
 
   return (
     <header className="flex items-center justify-between py-3 px-4 border-b bg-white dark:bg-onelog-nuit z-10" aria-label="Header principal">
-      <div className="flex items-center gap-2">
-        {/* SidebarTrigger toujours visible sur mobile/desktop */}
-        <SidebarTrigger className="md:hidden" />
-        <span className="text-2xl font-bold text-onelog-nuit dark:text-white tracking-tight flex items-center gap-2">
-          <BadgeCheck size={28} className="text-onelog-bleu" />
-          OneLog Africa
-        </span>
-      </div>
+      <div className="flex items-center gap-4 min-w-max">
+  <SidebarTrigger className="md:hidden" />
+  <img src="/onelog-africa-logo-dark.png" alt="Logo OneLog Africa" className="h-10 w-auto" />
+</div>
       <nav className="flex gap-4 font-semibold text-base items-center">
         {/* Bouton Accueil OneLog Africa */}
         <Button asChild variant="outline" size="sm">
@@ -94,6 +112,9 @@ export default function Header() {
           </NavLink>
         </Button>
         <ModeToggle />
+        <div className="ml-2">
+          <NotificationDropdown />
+        </div>
         {user && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

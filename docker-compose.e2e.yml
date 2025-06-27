@@ -1,0 +1,53 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: onelogdb
+      POSTGRES_USER: onelog
+      POSTGRES_PASSWORD: secret
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "onelog"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    image: node:18
+    working_dir: /app
+    command: sh -c "npm ci && npm run dev"
+    volumes:
+      - ./:/app
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgres://onelog:secret@db:5432/onelogdb
+      - VITE_SUPABASE_URL=${VITE_SUPABASE_URL}
+      - VITE_SUPABASE_ANON_KEY=${VITE_SUPABASE_ANON_KEY}
+    ports:
+      - "5173:5173"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  cypress:
+    image: cypress/included:13.7.3
+    working_dir: /e2e
+    volumes:
+      - ./:/e2e
+    environment:
+      - CYPRESS_baseUrl=http://app:5173
+      - VITE_SUPABASE_URL=${VITE_SUPABASE_URL}
+      - VITE_SUPABASE_ANON_KEY=${VITE_SUPABASE_ANON_KEY}
+    depends_on:
+      app:
+        condition: service_started
+      db:
+        condition: service_healthy
+    command: ["npx", "cypress", "run"]
+
+volumes:
+  pgdata:

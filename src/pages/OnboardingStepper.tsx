@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui-system';
 import { onboardingSteps } from '../data/onboardingSteps';
 import { trackEvent } from '@/services/analytics';
+import { StepIndicator } from '@/components/StepIndicator';
 
 export function resetOnboardingDone() {
   localStorage.removeItem('onelog_onboarding_done');
@@ -106,16 +107,13 @@ export default function OnboardingStepper({ onFinish, role }: OnboardingStepperP
           </motion.div>
         </AnimatePresence>
         {/* Progression visuelle */}
-        <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
-          {onboardingSteps.map((_, i) => (
-            <span
-              key={i}
-              role="presentation"
-              className={`w-3 h-3 rounded-full transition-all ${
-                i === step ? 'bg-[#F9A825]' : 'bg-gray-300'
-              }`}
-            />
-          ))}
+        <div className="absolute bottom-4 left-0 right-0 flex justify-center">
+          <StepIndicator
+            steps={onboardingSteps.map((s, i) => ({
+              title: s.title,
+              completed: i < step
+            }))}
+          />
         </div>
       </div>
     </div>

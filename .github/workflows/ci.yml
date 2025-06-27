@@ -7,6 +7,25 @@ on:
     branches: [ main ]
 
 jobs:
+  e2e-docker:
+    runs-on: ubuntu-latest
+    services:
+      app:
+        image: node:18
+        ports: ['5173:5173']
+        volumes:
+          - ./:/app
+        working-directory: /app
+        command: |
+          npm ci
+          npm run build
+          npm run start &
+          sleep 5
+    steps:
+      - uses: actions/checkout@v3
+      - name: Cypress via Docker Compose
+        run: docker-compose -f docker-compose.e2e.yml up --abort-on-container-exit
+
   build-and-test:
     runs-on: ubuntu-latest
     steps:
@@ -17,10 +36,27 @@ jobs:
           node-version: '18'
       - name: Install dependencies
         run: npm ci
+      # Lint (optionnel)
+      - name: Run linter
+        run: npm run lint || true
+      # Tests unitaires
       - name: Run unit tests
         run: npm run test
+      # Build Next.js
       - name: Build app
         run: npm run build
+      # Vérification du healthcheck API
+      - name: Start app in background
+        run: |
+          npm start &
+          sleep 10
+      - name: Test healthcheck endpoint
+        run: |
+          curl -f http://localhost:3000/api/health
+      # Build Docker (vérification Dockerfile)
+      - name: Build Docker image
+        run: docker build .
+      # Deploy preview (Netlify)
       - name: Deploy preview (Netlify)
         if: github.event_name == 'pull_request'
         uses: nwtgck/actions-netlify@v2.0

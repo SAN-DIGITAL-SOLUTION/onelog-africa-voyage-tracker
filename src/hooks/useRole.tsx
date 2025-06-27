@@ -1,7 +1,7 @@
 
 import React, { createContext, useContext, useState, useCallback } from "react";
 
-export type AppRole = "admin" | "exploiteur" | "chauffeur" | null;
+export type AppRole = "admin" | "exploiteur" | "chauffeur" | "client" | null;
 
 type RoleContextType = {
   role: AppRole;
