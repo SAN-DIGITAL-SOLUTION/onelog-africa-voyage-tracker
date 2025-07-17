@@ -1,0 +1,54 @@
+[
+  {
+    "id": "truck-001",
+    "name": "Camion Dakar-01",
+    "lat": 14.6937,
+    "lng": -17.4441,
+    "status": "active",
+    "mission": "Livraison Thiès",
+    "driver": "Amadou Ba",
+    "zone": "dakar",
+    "speed": 65,
+    "heading": 45,
+    "last_update": "2025-01-17T10:00:00Z"
+  },
+  {
+    "id": "truck-002",
+    "name": "Camion Thiès-02",
+    "lat": 14.7886,
+    "lng": -16.9268,
+    "status": "idle",
+    "mission": "En attente",
+    "driver": "Moussa Diop",
+    "zone": "thies",
+    "speed": 0,
+    "heading": 0,
+    "last_update": "2025-01-17T09:55:00Z"
+  },
+  {
+    "id": "truck-003",
+    "name": "Camion Kaolack-03",
+    "lat": 14.1594,
+    "lng": -16.0733,
+    "status": "maintenance",
+    "mission": "Maintenance préventive",
+    "driver": "Ibrahima Fall",
+    "zone": "kaolack",
+    "speed": 0,
+    "heading": 0,
+    "last_update": "2025-01-17T09:30:00Z"
+  },
+  {
+    "id": "truck-004",
+    "name": "Camion Saint-Louis-04",
+    "lat": 16.0179,
+    "lng": -16.4896,
+    "status": "active",
+    "mission": "Transport marchandises",
+    "driver": "Fatou Sow",
+    "zone": "saint-louis",
+    "speed": 72,
+    "heading": 180,
+    "last_update": "2025-01-17T09:58:00Z"
+  }
+]

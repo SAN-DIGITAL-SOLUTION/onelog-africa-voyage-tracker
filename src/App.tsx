@@ -23,6 +23,7 @@ import NotificationToast from "@/components/NotificationToast";
 import Onboarding from "@/pages/Onboarding";
 import WaitingApproval from "@/pages/WaitingApproval";
 import RoleRequests from "@/pages/Admin/RoleRequests";
+import PrototypeTest from "@/pages/PrototypeTest";
 import "./App.css";
 
 // React Query setup
@@ -88,6 +89,7 @@ function App() {
             {/* Route publique landing page */}
             <Route path="/" element={<Index />} />
             <Route path="/landing" element={<Landing />} />
+            <Route path="/prototype-test" element={<PrototypeTest />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/onboarding" element={<Onboarding />} />
             <Route path="/waiting-approval" element={<WaitingApproval />} />

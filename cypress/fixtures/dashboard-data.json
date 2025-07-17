@@ -1,0 +1,40 @@
+{
+  "vehicles": {
+    "total": 29,
+    "active": 24,
+    "inactive": 3,
+    "maintenance": 2,
+    "trend": {
+      "direction": "up",
+      "value": 12,
+      "label": "vs last week"
+    }
+  },
+  "missions": {
+    "total": 156,
+    "completed": 142,
+    "inProgress": 11,
+    "delayed": 3,
+    "trend": {
+      "direction": "up",
+      "value": 8,
+      "label": "vs last month"
+    }
+  },
+  "performance": {
+    "onTimeRate": 94.2,
+    "fuelEfficiency": 87.5,
+    "utilizationRate": 82.8,
+    "trend": {
+      "direction": "stable",
+      "value": 2,
+      "label": "vs last quarter"
+    }
+  },
+  "alerts": {
+    "critical": 1,
+    "warning": 4,
+    "info": 12
+  },
+  "lastUpdated": "2025-07-17T15:45:00Z"
+}
