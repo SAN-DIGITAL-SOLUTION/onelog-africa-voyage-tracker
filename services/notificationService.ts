@@ -1,4 +1,4 @@
-import { supabase } from "@/services/supabaseClient";
+import { supabase } from "@/integrations/supabase/client";
 
 export async function notifyChauffeur(chauffeurId: string, message: string) {
   // Exemple simple : insert dans une table notifications

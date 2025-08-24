@@ -1,5 +1,5 @@
 import { UserRole, Permission } from './types';
-import { supabase } from '../supabaseClient';
+import { supabase } from '../../integrations/supabase/client';
 
 // Mappage des rôles aux permissions
 export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {

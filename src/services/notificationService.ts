@@ -1,6 +1,6 @@
 import Twilio from 'twilio';
 import fetch from 'node-fetch';
-import { supabase } from './supabaseClient';
+import { supabase } from '../integrations/supabase/client';
 import { TemplateEngine } from './templateEngine';
 
 const whatsappFrom = process.env.TWILIO_WHATSAPP_FROM!;

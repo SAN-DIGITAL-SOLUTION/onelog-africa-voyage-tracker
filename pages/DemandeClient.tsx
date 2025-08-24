@@ -1,7 +1,7 @@
 import DemandeForm from "@/components/DemandeForm";
 import SuccessModal from "@/components/SuccessModal";
 import { useState, useEffect } from "react";
-import { supabase } from "@/services/supabaseClient";
+import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 
 export default function DemandeClient() {

@@ -28,59 +28,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Ajout du contexte de rôle pour hydrater après connexion
-  const { setRole, setLoadingRole } = useRole ? useRole() : { setRole: () => {}, setLoadingRole: () => {} };
+  // Suppression de la dépendance directe à useRole pour éviter la circularité
+  // Le rôle sera géré par un effet séparé après l'initialisation
 
   useEffect(() => {
+    console.log('[useAuth] Initialisation du hook useAuth');
+    
     // 1. Set up auth state listener first
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log(`[useAuth] Événement d'authentification: ${event}`, { session });
       setSession(session);
       setUser(session?.user ?? null);
 
-      // Charger le rôle _uniquement_ si l'utilisateur est connecté
-      if (session?.user) {
-        setLoadingRole?.(true);
-        fetchUserRole(session.user.id).then((role) => {
-          setRole?.(role);
-          setLoadingRole?.(false);
-          // Identification PostHog
-          import('../lib/posthog').then(({ default: posthog }) => {
-            posthog.identify(session.user.id, {
-              email: session.user.email,
-              role,
-            });
-          });
-        });
-      } else {
-        setRole?.(null);
-        setLoadingRole?.(false);
-      }
+      // Le rôle sera géré par RoleProvider séparément
+      // Ici on se contente de gérer l'authentification
       setLoading(false);
     });
 
     // 2. Check for existing session after
+    console.log('[useAuth] Vérification de la session existante...');
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('[useAuth] Session récupérée:', session);
       setSession(session);
       setUser(session?.user ?? null);
 
-      // Idem ici
-      if (session?.user) {
-        setLoadingRole?.(true);
-        fetchUserRole(session.user.id).then((role) => {
-          setRole?.(role);
-          setLoadingRole?.(false);
-          // Identification PostHog
-          import('../lib/posthog').then(({ default: posthog }) => {
-            posthog.identify(session.user.id, {
-              email: session.user.email,
-              role,
-            });
-          });
-        });
-      } else {
-        setRole?.(null);
-        setLoadingRole?.(false);
-      }
+      // Le rôle sera géré par RoleProvider séparément
+      // Ici on se contente de gérer l'authentification
 
       setLoading(false);
     });
@@ -88,7 +61,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => {
       subscription.unsubscribe();
     };
-  }, [setRole, setLoadingRole]);
+  }, []);
 
   const signUp = useCallback(async (email: string, password: string) => {
     setLoading(true);
@@ -118,21 +91,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setLoading(false);
   }, []);
 
-  // Méthode pour rafraîchir le user et le rôle après onboarding
+  // Méthode pour rafraîchir le user après onboarding
   const refreshUser = useCallback(async () => {
     const { data: { session } } = await supabase.auth.getSession();
     setSession(session);
     setUser(session?.user ?? null);
-    if (session?.user) {
-      setLoadingRole?.(true);
-      const role = await fetchUserRole(session.user.id);
-      setRole?.(role);
-      setLoadingRole?.(false);
-    } else {
-      setRole?.(null);
-      setLoadingRole?.(false);
-    }
-  }, [setRole, setLoadingRole]);
+    // Le rôle sera rafraîchi par RoleProvider qui écoute les changements d'user
+  }, []);
 
   return (
     <AuthContext.Provider

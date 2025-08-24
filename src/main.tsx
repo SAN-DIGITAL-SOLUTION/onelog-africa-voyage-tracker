@@ -11,10 +11,10 @@ import ErrorBoundary from './components/ErrorBoundary';
 
 createRoot(document.getElementById("root")!).render(
   <ErrorBoundary>
-    <RoleProvider>
-      <AuthProvider>
+    <AuthProvider>
+      <RoleProvider>
         <App />
-      </AuthProvider>
-    </RoleProvider>
+      </RoleProvider>
+    </AuthProvider>
   </ErrorBoundary>
 );

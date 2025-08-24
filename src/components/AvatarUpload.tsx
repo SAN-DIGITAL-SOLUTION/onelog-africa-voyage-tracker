@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { supabase } from "../lib/supabaseClient";
+import { supabase } from "../integrations/supabase/client";
 
 interface AvatarUploadProps {
   userId: string;

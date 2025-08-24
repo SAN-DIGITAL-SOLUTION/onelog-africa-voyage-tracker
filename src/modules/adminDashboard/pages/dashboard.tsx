@@ -5,7 +5,7 @@ import useAdminStats from '../hooks/useAdminStats';
 import AnalyticsDashboard from './analytics/AnalyticsDashboard';
 
 import { GetServerSidePropsContext } from 'next';
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '@/integrations/supabase/client';
 
 export default function AdminDashboardPage() {
   const stats = useAdminStats();
@@ -28,16 +28,17 @@ export default function AdminDashboardPage() {
 }
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-  const supabase = createClient(supabaseUrl, supabaseKey);
+  // Utilisation de l'instance partagée de Supabase
   const token = ctx.req.cookies['sb-access-token'];
   if (!token) {
     return { redirect: { destination: '/login', permanent: false } };
   }
-  const { data: { user } } = await supabase.auth.getUser(token);
-  if (!user) {
-    return { redirect: { destination: '/login', permanent: false } };
+  
+  // Utilisation de la méthode appropriée pour vérifier l'utilisateur
+  const { data: { user }, error } = await supabase.auth.getUser(token);
+  
+  if (error || !user) {
+    return { redirect: { destination: '/login', permanent: false } }; 
   }
   const { data: roles } = await supabase
     .from('user_roles')

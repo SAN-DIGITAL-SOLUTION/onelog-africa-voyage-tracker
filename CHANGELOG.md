@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.1.0] – 2025-07-19
+
+### Améliorations majeures
+- **Timeline Optimisée** :
+  - Refonte complète de la timeline avec virtualisation et chargement paresseux
+  - Nouveaux filtres optimisés avec persistance dans l'URL
+  - Amélioration des performances avec React Query
+  - Tests E2E avec Playwright
+  - Scripts d'analyse des performances avec Lighthouse
+  - Documentation complète des optimisations
+
 ## [1.0.0] – 2025-06-20
 
 ### Ajouts majeurs

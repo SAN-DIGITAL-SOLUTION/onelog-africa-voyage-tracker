@@ -2,7 +2,7 @@ import crypto from 'crypto';
 import type { IncomingMessage, ServerResponse } from 'http';
 import { rateLimit } from './rateLimit';
 import twilioSchema from './twilio.zod';
-import { supabase } from '../../../lib/supabaseClient';
+import { supabase } from '../../../integrations/supabase/client';
 import { logNotification } from '../../../services/notificationService';
 
 const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN || '';

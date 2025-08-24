@@ -1,4 +1,4 @@
-import { supabase } from '../../services/supabaseClient';
+import { supabase } from '../../integrations/supabase/client';
 import { getUserId } from '../../services/authService';
 
 export async function getNotificationPreferences() {

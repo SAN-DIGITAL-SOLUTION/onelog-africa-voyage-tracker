@@ -1,4 +1,4 @@
-import { supabase } from "../lib/supabaseClient";
+import { supabase } from "../integrations/supabase/client";
 
 export async function getUserProfile(userId: string) {
   // Fetch from extended users table

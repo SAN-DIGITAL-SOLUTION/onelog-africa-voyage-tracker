@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { retryFailedNotifications } from './notificationRetryService';
 import * as notificationService from './notificationService';
-import { supabase } from './supabaseClient';
+import { supabase } from '../integrations/supabase/client';
 import * as notificationSvc from './notificationService';
 
 describe('notificationRetryService', () => {

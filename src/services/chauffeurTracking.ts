@@ -1,5 +1,5 @@
 // fichier : src/services/chauffeurTracking.ts
-import { supabase } from './supabaseClient';
+import { supabase } from '../integrations/supabase/client';
 
 export async function insertTrackingPoint(missionId: string, latitude: number, longitude: number) {
   const user = supabase.auth.user();

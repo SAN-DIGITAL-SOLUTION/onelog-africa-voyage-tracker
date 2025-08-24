@@ -1,5 +1,5 @@
 // fichier: src/services/clientData.ts
-import { supabase } from './supabaseClient';
+import { supabase } from '../integrations/supabase/client';
 
 export async function getClientMissions() {
   const { data, error } = await supabase

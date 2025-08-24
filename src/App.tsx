@@ -36,6 +36,8 @@ const queryClient = new QueryClient({
 });
 
 import MainLayout from "@/components/MainLayout";
+import TimelinePage from "@/pages/timeline";
+import TimelinePageOptimized from "@/pages/timeline/TimelinePageOptimized";
 
 function RequireRole({ children }: { children: JSX.Element }) {
   const { user, loading: authLoading } = useAuth();
@@ -129,6 +131,16 @@ function App() {
               <Route path="/missions-chauffeur" element={
                 <RequireRole>
                   <MissionsChauffeur />
+                </RequireRole>
+              } />
+              <Route path="/timeline" element={
+                <RequireRole>
+                  <TimelinePage />
+                </RequireRole>
+              } />
+              <Route path="/timeline-optimized" element={
+                <RequireRole>
+                  <TimelinePageOptimized />
                 </RequireRole>
               } />
               <Route path="/notifications" element={

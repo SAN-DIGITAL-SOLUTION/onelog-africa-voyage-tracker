@@ -47,11 +47,11 @@ export default function OnboardingStepper({ onFinish, role }: OnboardingStepperP
           image: '/assets/onboarding/step2-chauffeur.svg',
         };
       }
-      if (role === 'exploiteur' || role === 'exploitant') {
+      if (role === 'exploiteur') {
         return {
           ...onboardingSteps[1],
-          description: 'En tant qu’exploitant, planifiez les trajets et assignez vos chauffeurs en un clic.',
-          image: '/assets/onboarding/step2-exploitant.svg',
+          description: 'En tant qu\'exploiteur, planifiez les trajets et assignez vos chauffeurs en un clic.',
+          image: '/assets/onboarding/step2-exploiteur.svg',
         };
       }
     }

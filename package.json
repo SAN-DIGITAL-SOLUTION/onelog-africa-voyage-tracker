@@ -16,7 +16,9 @@
     "preview": "vite preview",
     "storybook": "storybook dev -p 6007",
     "build-storybook": "storybook build",
-    "test": "vitest run --coverage --include src/**/*.{js,ts} --include src/__tests__/**/*.{js,ts}",
+    "test": "vitest run --coverage",
+    "docs:update": "node scripts/update-documentation.js",
+    "docs:auto": "npm run docs:update && git add README.md project-status.json docs/auto-update-report.json && git commit -m 'docs: auto-update documentation' || true",
     "test:ui": "vitest --ui",
     "test:storybook": "test-storybook",
     "cypress:open": "cypress open",
@@ -25,7 +27,8 @@
     "audit:tests": "node scripts/audit-tests.js",
     "test:coverage": "vitest run --coverage --reporter=lcov",
     "test:coverage:storybook": "test-storybook --coverage",
-    "coverage:report": "c8 report --reporter=text --reporter=lcov"
+    "coverage:report": "c8 report --reporter=text --reporter=lcov",
+    "postinstall": "npm run docs:update"
   },
   "dependencies": {
     "@googlemaps/markerclusterer": "^2.5.3",
@@ -95,12 +98,15 @@
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
     "twilio": "^5.7.1",
+    "use-debounce": "^10.0.5",
     "vaul": "^0.9.3",
     "zod": "^3.23.8"
   },
   "devDependencies": {
     "@axe-core/react": "^4.10.2",
     "@eslint/js": "^9.9.0",
+    "@faker-js/faker": "^8.4.1",
+    "@playwright/test": "^1.42.1",
     "@storybook/addon-a11y": "^8.6.14",
     "@storybook/addon-essentials": "^8.6.14",
     "@storybook/react-vite": "^8.6.14",

@@ -1,5 +1,5 @@
 // fichier: src/services/chauffeurData.ts
-import { supabase } from './supabaseClient';
+import { supabase } from '../integrations/supabase/client';
 
 export async function getChauffeurMissions() {
   const { data, error } = await supabase

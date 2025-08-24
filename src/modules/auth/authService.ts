@@ -1,7 +1,5 @@
-import { createClient } from '@supabase/supabase-js';
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-const supabase = createClient(supabaseUrl, supabaseKey);
+// Utilisation du client Supabase principal pour éviter les instances multiples
+import { supabase } from '@/integrations/supabase/client';
 
 export async function login(email: string, password: string) {
   return supabase.auth.signInWithPassword({ email, password });

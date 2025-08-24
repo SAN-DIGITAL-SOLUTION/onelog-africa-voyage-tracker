@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import handler from './twilio';
 import * as notificationService from '../../../services/notificationService';
-import * as supabaseClient from '../../../lib/supabaseClient';
+import * as supabaseClient from '../../../integrations/supabase/client';
 
 function mockRes() {
   const res: any = {

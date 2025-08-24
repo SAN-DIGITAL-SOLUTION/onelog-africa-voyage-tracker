@@ -3,7 +3,7 @@ import ProfileForm from "../ProfileForm";
 import * as usersService from "../../services/users";
 
 // Mock supabase client
-vi.mock("../../lib/supabaseClient", () => import("../../lib/supabaseClient.mock"));
+vi.mock("../../integrations/supabase/client", () => import("../../integrations/supabase/client.mock"));
 
 describe("ProfileForm", () => {
   const user = { id: "1", email: "test@example.com", user_metadata: { name: "Test" } };

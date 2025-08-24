@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/lib/supabaseClient";
+import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { ROLE_ASSIGNMENT_MODE } from "@/config";
 import { AppRole } from "@/hooks/useRole";
@@ -16,7 +16,7 @@ import Footer from "@/components/Footer";
 const ROLES = [
   { value: "client" as AppRole, label: "Client" },
   { value: "chauffeur" as AppRole, label: "Chauffeur" },
-  { value: "exploitant" as AppRole, label: "Exploitant" },
+  { value: "exploiteur" as AppRole, label: "Exploiteur" },
   { value: "admin" as AppRole, label: "Administrateur" }
 ];
 
@@ -30,11 +30,21 @@ export default function Onboarding() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
+  // Gérer la redirection avec useEffect
+  useEffect(() => {
+    if (!user && !isRedirecting) {
+      setIsRedirecting(true);
+      navigate('/auth', { replace: true });
+    }
+  }, [user, navigate, isRedirecting]);
+
+  // Afficher un indicateur de chargement pendant la redirection
   if (!user) {
     return (
       <main className="container mx-auto pt-16 text-center">
-        <div>Chargement...</div>
+        <div>Redirection vers la page de connexion...</div>
       </main>
     );
   }

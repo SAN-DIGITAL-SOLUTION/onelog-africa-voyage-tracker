@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import * as userProfileService from '../services/userProfileService';
 
-vi.mock('../../../services/supabaseClient', () => ({
+vi.mock('../../../integrations/supabase/client', () => ({
   supabase: {
     from: vi.fn(() => ({
       select: vi.fn().mockReturnThis(),
