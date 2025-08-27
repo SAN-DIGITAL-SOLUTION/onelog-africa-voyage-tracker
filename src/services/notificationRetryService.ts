@@ -1,6 +1,5 @@
 import { supabase } from '../integrations/supabase/client';
-import { notificationService } from './notificationService';
-import { checkNotificationPreference } from './notificationService';
+import { sendCustomNotification, checkNotificationPreference } from './notificationService';
 
 // Relance les notifications échouées ou non lues (retry/fallback)
 export async function retryFailedNotifications() {
@@ -87,6 +86,7 @@ export async function retryUnconfirmedNotifications() {
 
   for (const log of logs || []) {
     const elapsed = (now - new Date(log.created_at).getTime()) / 1000;
+    const FALLBACK_DELAY_SECONDS = 300; // 5 minutes par défaut
     if (log.status === 'sent' && elapsed > FALLBACK_DELAY_SECONDS) {
       // Fallback si non lu après délai
       await fallbackNotification(log, 'sms');
@@ -119,7 +119,7 @@ async function fallbackNotification(log: any, channel: 'sms' | 'email') {
   }
 
   // Envoyer via le canal fallback
-  await notificationService.sendCustomNotification({
+  await sendCustomNotification({
     type: 'fallback',
     channel,
     recipient: notif.user_id,

@@ -1,64 +1,194 @@
-import { useEffect, useState, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { NotificationService } from '@/services/notificationService';
+import type { Notification, NotificationFilters, NotificationType } from '@/types/notifications';
 
-export type Notification = {
-  id: string;
-  user_id: string;
-  message: string;
-  read: boolean;
-  created_at: string;
-};
+const notificationService = NotificationService.getInstance();
 
-export function useNotifications(userId: string) {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [unreadCount, setUnreadCount] = useState(0);
+export function useNotifications(filters: NotificationFilters = {}) {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
 
-  // Charger les notifications à l'initialisation
-  useEffect(() => {
-    if (!userId) return;
-    supabase
-      .from('notifications')
-      .select('*')
-      .eq('user_id', userId)
-      .order('created_at', { ascending: false })
-      .then(({ data }) => {
-        setNotifications(data || []);
-        setUnreadCount((data || []).filter(n => !n.read).length);
-      });
-  }, [userId]);
+  const userId = user?.id;
 
-  // Ecoute Supabase Realtime
-  useEffect(() => {
-    if (!userId) return;
-    const channel = supabase
-      .channel('notifications-realtime')
-      .on('postgres_changes', {
-        event: 'INSERT',
-        schema: 'public',
-        table: 'notifications',
-        filter: `user_id=eq.${userId}`
-      }, (payload) => {
-        setNotifications(prev => [payload.new, ...prev]);
-        setUnreadCount(c => c + 1);
-      })
-      .subscribe();
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [userId]);
+  const {
+    data: notifications = [],
+    isLoading,
+    isError,
+    error,
+    refetch
+  } = useQuery({
+    queryKey: ['notifications', userId, filters],
+    queryFn: () => {
+      if (!userId) return Promise.resolve([]);
+      return notificationService.getUserNotifications(userId, filters);
+    },
+    enabled: !!userId,
+    staleTime: 1000 * 60,
+  });
 
-  // Marquer comme lu
-  const markAsRead = useCallback(async (id: string) => {
-    await supabase.from('notifications').update({ read: true }).eq('id', id);
-    setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
-    setUnreadCount(c => Math.max(0, c - 1));
-  }, []);
+  const {
+    data: unreadCount = 0,
+    refetch: refetchUnreadCount
+  } = useQuery({
+    queryKey: ['notifications', userId, 'unread'],
+    queryFn: () => {
+      if (!userId) return Promise.resolve(0);
+      return notificationService.getUnreadCount(userId);
+    },
+    enabled: !!userId,
+    refetchInterval: 30000,
+  });
 
-  // Supprimer une notification
-  const removeNotification = useCallback(async (id: string) => {
-    await supabase.from('notifications').delete().eq('id', id);
-    setNotifications(prev => prev.filter(n => n.id !== id));
-  }, []);
+  const {
+    data: preferences,
+    refetch: refetchPreferences
+  } = useQuery({
+    queryKey: ['notification-preferences', userId],
+    queryFn: () => {
+      if (!userId) return Promise.resolve(null);
+      return notificationService.getUserPreferences(userId);
+    },
+    enabled: !!userId,
+  });
 
-  return { notifications, unreadCount, markAsRead, removeNotification };
+  const markAsReadMutation = useMutation({
+    mutationFn: ({ notificationId }: { notificationId: string }) => {
+      if (!userId) throw new Error('User not authenticated');
+      return notificationService.markAsRead(notificationId, userId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['notifications', userId] });
+      queryClient.invalidateQueries({ queryKey: ['notifications', userId, 'unread'] });
+    },
+  });
+
+  const markAllAsReadMutation = useMutation({
+    mutationFn: () => {
+      if (!userId) throw new Error('User not authenticated');
+      return notificationService.markAllAsRead(userId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['notifications', userId] });
+      queryClient.invalidateQueries({ queryKey: ['notifications', userId, 'unread'] });
+    },
+  });
+
+  const createNotificationMutation = useMutation({
+    mutationFn: (params: {
+      title: string;
+      message: string;
+      type: NotificationType;
+      priority?: 'low' | 'medium' | 'high' | 'critical';
+      userId?: string;
+      billingPartnerId?: string;
+      relatedEntityType?: string;
+      relatedEntityId?: string;
+      metadata?: any;
+      channels?: ('email' | 'slack' | 'in_app' | 'sms')[];
+    }) => {
+      return notificationService.createNotification(params);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+      queryClient.invalidateQueries({ queryKey: ['notifications', 'unread'] });
+    },
+  });
+
+  return {
+    notifications,
+    unreadCount,
+    preferences,
+    isLoading,
+    isError,
+    error,
+    refetch,
+    markAsRead: markAsReadMutation.mutate,
+    markAllAsRead: markAllAsReadMutation.mutate,
+    createNotification: createNotificationMutation.mutate,
+  };
+}
+
+export function useNotificationBadge() {
+  const { user } = useAuth();
+  const userId = user?.id;
+
+  const {
+    data: unreadCount = 0,
+  } = useQuery({
+    queryKey: ['notifications', userId, 'unread'],
+    queryFn: () => {
+      if (!userId) return Promise.resolve(0);
+      return notificationService.getUnreadCount(userId);
+    },
+    enabled: !!userId,
+    refetchInterval: 30000,
+  });
+
+  return { unreadCount };
+}
+
+export function useNotificationPreferences() {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+  const userId = user?.id;
+
+  const {
+    data: preferences,
+    isLoading,
+    refetch
+  } = useQuery({
+    queryKey: ['notification-preferences', userId],
+    queryFn: () => {
+      if (!userId) return Promise.resolve(null);
+      return notificationService.getUserPreferences(userId);
+    },
+    enabled: !!userId,
+  });
+
+  const updatePreferences = useMutation({
+    mutationFn: (preferences: any) => {
+      if (!userId) throw new Error('User not authenticated');
+      return notificationService.updateUserPreferences(userId, preferences);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['notification-preferences', userId] });
+    },
+  });
+
+  return {
+    preferences,
+    isLoading,
+    refetch,
+    updatePreferences: updatePreferences.mutate,
+  };
+}
+
+export function useCreateNotification() {
+  const queryClient = useQueryClient();
+
+  const createNotification = useMutation({
+    mutationFn: (params: {
+      title: string;
+      message: string;
+      type: NotificationType;
+      priority?: 'low' | 'medium' | 'high' | 'critical';
+      userId?: string;
+      billingPartnerId?: string;
+      relatedEntityType?: string;
+      relatedEntityId?: string;
+      metadata?: any;
+      channels?: ('email' | 'slack' | 'in_app' | 'sms')[];
+    }) => {
+      return notificationService.createNotification(params);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+      queryClient.invalidateQueries({ queryKey: ['notifications', 'unread'] });
+    },
+  });
+
+  return {
+    createNotification: createNotification.mutate,
+    isCreating: createNotification.isPending,
+  };
 }

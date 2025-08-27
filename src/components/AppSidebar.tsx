@@ -83,7 +83,7 @@ const operations = [
   },
   {
     label: "Tracking live",
-    to: "/missions/1/tracking",
+    to: "/tracking",
     icon: Map,
   },
   {
@@ -158,20 +158,22 @@ export default function AppSidebar() {
   }
 
   return (
-    <Sidebar className="min-h-screen border-r bg-primary dark:bg-primary pt-4 w-56 data-[state=collapsed]:w-14 transition-all duration-200" aria-label="Sidebar principale">
-      <div className="flex items-center gap-2 px-4 mb-8">
-        <img src="/onelog-africa-logo-transparent.png" alt="Logo OneLog Africa" className="h-8 w-8 rounded bg-white shadow" />
-{state !== "collapsed" && (
-  <span className="font-bold text-lg tracking-tight" style={{color: '#1A3C40'}}>
-    OneLog <span style={{color: '#F9A825'}}>Africa</span>
-  </span>
-) }
-        <SidebarTrigger className="ml-auto" />
+    <Sidebar className="border-r bg-white shadow-sm col-span-1 sm:col-span-2 lg:col-span-2">
+      <div className="flex items-center justify-between p-2 sm:p-4 border-b">
+        <div className="flex items-center gap-1 sm:gap-2">
+          <img
+            src="/Logo de OneLog Africa 3.png"
+            alt="OneLog Africa"
+            className="h-6 w-6 sm:h-8 sm:w-8"
+          />
+          <span className="font-bold text-sm sm:text-lg text-gray-900 hidden sm:block">OneLog</span>
+        </div>
+        <SidebarTrigger className="md:hidden" />
       </div>
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel asChild>
-            <div className="text-xs mb-2 font-semibold text-secondary pl-4">
+            <div className="text-xs mb-2 font-semibold text-gray-600 pl-4">
               Dashboards
             </div>
           </SidebarGroupLabel>
@@ -186,13 +188,13 @@ export default function AppSidebar() {
                         to={item.to}
                         aria-label={item.label}
                         className={({ isActive: navActive }) =>
-                          `flex items-center gap-3 px-3 py-2 rounded transition-colors group focus:outline focus:outline-2 focus:outline-accent
-                          ${isActive ? "bg-white shadow-sm" : ""}`
+                          `flex items-center gap-3 px-3 py-2 rounded transition-colors group focus:outline focus:outline-2 focus:outline-blue-500
+                          ${isActive ? "bg-blue-50 shadow-sm" : "hover:bg-gray-50"}`
                         }
                       >
-                        <item.icon className={`h-5 w-5 shrink-0 transition-colors ${isActive ? "text-accent" : "text-white group-hover:text-accent"}`} />
+                        <item.icon className={`h-5 w-5 shrink-0 transition-colors ${isActive ? "text-blue-600" : "text-gray-700 group-hover:text-blue-600"}`} />
                         {state !== "collapsed" && (
-                          <span className={`font-bold transition-colors ${isActive ? "text-white" : "text-white group-hover:text-accent"}`}>{item.label}</span>
+                          <span className={`font-medium transition-colors ${isActive ? "text-blue-600" : "text-gray-700 group-hover:text-blue-600"}`}>{item.label}</span>
                         )}
                         {renderBadge(item)}
                       </NavLink>
@@ -205,7 +207,7 @@ export default function AppSidebar() {
         </SidebarGroup>
         <SidebarGroup>
           <SidebarGroupLabel asChild>
-            <div className="text-xs mb-2 font-semibold text-secondary pl-4">
+            <div className="text-xs mb-2 font-semibold text-gray-600 pl-4">
               Opérations
             </div>
           </SidebarGroupLabel>
@@ -220,13 +222,13 @@ export default function AppSidebar() {
                         to={item.to}
                         aria-label={item.label}
                         className={({ isActive: navActive }) =>
-                          `flex items-center gap-3 px-3 py-2 rounded transition-colors group focus:outline focus:outline-2 focus:outline-accent
-                          ${isActive ? "bg-white shadow-sm" : ""}`
+                          `flex items-center gap-3 px-3 py-2 rounded transition-colors group focus:outline focus:outline-2 focus:outline-blue-500
+                          ${isActive ? "bg-blue-50 shadow-sm" : "hover:bg-gray-50"}`
                         }
                       >
-                        <item.icon className={`h-5 w-5 shrink-0 transition-colors ${isActive ? "text-accent" : "text-white group-hover:text-accent"}`} />
+                        <item.icon className={`h-5 w-5 shrink-0 transition-colors ${isActive ? "text-blue-600" : "text-gray-700 group-hover:text-blue-600"}`} />
                         {state !== "collapsed" && (
-                          <span className={`font-bold transition-colors ${isActive ? "text-white" : "text-white group-hover:text-accent"}`}>{item.label}</span>
+                          <span className={`font-medium transition-colors ${isActive ? "text-blue-600" : "text-gray-700 group-hover:text-blue-600"}`}>{item.label}</span>
                         )}
                         {renderBadge(item)}
                       </NavLink>

@@ -5,7 +5,7 @@ import { fr } from 'date-fns/locale';
 import { useTimelineData } from '@/hooks/useTimelineData';
 import { TimelineFiltersOptimized } from './TimelineFiltersOptimized';
 import { TimelineEvent as TimelineEventType } from '@/types/timeline';
-import { TimelineEvent } from './EventItem';
+import { EventItem } from './EventItem';
 import { DayDivider } from './DayDivider';
 import { Loader2, AlertCircle } from 'lucide-react';
 
@@ -33,7 +33,7 @@ const TimelineItem = React.memo(({ item, onEventClick }: {
         transition={{ duration: 0.2 }}
         className="py-2"
       >
-        <TimelineEvent 
+        <EventItem 
           event={item.event} 
           onClick={() => onEventClick?.(item.event!)} 
           className="hover:shadow-md transition-shadow"

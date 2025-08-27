@@ -18,32 +18,107 @@ jobs:
         working-directory: /app
         command: |
           npm ci
-          npm run build
-          npm run start &
-          sleep 5
     steps:
-      - uses: actions/checkout@v3
-      - name: Cypress via Docker Compose
-        run: docker-compose -f docker-compose.e2e.yml up --abort-on-container-exit
+      - name: Checkout
+        uses: actions/checkout@v4
 
-  build-and-test:
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Cache node modules
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            **/node_modules
+            server/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+  backend-tests:
+    needs: setup
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
-      - name: Install dependencies
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install backend deps
+        working-directory: server
         run: npm ci
-      # Lint (optionnel)
-      - name: Run linter
-        run: npm run lint || true
-      # Tests unitaires
+
+      - name: Run Jest tests
+        working-directory: server
+        env:
+          NODE_ENV: test
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          npm test -- --ci --reporters=default --reporters=jest-junit --coverage
+
+      - name: Upload Jest junit
+        uses: actions/upload-artifact@v4
+        with:
+          name: jest-junit-backend
+          path: server/junit.xml
+
+      - name: Upload coverage reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage
+          path: server/coverage/
+
+  frontend-tests:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install frontend deps
+        run: npm ci
+
       - name: Run unit tests
-        run: npm run test
-      # Build Next.js
-      - name: Build app
+        run: npm test -- --reporters=default --reporters=jest-junit --coverage
+
+      - name: Upload frontend coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-coverage
+          path: coverage/
+
+  frontend-e2e:
+    needs: [setup, backend-tests]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install frontend deps
+        run: npm ci
+
+      - name: Install backend deps
+        working-directory: server
+        run: npm ci
+
+      - name: Build Frontend
         run: npm run build
       # Vérification du healthcheck API
       - name: Start app in background

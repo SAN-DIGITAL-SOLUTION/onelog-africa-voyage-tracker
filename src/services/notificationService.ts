@@ -152,7 +152,7 @@ async function sendNotification(
         }
         break;
       case 'sms':
-                try {
+        try {
           const twilioClient = Twilio(
             process.env.TWILIO_ACCOUNT_SID!,
             process.env.TWILIO_AUTH_TOKEN!
@@ -190,6 +190,8 @@ async function sendNotification(
     return { success, error };
   } catch (error: any) {
     console.error('Erreur lors de l\'envoi de la notification:', error);
+    const errorMessage = error.message || 'Erreur inconnue';
+    
     // Enregistrer l'échec
     await logNotification({
       type: options.type,
@@ -199,130 +201,55 @@ async function sendNotification(
       status: 'failed',
       content: '',
       metadata: options.metadata,
-      error: error.message,
+      error: errorMessage,
     });
-
-    return { success: false, error: error.message };
+    
+    return { success: false, error: errorMessage };
   }
 }
 
-// Fonctions d'aide pour les types de notifications courants
-export { sendNotification };
+// Fonction pour envoyer une notification SMS (placeholder)
+async function sendSMSNotification(
+  notification: any,
+  phoneNumber: string,
+  message: string
+): Promise<{ success: boolean; error?: string }> {
+  // Placeholder pour l'intégration SMS
+  console.log(`SMS to ${phoneNumber}: ${message}`);
+  
+  const { error } = await supabase
+    .from('notifications')
+    .update({ 
+      status: 'sent',
+      sent_at: new Date().toISOString() 
+    })
+    .eq('id', notification.id);
 
-export const notificationService = {
-  // Envoyer une notification de création de mission
-  async sendMissionCreated(
-    recipient: string,
-    missionId: string,
-    clientName: string,
-    deliveryDate: Date | string,
-    userId?: string
-  ) {
-    // Vérification explicite de la préférence utilisateur (whatsapp)
-    if (userId) {
-      const enabled = await checkNotificationPreference(userId, 'whatsapp');
-      if (!enabled) {
-        await logNotification({
-          type: 'mission_created',
-          channel: 'whatsapp',
-          recipient,
-          userId,
-          status: 'preference_skipped',
-          content: '',
-          metadata: { reason: 'user_disabled_whatsapp_notifications' },
-        });
-        return { success: false, error: 'preference_skipped' };
-      }
-    }
-    return sendNotification({
-      type: 'mission_created',
-      channel: 'whatsapp',
-      recipient,
-      userId,
-      variables: {
-        missionId,
-        clientName,
-        deliveryDate: deliveryDate instanceof Date ? deliveryDate : new Date(deliveryDate),
-      },
-    });
-  },
+  if (error) {
+    console.error('Erreur lors de la mise à jour de la notification:', error);
+    return { success: false, error: error.message };
+  }
 
-  // Envoyer une notification de mise à jour de statut de mission
-  async sendMissionStatusUpdate(
-    recipient: string,
-    missionId: string,
-    status: string,
-    clientName: string,
-    userId?: string
-  ) {
-    // Vérification explicite de la préférence utilisateur (whatsapp)
-    if (userId) {
-      const enabled = await checkNotificationPreference(userId, 'whatsapp');
-      if (!enabled) {
-        await logNotification({
-          type: 'mission_updated',
-          channel: 'whatsapp',
-          recipient,
-          userId,
-          status: 'preference_skipped',
-          content: '',
-          metadata: { reason: 'user_disabled_whatsapp_notifications' },
-        });
-        return { success: false, error: 'preference_skipped' };
-      }
-    }
-    return sendNotification({
-      type: 'mission_updated',
-      channel: 'whatsapp',
-      recipient,
-      userId,
-      variables: {
-        missionId,
-        status,
-        clientName,
-      },
-    });
-  },
+  return { success: true };
+}
 
-  // Envoyer une notification de paiement reçu
-  async sendPaymentReceived(
-    recipient: string,
-    amount: number,
-    currency: string,
-    missionId: string,
-    clientName: string,
-    userId?: string
-  ) {
-    return sendNotification({
-      type: 'payment_received',
-      channel: 'whatsapp',
-      recipient,
-      userId,
-      variables: {
-        amount,
-        currency,
-        missionId,
-        clientName,
-      },
-    });
-  },
+// Fonction pour envoyer une notification personnalisée
+export async function sendCustomNotification(
+  type: NotificationType,
+  channel: NotificationChannel,
+  recipient: string,
+  variables: Record<string, any>,
+  userId?: string,
+  metadata?: Record<string, any>
+): Promise<{ success: boolean; error?: string }> {
+  return sendNotification({
+    type,
+    channel,
+    recipient,
+    userId,
+    variables,
+    metadata,
+  });
+}
 
-  // Envoyer une notification personnalisée
-  async sendCustomNotification(
-    type: NotificationType,
-    channel: NotificationChannel,
-    recipient: string,
-    variables: Record<string, any>,
-    userId?: string,
-    metadata?: Record<string, any>
-  ) {
-    return sendNotification({
-      type,
-      channel,
-      recipient,
-      userId,
-      variables,
-      metadata,
-    });
-  },
-};
+export { sendNotification, checkNotificationPreference, logNotification };

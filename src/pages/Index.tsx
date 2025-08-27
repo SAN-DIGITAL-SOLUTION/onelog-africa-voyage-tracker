@@ -1,63 +1,39 @@
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { useRole } from '@/hooks/useRole';
-import { useEffect, useState, useMemo } from 'react';
-
-// Composant pour afficher un indicateur de chargement
-function LoadingSpinner() {
-  return (
-    <div className="flex items-center justify-center min-h-screen">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-    </div>
-  );
-}
+import { useAuth } from '@/hooks/useAuth';
 
 export default function Index() {
   const { role, loadingRole } = useRole();
-  const [isLoading, setIsLoading] = useState(true);
-  const location = useLocation();
-  const currentPath = location.pathname;
+  const { user, loading: authLoading } = useAuth();
 
-  // Mettre à jour l'état de chargement
-  useEffect(() => {
-    if (!loadingRole) {
-      setIsLoading(false);
-    }
-  }, [loadingRole]);
-
-  // Mémoriser la cible de redirection pour éviter des recalculs inutiles
-  const targetPath = useMemo(() => {
-    if (!role) return '/onboarding';
-    
-    switch (role) {
-      case 'admin':
-        return '/admin-dashboard';
-      case 'chauffeur':
-        return '/chauffeur-dashboard';
-      case 'exploiteur':
-        return '/qa-dashboard';
-      case 'client':
-        return '/client-dashboard';
-      default:
-        console.warn(`Rôle non reconnu: ${role}`);
-        return '/onboarding';
-    }
-  }, [role]);
-
-  // Afficher un indicateur de chargement si nécessaire
-  if (isLoading) {
-    return <LoadingSpinner />;
+  // Afficher un indicateur de chargement pendant la vérification
+  if (authLoading || loadingRole) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+      </div>
+    );
   }
 
-  // Éviter les redirections inutiles si on est déjà sur la bonne page
-  if (currentPath === targetPath) {
-    return null; // ou un composant vide
+  // Si l'utilisateur n'est pas connecté, rediriger vers l'authentification
+  if (!user) {
+    return <Navigate to="/auth" replace />;
   }
 
-  // Si l'utilisateur n'a pas de rôle, rediriger vers la page d'onboarding
+  // Si l'utilisateur n'a pas de rôle, rediriger vers l'onboarding
   if (!role) {
-    return <Navigate to={targetPath} replace />;
+    return <Navigate to="/onboarding" replace />;
   }
 
-  // Rediriger vers la page appropriée en fonction du rôle
+  // Rediriger vers le dashboard approprié selon le rôle
+  const dashboardMap = {
+    'admin': '/admin-dashboard',
+    'super_admin': '/admin-dashboard', 
+    'chauffeur': '/chauffeur-dashboard',
+    'exploiteur': '/qa-dashboard',
+    'client': '/client-dashboard'
+  };
+
+  const targetPath = dashboardMap[role] || '/dashboard';
   return <Navigate to={targetPath} replace />;
 }

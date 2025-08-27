@@ -1,44 +1,38 @@
-# Étape 1 : Build de l'application
-FROM node:20-alpine AS builder
+# Multi-stage build pour OneLog Africa - Vite + React
+FROM node:18-alpine AS builder
 
-# Créer le répertoire de travail
 WORKDIR /app
 
-# Copier uniquement les fichiers nécessaires
-COPY package.json package-lock.json ./
+# Copier les fichiers de dépendances
+COPY package*.json ./
 
-# Installer les dépendances de production uniquement
-RUN npm install -g npm@11 && npm ci --only=production --legacy-peer-deps
+# Installer toutes les dépendances (dev incluses pour le build)
+RUN npm ci
 
-# Copier le reste du code
+# Copier le code source
 COPY . .
 
-# Construire l’application Next.js
+# Build de l'application Vite
 RUN npm run build
 
-# Étape 2 : Image légère pour exécution en production
-FROM node:20-alpine AS runner
+# Étape 2 : Serveur Nginx pour servir les fichiers statiques
+FROM nginx:alpine AS runner
 
-# Créer un utilisateur non root
-RUN addgroup --system app && adduser --system --ingroup app app
+# Copier la configuration Nginx
+COPY nginx.conf /etc/nginx/nginx.conf
 
-WORKDIR /app
+# Copier les fichiers buildés depuis l'étape précédente
+COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Copier uniquement le build depuis l'étape précédente
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/next.config.js ./next.config.js
+# Copier les fichiers PHP dans le répertoire approprié
+COPY --from=builder /app/php /var/www/html/php
 
-# Définir les permissions
-RUN chown -R app:app /app
+# Installer PHP-FPM pour les endpoints PHP
+RUN apk add --no-cache php81 php81-fpm php81-mysqli php81-json php81-curl
 
-USER app
-
-# Démarrer l’app
+# Health check
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/api/health || exit 1
+  CMD wget --no-verbose --tries=1 --spider http://localhost/health || exit 1
 
-EXPOSE 3000
-CMD ["npm", "start"]
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

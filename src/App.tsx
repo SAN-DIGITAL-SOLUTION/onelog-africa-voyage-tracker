@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
-import { useRole } from "@/hooks/useRole";
+import { useRole, RoleProvider } from "@/hooks/useRole";
 import { Toaster } from "@/components/ui/toaster";
 import Index from "@/pages/Index";
 import Auth from "@/pages/Auth";
@@ -23,6 +23,8 @@ import NotificationToast from "@/components/NotificationToast";
 import Onboarding from "@/pages/Onboarding";
 import WaitingApproval from "@/pages/WaitingApproval";
 import RoleRequests from "@/pages/Admin/RoleRequests";
+import AdminSettings from "@/pages/AdminSettings";
+import AdminAnalytics from "@/pages/AdminAnalytics";
 import "./App.css";
 
 // React Query setup
@@ -38,6 +40,7 @@ const queryClient = new QueryClient({
 import MainLayout from "@/components/MainLayout";
 import TimelinePage from "@/pages/timeline";
 import TimelinePageOptimized from "@/pages/timeline/TimelinePageOptimized";
+import TrackingDemo from "@/pages/TrackingDemo";
 
 function RequireRole({ children }: { children: JSX.Element }) {
   const { user, loading: authLoading } = useAuth();
@@ -85,19 +88,23 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <Router>
-          <Routes>
-            {/* Route publique landing page */}
-            <Route path="/" element={<Index />} />
-            <Route path="/landing" element={<Landing />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/onboarding" element={<Onboarding />} />
-            <Route path="/waiting-approval" element={<WaitingApproval />} />
-            <Route path="/admin/role-requests" element={<RequireRole><RoleRequests /></RequireRole>} />
-            <Route path="/no-role" element={<NoRole />} />
-            <Route path="/404" element={<NotFound />} />
+        <RoleProvider>
+          <Router>
+            <Routes>
+              {/* Route publique landing page */}
+              <Route path="/" element={<Index />} />
+              <Route path="/landing" element={<Landing />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/onboarding" element={<Onboarding />} />
+              <Route path="/waiting-approval" element={<WaitingApproval />} />
+              <Route path="/admin/role-requests" element={<RequireRole><RoleRequests /></RequireRole>} />
+              <Route path="/admin/settings" element={<RequireRole><AdminSettings /></RequireRole>} />
+              <Route path="/admin/analytics" element={<RequireRole><AdminAnalytics /></RequireRole>} />
+              <Route path="/no-role" element={<NoRole />} />
+              <Route path="/404" element={<NotFound />} />
             {/* Routes authentifiées sous MainLayout (sidebar + header) */}
             <Route element={<MainLayout />}>
+              <Route index element={<Navigate to="/dashboard" replace />} />
               <Route path="/dashboard" element={
                 <RequireRole>
                   <Dashboard />
@@ -163,12 +170,18 @@ function App() {
                   <MissionTracking />
                 </RequireRole>
               } />
+              <Route path="/tracking-demo" element={
+                <RequireRole>
+                  <TrackingDemo />
+                </RequireRole>
+              } />
             </Route>
             <Route path="*" element={<Navigate to="/404" replace />} />
           </Routes>
           <Toaster />
           <NotificationToast />
         </Router>
+        </RoleProvider>
       </AuthProvider>
     </QueryClientProvider>
   );

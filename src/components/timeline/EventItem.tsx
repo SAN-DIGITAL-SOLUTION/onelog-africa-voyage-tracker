@@ -207,3 +207,4 @@ const EventItem: React.FC<EventItemProps> = ({
 };
 
 export { EventItem };
+export type { TimelineEvent } from './types';
