@@ -35,8 +35,8 @@ export function useMissions() {
     },
   });
 
-  const missionsPage = missions?.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE) ?? [];
-  const pageCount = Math.ceil((missions?.length ?? 0) / PAGE_SIZE);
+  const missionsPage = Array.isArray(missions) ? missions.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE) : [];
+  const pageCount = Math.ceil((Array.isArray(missions) ? missions.length : 0) / PAGE_SIZE);
 
   // Pagination
   function goToPage(p: number) {
@@ -44,7 +44,7 @@ export function useMissions() {
   }
 
   return {
-    missions,
+    missions: Array.isArray(missions) ? missions : [],
     missionsPage,
     isLoading,
     error,

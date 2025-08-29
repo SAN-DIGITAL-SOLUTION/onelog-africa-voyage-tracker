@@ -32,10 +32,7 @@ export function useRealtimeMissions() {
       const { data, error } = await supabase
         .from('missions')
         .select(`
-          *,
-          client:client_id(name),
-          driver:driver_id(name),
-          vehicle:vehicle_id(plate_number)
+          *
         `)
         .in('status', ['pending', 'in_progress', 'completed'])
         .order('created_at', { ascending: false });
@@ -48,6 +45,11 @@ export function useRealtimeMissions() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleRealtimeChange = (payload: any) => {
+    console.log('Mission change received:', payload);
+    fetchMissions(); // Recharger les missions
   };
 
   return { missions, loading, error, refetch: fetchMissions };

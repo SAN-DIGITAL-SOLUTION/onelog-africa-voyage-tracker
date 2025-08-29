@@ -17,6 +17,7 @@ import ChauffeurDashboard from "@/pages/ChauffeurDashboard";
 import AdminDashboard from "@/pages/AdminDashboard";
 import MissionTracking from "@/pages/MissionTracking";
 import Landing from "@/pages/Landing";
+import ControlRoom from './pages/ControlRoom';
 import NoRole from "@/pages/NoRole";
 import NotFound from "@/pages/NotFound";
 import NotificationToast from "@/components/NotificationToast";
@@ -162,7 +163,12 @@ function App() {
               } />
               <Route path="/tracking" element={
                 <RequireRole>
-                  <TrackingMap />
+                  <Navigate to="/control-room" replace />
+                </RequireRole>
+              } />
+              <Route path="/control-room" element={
+                <RequireRole>
+                  <ControlRoom />
                 </RequireRole>
               } />
               <Route path="/missions/:id/tracking" element={

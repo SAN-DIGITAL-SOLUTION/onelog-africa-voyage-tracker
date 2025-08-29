@@ -28,7 +28,7 @@ export default function RealtimeStatusIndicator() {
   return (
     <div className="fixed bottom-4 right-4 z-40">
       <AnimatePresence>
-        {realtimeUpdates.length > 0 && (
+        {realtimeUpdates && Array.isArray(realtimeUpdates) && realtimeUpdates.length > 0 && (
           <motion.div
             initial={{ opacity: 0, scale: 0.8, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}

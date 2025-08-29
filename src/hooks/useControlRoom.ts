@@ -81,13 +81,57 @@ export const useControlRoom = () => {
 
     try {
       setLoading(true);
-      const { data, error } = await supabase
-        .rpc('get_latest_positions', { transporteur_uuid: user.id });
+      setError(null);
+      
+      // Ajouter un timeout de 10 secondes
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Timeout de connexion')), 10000)
+      );
 
-      if (error) throw error;
-      setPositions(data || []);
+      let data = null;
+      let error = null;
+
+      try {
+        // Essayer d'abord la fonction RPC
+        const fetchPromise = supabase
+          .rpc('get_latest_positions', { transporteur_uuid: user.id });
+
+        const result = await Promise.race([fetchPromise, timeoutPromise]) as any;
+        data = result.data;
+        error = result.error;
+      } catch (err) {
+        error = err;
+      }
+
+      // Fallback sur la table tracking_points si la fonction échoue
+      if (error) {
+        console.warn('Fonction get_latest_positions échouée, fallback sur tracking_points:', error);
+        try {
+          const fallbackPromise = supabase
+            .from('tracking_points')
+            .select('*')
+            .order('timestamp', { ascending: false })
+            .limit(100);
+
+          const result = await Promise.race([fallbackPromise, timeoutPromise]) as any;
+          data = result.data;
+          error = result.error;
+        } catch (err) {
+          error = err;
+        }
+      }
+
+      if (error) {
+        console.error('Erreur finale:', error);
+        setError(`Erreur de connexion: ${error.message}`);
+        setPositions([]);
+      } else {
+        setPositions(data || []);
+      }
     } catch (err) {
-      setError(err.message);
+      console.error('Erreur fetch:', err);
+      setError(err.message || 'Erreur de connexion au serveur');
+      setPositions([]);
     } finally {
       setLoading(false);
     }
@@ -97,6 +141,10 @@ export const useControlRoom = () => {
   useEffect(() => {
     if (!user) return;
 
+    // Charger les données initiales
+    fetchLatestPositions();
+
+    // Écouter les changements en temps réel
     const channel = supabase
       .channel('positions_changes')
       .on(

@@ -40,6 +40,8 @@ export function useBillingService() {
     getInvoicesByPartner: (partnerId: string) => billingService.getInvoicesByPartner(partnerId),
     generatePeriodicInvoices: (partnerId: string, startDate: Date, endDate: Date) => 
       billingService.generatePeriodicInvoices(partnerId, startDate, endDate),
+    generateGroupedInvoice: (partnerId: string, startDate: Date, endDate: Date) =>
+      billingService.generateGroupedInvoice(partnerId, startDate, endDate),
     sendInvoice: (invoiceId: string, email: string) => billingService.sendInvoice(invoiceId, email),
   };
 }

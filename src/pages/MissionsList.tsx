@@ -131,7 +131,7 @@ export default function MissionsList() {
                 </div>
                 <div className="flex-1">
                   <p className="text-sm text-green-600 font-medium mb-1">Terminées</p>
-                  <p className="text-2xl font-bold text-green-800">{missions?.filter(m => m.status === 'completed').length || 0}</p>
+                  <p className="text-2xl font-bold text-green-800">{Array.isArray(missions) ? missions.filter(m => m?.status === 'completed').length : 0}</p>
                 </div>
               </div>
             </div>
@@ -145,7 +145,7 @@ export default function MissionsList() {
                 </div>
                 <div className="flex-1">
                   <p className="text-sm text-blue-600 font-medium mb-1">En cours</p>
-                  <p className="text-2xl font-bold text-blue-800">{missions?.filter(m => m.status === 'in_progress').length || 0}</p>
+                  <p className="text-2xl font-bold text-blue-800">{Array.isArray(missions) ? missions.filter(m => m?.status === 'in_progress').length : 0}</p>
                 </div>
               </div>
             </div>
@@ -159,7 +159,7 @@ export default function MissionsList() {
                 </div>
                 <div className="flex-1">
                   <p className="text-sm text-orange-600 font-medium mb-1">En attente</p>
-                  <p className="text-2xl font-bold text-orange-800">{missions?.filter(m => m.status === 'pending').length || 0}</p>
+                  <p className="text-2xl font-bold text-orange-800">{Array.isArray(missions) ? missions.filter(m => m?.status === 'pending').length : 0}</p>
                 </div>
               </div>
             </div>
@@ -173,7 +173,7 @@ export default function MissionsList() {
                 </div>
                 <div className="flex-1">
                   <p className="text-sm text-purple-600 font-medium mb-1">Total</p>
-                  <p className="text-2xl font-bold text-purple-800">{missions?.length || 0}</p>
+                  <p className="text-2xl font-bold text-purple-800">{Array.isArray(missions) ? missions.length : 0}</p>
                 </div>
               </div>
             </div>

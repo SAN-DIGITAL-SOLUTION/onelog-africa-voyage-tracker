@@ -18,6 +18,33 @@ export class BillingService {
   /**
    * Génère des factures groupées pour un partenaire et une période
    */
+  /**
+   * Appelle la fonction Supabase pour générer une facture groupée et renvoie l'URL du PDF.
+   */
+  async generateGroupedInvoice(partnerId: string, startDate: Date, endDate: Date): Promise<string> {
+    const { data, error } = await supabase.functions.invoke('generate-grouped-invoice-pdf', {
+      body: {
+        billing_partner_id: partnerId,
+        start_date: startDate.toISOString().split('T')[0], // Format YYYY-MM-DD
+        end_date: endDate.toISOString().split('T')[0],     // Format YYYY-MM-DD
+      },
+    });
+
+    if (error) {
+      throw new Error(`Erreur lors de la génération de la facture: ${error.message}`);
+    }
+
+    if (!data.pdfUrl) {
+      throw new Error('Aucune URL de PDF retournée par la fonction.');
+    }
+
+    return data.pdfUrl;
+  }
+
+  /**
+   * @deprecated La logique est maintenant gérée côté serveur par generateGroupedInvoice.
+   * Génère des factures groupées pour un partenaire et une période
+   */
   async generatePeriodicInvoices(
     partnerId: string,
     periodStart: Date,

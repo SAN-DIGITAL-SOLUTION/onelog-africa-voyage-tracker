@@ -195,8 +195,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new InvalidArgumentException('Format JSON invalide: ' . json_last_error_msg(), 400);
         }
         
+        // Validation stricte des champs
+        $required = ['transporteur_id', 'departure', 'arrival', 'expected_start', 'expected_end'];
+        $validated = [];
+
+        foreach ($required as $field) {
+            if (!isset($data[$field])) {
+                http_response_code(400);
+                echo json_encode(['error' => "Champ manquant: $field"]);
+                exit;
+            }
+            
+            // Sanitization
+            $validated[$field] = htmlspecialchars(strip_tags(trim($data[$field])), ENT_QUOTES, 'UTF-8');
+        }
+
         $controller = new MissionController($db);
-        $response = $controller->createMission($data);
+        $response = $controller->createMission($validated);
         
         // Définition du code HTTP approprié en fonction de la réponse
         http_response_code(isset($response['error']) ? $response['error']['code'] : 201);

@@ -44,16 +44,18 @@ export const BillingPartnerSelector: React.FC = () => {
 
     setIsGenerating(true);
     try {
-      const invoices = await billingService.generatePeriodicInvoices(
+      const pdfUrl = await billingService.generateGroupedInvoice(
         selectedPartner,
         startDate,
         endDate
       );
 
       toast({
-        title: "Succès",
-        description: `${invoices.length} facture(s) générée(s)`,
+        title: "Facture générée avec succès",
+        description: "Le PDF va s'ouvrir dans un nouvel onglet.",
       });
+
+      window.open(pdfUrl, '_blank');
     } catch (error) {
       toast({
         title: "Erreur",

@@ -265,7 +265,9 @@ jobs:
       - name: ⚡ Run load tests
         run: k6 run tests/load/load-test.js
         env:
-          BASE_URL: https://staging.onelog-africa.com
+          SUPABASE_URL: ${{ secrets.STAGING_SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.STAGING_SUPABASE_ANON_KEY }}
+          PHP_URL: https://staging.onelog-africa.com # ou l'URL du backend PHP de staging
 
       - name: 📊 Upload load test results
         uses: actions/upload-artifact@v3

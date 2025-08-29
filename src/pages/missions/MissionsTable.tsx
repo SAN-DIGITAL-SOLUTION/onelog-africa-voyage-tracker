@@ -82,7 +82,7 @@ export default function MissionsTable({
               <span className="animate-spin h-7 w-7 border-4 border-onelog-bleu border-t-transparent rounded-full inline-block" />
             </TableCell>
           </TableRow>
-        ) : ((missionsPage && Array.isArray(missionsPage) && missionsPage.length > 0) ? missionsPage.map((m) => (
+        ) : (Array.isArray(missionsPage) && missionsPage.length > 0) ? missionsPage.map((m) => (
           <TableRow key={m.id} className="hover:bg-onelog-bleu/10">
             <TableCell style={{ fontFamily: "'PT Sans',sans-serif" }}>{m.ref}</TableCell>
             <TableCell style={{ fontFamily: "'PT Sans',sans-serif" }}>{m.client}</TableCell>
@@ -142,7 +142,7 @@ export default function MissionsTable({
               Aucune mission trouvée.
             </TableCell>
           </TableRow>
-        ))}
+        )}
       </TableBody>
     </Table>
   );

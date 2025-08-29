@@ -3,7 +3,8 @@ import mapboxgl from 'mapbox-gl';
 import { useControlRoom } from '../hooks/useControlRoom';
 import { useAuth } from '../hooks/useAuth';
 import { MAPBOX_CONFIG } from '../config/mapbox.config';
-import { Play, Pause, Maximize, Minimize, Filter, Truck, Route, Clock } from 'lucide-react';
+import StaticMap from '../components/StaticMap';
+import { Play, Pause, Maximize, Minimize, Filter, Truck, Route, Clock, AlertCircle, RefreshCw } from 'lucide-react';
 
 const ControlRoom: React.FC = () => {
   const { user } = useAuth();
@@ -24,30 +25,54 @@ const ControlRoom: React.FC = () => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const markers = useRef<Record<string, mapboxgl.Marker>>({});
+  const [webGLError, setWebGLError] = useState<string | null>(null);
+  const [isWebGLSupported, setIsWebGLSupported] = useState(true);
+
+  // Vérifier la compatibilité WebGL
+  useEffect(() => {
+    const canvas = document.createElement('canvas');
+    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+    if (!gl) {
+      setIsWebGLSupported(false);
+      setWebGLError('WebGL non supporté par votre navigateur');
+    }
+  }, []);
 
   // Initialiser la carte Mapbox
   useEffect(() => {
-    if (!mapContainer.current) return;
+    if (!mapContainer.current || !isWebGLSupported) return;
 
-    mapboxgl.accessToken = MAPBOX_CONFIG.accessToken;
+    try {
+      mapboxgl.accessToken = MAPBOX_CONFIG.accessToken;
 
-    map.current = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: MAPBOX_CONFIG.style,
-      center: MAPBOX_CONFIG.defaultCenter,
-      zoom: MAPBOX_CONFIG.defaultZoom
-    });
+      map.current = new mapboxgl.Map({
+        container: mapContainer.current,
+        style: MAPBOX_CONFIG.style,
+        center: MAPBOX_CONFIG.defaultCenter,
+        zoom: MAPBOX_CONFIG.defaultZoom,
+        failIfMajorPerformanceCaveat: false
+      });
 
-    map.current.addControl(new mapboxgl.NavigationControl());
-    map.current.addControl(new mapboxgl.FullscreenControl());
+      map.current.addControl(new mapboxgl.NavigationControl());
+      map.current.addControl(new mapboxgl.FullscreenControl());
 
-    return () => {
-      if (map.current) {
-        map.current.remove();
-        map.current = null;
-      }
-    };
-  }, []);
+      // Gestion des erreurs Mapbox
+      map.current.on('error', (e) => {
+        console.error('Mapbox error:', e);
+        setWebGLError('Erreur lors du chargement de la carte');
+      });
+
+      return () => {
+        if (map.current) {
+          map.current.remove();
+          map.current = null;
+        }
+      };
+    } catch (error) {
+      console.error('Erreur initialisation Mapbox:', error);
+      setWebGLError('Erreur lors de l\'initialisation de la carte');
+    }
+  }, [isWebGLSupported]);
 
   // Mettre à jour les marqueurs sur la carte
   useEffect(() => {
@@ -153,6 +178,19 @@ const ControlRoom: React.FC = () => {
           <h2 className="text-2xl font-bold text-gray-700 mb-4">Salle de Contrôle</h2>
           <p className="text-gray-500">Veuillez vous connecter pour accéder au tableau de bord.</p>
         </div>
+      </div>
+    );
+  }
+
+  const handleReload = () => {
+    window.location.reload();
+  };
+
+  // Mode carte statique en fallback
+  if (!isWebGLSupported || webGLError) {
+    return (
+      <div className="h-screen bg-gray-900 flex">
+        <StaticMap positions={positions} loading={loading} />
       </div>
     );
   }

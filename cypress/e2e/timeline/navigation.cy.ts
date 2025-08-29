@@ -5,6 +5,9 @@ describe('Navigation et fonctionnalités de la Timeline', () => {
     // Visiter la page de la timeline avant chaque test
     cy.visit('/timeline');
     // Attendre que la page soit chargée
+    // Attendre que le chargement initial soit terminé
+    cy.get('[data-testid="loading-indicator"]').should('not.exist');
+    // Vérifier que le conteneur de la timeline est bien visible
     cy.get('[data-testid="timeline-container"]').should('be.visible');
   });
 

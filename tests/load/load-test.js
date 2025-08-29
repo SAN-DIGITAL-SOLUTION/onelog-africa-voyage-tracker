@@ -22,7 +22,9 @@ export const options = {
   },
 };
 
-const BASE_URL = __ENV.BASE_URL || 'https://staging.onelog-africa.com';
+const SUPABASE_URL = __ENV.SUPABASE_URL;
+const PHP_URL = __ENV.PHP_URL;
+const ANON_KEY = __ENV.SUPABASE_ANON_KEY;
 
 // Données de test
 const testUsers = [
@@ -41,21 +43,23 @@ const testMissions = [
 ];
 
 export function setup() {
-  // Authentification pour obtenir les tokens
   const authTokens = {};
-  
+
   testUsers.forEach(user => {
-    const loginRes = http.post(`${BASE_URL}/auth/login`, {
+    const res = http.post(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
       email: user.email,
       password: user.password,
+    }, {
+      headers: { 'apikey': ANON_KEY }
     });
-    
-    if (loginRes.status === 200) {
-      const token = loginRes.json('access_token');
-      authTokens[user.email] = token;
+
+    if (res.status === 200) {
+      authTokens[user.email] = res.json('access_token');
+    } else {
+      console.error(`Failed to authenticate user ${user.email}: ${res.status} ${res.body}`);
     }
   });
-  
+
   return { authTokens };
 }
 
@@ -78,7 +82,7 @@ export default function(data) {
 }
 
 function testHomePage() {
-  const res = http.get(`${BASE_URL}/`);
+  const res = http.get(`${PHP_URL}/`);
   
   check(res, {
     'Homepage loads': (r) => r.status === 200,
@@ -93,7 +97,7 @@ function testHomePage() {
 function testAuthentication() {
   const user = testUsers[Math.floor(Math.random() * testUsers.length)];
   
-  const res = http.post(`${BASE_URL}/auth/login`, {
+  const res = http.post(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
     email: user.email,
     password: user.password,
   });
@@ -119,7 +123,7 @@ function testMissionsList(authTokens) {
     },
   };
   
-  const res = http.get(`${BASE_URL}/api/missions`, params);
+  const res = http.get(`${SUPABASE_URL}/rest/v1/missions?select=*`, params);
   
   check(res, {
     'Missions list loads': (r) => r.status === 200,
@@ -144,7 +148,7 @@ function testMissionCreation(authTokens) {
     },
   };
   
-  const res = http.post(`${BASE_URL}/api/missions`, JSON.stringify(mission), params);
+  const res = http.post(`${SUPABASE_URL}/rest/v1/missions`, JSON.stringify(mission), params);
   
   check(res, {
     'Mission created': (r) => r.status === 201,
@@ -175,7 +179,7 @@ function testTrackingUpdates(authTokens) {
     },
   };
   
-  const res = http.post(`${BASE_URL}/api/tracking`, JSON.stringify(trackingData), params);
+  const res = http.post(`${PHP_URL}/log_position.php`, trackingData, { headers: { 'Authorization': `Bearer ${token}` } });
   
   check(res, {
     'Tracking updated': (r) => r.status === 200,
@@ -197,7 +201,7 @@ function testNotifications(authTokens) {
     },
   };
   
-  const res = http.get(`${BASE_URL}/api/notifications`, params);
+  const res = http.get(`${SUPABASE_URL}/rest/v1/notifications?select=*`, params);
   
   check(res, {
     'Notifications loaded': (r) => r.status === 200,
@@ -226,7 +230,7 @@ function testAdminDashboard(authTokens) {
   ];
   
   endpoints.forEach(endpoint => {
-    const res = http.get(`${BASE_URL}${endpoint}`, params);
+    const res = http.get(`${SUPABASE_URL}/rest/v1${endpoint}`, params);
     
     check(res, {
       [`${endpoint} loads`]: (r) => r.status === 200,
