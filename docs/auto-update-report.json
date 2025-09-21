@@ -1,14 +1,14 @@
 {
-  "timestamp": "2025-08-29T02:41:54.744Z",
+  "timestamp": "2025-08-30T08:54:23.206Z",
   "progress": 100,
   "statistics": {
     "totalFiles": 367,
-    "reactComponents": 205,
-    "pages": 64,
+    "reactComponents": 203,
+    "pages": 62,
     "services": 18,
-    "hooks": 19,
+    "hooks": 21,
     "tests": 31,
-    "migrations": 24
+    "migrations": 3
   },
   "recommendations": []
 }

@@ -16,7 +16,8 @@ import {
   Trash2,
   Download
 } from 'lucide-react';
-import { Badge, Button } from '../ui-system';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { EventDetailModalProps } from './types';
 
 const EventDetailModal: React.FC<EventDetailModalProps> = ({
@@ -152,10 +153,7 @@ const EventDetailModal: React.FC<EventDetailModalProps> = ({
                 </div>
                 
                 <div className="flex items-center space-x-2">
-                  <Badge 
-                    text={event.status} 
-                    color={statusVariants[event.status]}
-                  />
+                  <Badge variant={statusVariants[event.status]}>{event.status}</Badge>
                   {event.severity && (
                     <span className={`text-xs font-medium ${severityColors[event.severity]}`}>
                       {event.severity.toUpperCase()}

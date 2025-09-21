@@ -39,8 +39,12 @@ export default defineConfig({
     resolve: {
       alias: [
         {
-          find: /^@\/(.*)/,
-          replacement: path.resolve(dirname, 'src/$1'),
+          find: '@',
+          replacement: path.resolve(dirname, 'src'),
+        },
+        {
+          find: /^next\/server$/,
+          replacement: path.resolve(dirname, '__tests__/mocks/next-server.ts'),
         },
       ],
     },

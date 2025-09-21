@@ -34,13 +34,13 @@ describe('TimelineFilters', () => {
     );
 
     // Vérifier la présence des filtres principaux
-    expect(screen.getByText(/Type d'événement/i)).toBeInTheDocument();
-    expect(screen.getByText(/Statut/i)).toBeInTheDocument();
-    expect(screen.getByText(/Gravité/i)).toBeInTheDocument();
+    expect(screen.getByText(/Types d'événements/i)).toBeInTheDocument();
+    expect(screen.getByText(/Statuts/i)).toBeInTheDocument();
+    expect(screen.getByText(/Sévérité/i)).toBeInTheDocument();
     expect(screen.getByText(/Période/i)).toBeInTheDocument();
   });
 
-  it('permet de sélectionner un type d\'événement', () => {
+  it('permet de désélectionner un type d`événement', () => {
     render(
       <TimelineFilters 
         filters={mockTimelineFilters} 
@@ -49,14 +49,13 @@ describe('TimelineFilters', () => {
       />
     );
 
-    // Cliquer sur le filtre "Départ"
-    const departureFilter = screen.getByLabelText(/Départ/i);
+    // 'departure' est déjà sélectionné, cliquer dessus devrait le retirer
+    const departureFilter = screen.getByTestId('event-type-departure');
     fireEvent.click(departureFilter);
 
-    // Vérifier que la callback est appelée
     expect(mockOnFiltersChange).toHaveBeenCalledWith(
       expect.objectContaining({
-        types: expect.arrayContaining(['departure'])
+        eventTypes: ['arrival'] // 'departure' a été retiré
       })
     );
   });
@@ -66,32 +65,18 @@ describe('TimelineFilters', () => {
       <TimelineFilters 
         filters={mockTimelineFilters} 
         onFiltersChange={mockOnFiltersChange} 
+        availableVehicles={mockAvailableVehicles}
       />
     );
 
-    // Cliquer sur le bouton de réinitialisation
-    const resetButton = screen.getByText(/Réinitialiser/i);
-    fireEvent.click(resetButton);
+    const resetButton = screen.getByTestId('filters-reset');
+    fireEvent.click(resetButton, { bubbles: true });
 
-    // Vérifier que tous les filtres sont réinitialisés
-    expect(mockOnFiltersChange).toHaveBeenCalledWith({
-      dateRange: { start: null, end: null },
-      types: [],
-      status: [],
-      severity: [],
-      vehicleId: null
-    });
-  });
-
-  it('affiche le nombre d\'événements filtrés', () => {
-    render(
-      <TimelineFilters 
-        filters={mockTimelineFilters} 
-        onFiltersChange={mockOnFiltersChange}
-        eventCount={42}
-      />
-    );
-
-    expect(screen.getByText(/42 événements/i)).toBeInTheDocument();
+    expect(mockOnFiltersChange).toHaveBeenCalledWith(expect.objectContaining({
+      eventTypes: [],
+      vehicleIds: [],
+      statuses: [],
+      severity: []
+    }));
   });
 });

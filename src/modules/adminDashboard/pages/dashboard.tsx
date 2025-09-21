@@ -2,10 +2,10 @@ import DashboardLayout from '../components/DashboardLayout';
 import StatsCard from '../components/StatsCard';
 import NotificationSummary from '../components/NotificationSummary';
 import useAdminStats from '../hooks/useAdminStats';
-import AnalyticsDashboard from './analytics/AnalyticsDashboard';
+import AnalyticsDashboard from '../analytics/AnalyticsDashboard';
 
 import { GetServerSidePropsContext } from 'next';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/lib/supabase';
 
 export default function AdminDashboardPage() {
   const stats = useAdminStats();

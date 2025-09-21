@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/lib/supabase';
 
 export async function middleware(req: NextRequest) {
   if (!req.nextUrl.pathname.startsWith('/admin')) {

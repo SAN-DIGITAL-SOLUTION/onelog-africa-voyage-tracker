@@ -1,5 +1,4 @@
 import React, { useState, useCallback } from 'react';
-import { Section } from '@/components/ui-system';
 import { AlertCircle, Clock } from 'lucide-react';
 import { TimelineOptimized } from '@/components/timeline/TimelineOptimized';
 import { TimelineEvent as TimelineEventType } from '@/types/timeline';
@@ -36,7 +35,7 @@ const TimelinePageOptimized: React.FC = () => {
   }, []);
 
   return (
-    <Section data-testid="timeline-page">
+    <section data-testid="timeline-page">
       <div className="min-h-screen bg-neutral-light">
         <div className="container mx-auto px-4 py-8">
           {/* En-tête */}
@@ -84,7 +83,7 @@ const TimelinePageOptimized: React.FC = () => {
           />
         </div>
       </div>
-    </Section>
+    </section>
   );
 };
 

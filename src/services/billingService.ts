@@ -1,5 +1,12 @@
-import { supabase } from '@/integrations/supabase/client';
-import type { BillingPartner, GroupedInvoice, Mission } from '@/types/billing';
+import { supabase } from '@/lib/supabase';
+import type { BillingPartner, GroupedInvoice } from '@/types/billing';
+import type { Mission } from '@/types/mission';
+
+interface ClientInvoiceData {
+  missions: Mission[];
+  totalAmount: number;
+  client: any; // TODO: Replace with a specific client type when available
+}
 
 export class BillingService {
   /**
@@ -64,7 +71,7 @@ export class BillingService {
     }
 
     // 2. Calculer le total par client
-    const clientTotals = missions.reduce((acc, mission) => {
+    const clientTotals: Record<string, ClientInvoiceData> = missions.reduce((acc, mission) => {
       const clientId = mission.client_id;
       if (!acc[clientId]) {
         acc[clientId] = {
@@ -76,7 +83,7 @@ export class BillingService {
       acc[clientId].missions.push(mission);
       acc[clientId].totalAmount += mission.price || 0;
       return acc;
-    }, {} as Record<string, any>);
+    }, {} as Record<string, ClientInvoiceData>);
 
     // 3. Créer les factures groupées
     const invoices: GroupedInvoice[] = [];

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Package, Truck, FileText, Clock, MapPin, Plus, Eye, Download, CreditCard } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import RequireAuth from '../components/RequireAuth';
 
 export default function ClientDashboard() {
@@ -205,10 +206,10 @@ export default function ClientDashboard() {
                     <Truck className="h-5 w-5 text-blue-600" />
                     Missions récentes
                   </h2>
-                  <button className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                  <Link to="/demande-client" className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
                     <Plus className="h-4 w-4" />
                     Nouvelle mission
-                  </button>
+                  </Link>
                 </div>
                 <div className="space-y-4">
                   {recentMissions.map(mission => (
@@ -237,7 +238,7 @@ export default function ClientDashboard() {
               <div className="bg-white rounded-xl p-6 shadow-sm border">
                 <h2 className="text-xl font-semibold mb-4">Actions rapides</h2>
                 <div className="space-y-3">
-                  <button className="w-full p-3 bg-blue-50 border-2 border-blue-200 rounded-lg hover:bg-blue-100 transition-colors text-left">
+                  <Link to="/demande-client" className="block w-full p-3 bg-blue-50 border-2 border-blue-200 rounded-lg hover:bg-blue-100 transition-colors text-left">
                     <div className="flex items-center gap-3">
                       <Plus className="h-5 w-5 text-blue-600" />
                       <div>
@@ -245,7 +246,7 @@ export default function ClientDashboard() {
                         <p className="text-sm text-gray-600">Nouvelle expédition</p>
                       </div>
                     </div>
-                  </button>
+                  </Link>
                   <button className="w-full p-3 bg-green-50 border-2 border-green-200 rounded-lg hover:bg-green-100 transition-colors text-left">
                     <div className="flex items-center gap-3">
                       <MapPin className="h-5 w-5 text-green-600" />

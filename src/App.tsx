@@ -3,21 +3,19 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { useRole, RoleProvider } from "@/hooks/useRole";
 import { Toaster } from "@/components/ui/toaster";
-import Index from "@/pages/Index";
+import HomeRedirect from "@/pages/HomeRedirect";
 import Auth from "@/pages/Auth";
-import Dashboard from "@/pages/Dashboard";
 import Missions from "@/pages/Missions";
 import MissionsChauffeur from "@/pages/MissionsChauffeur";
 import Notifications from "@/pages/Notifications";
 import Invoices from "@/pages/Invoices";
-import TrackingMap from "@/pages/TrackingMap";
-import QADashboard from "@/pages/QADashboard";
+import ControlRoom from "@/pages/ControlRoom";
+import ExploiteurDashboard from "@/pages/ExploiteurDashboard";
 import ClientDashboard from "@/pages/ClientDashboard";
 import ChauffeurDashboard from "@/pages/ChauffeurDashboard";
 import AdminDashboard from "@/pages/AdminDashboard";
 import MissionTracking from "@/pages/MissionTracking";
 import Landing from "@/pages/Landing";
-import ControlRoom from './pages/ControlRoom';
 import NoRole from "@/pages/NoRole";
 import NotFound from "@/pages/NotFound";
 import NotificationToast from "@/components/NotificationToast";
@@ -26,7 +24,9 @@ import WaitingApproval from "@/pages/WaitingApproval";
 import RoleRequests from "@/pages/Admin/RoleRequests";
 import AdminSettings from "@/pages/AdminSettings";
 import AdminAnalytics from "@/pages/AdminAnalytics";
-import "./App.css";
+import DemandesExploitantPage from "@/pages/DemandesExploitantPage";
+import AffectationsPage from "@/pages/AffectationsPage";
+import FullscreenDashboard from "@/pages/FullscreenDashboard";
 
 // React Query setup
 const queryClient = new QueryClient({
@@ -41,7 +41,6 @@ const queryClient = new QueryClient({
 import MainLayout from "@/components/MainLayout";
 import TimelinePage from "@/pages/timeline";
 import TimelinePageOptimized from "@/pages/timeline/TimelinePageOptimized";
-import TrackingDemo from "@/pages/TrackingDemo";
 
 function RequireRole({ children }: { children: JSX.Element }) {
   const { user, loading: authLoading } = useAuth();
@@ -93,7 +92,7 @@ function App() {
           <Router>
             <Routes>
               {/* Route publique landing page */}
-              <Route path="/" element={<Index />} />
+              <Route path="/" element={<HomeRedirect />} />
               <Route path="/landing" element={<Landing />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/onboarding" element={<Onboarding />} />
@@ -105,15 +104,9 @@ function App() {
               <Route path="/404" element={<NotFound />} />
             {/* Routes authentifiées sous MainLayout (sidebar + header) */}
             <Route element={<MainLayout />}>
-              <Route index element={<Navigate to="/dashboard" replace />} />
-              <Route path="/dashboard" element={
+                            <Route path="/exploiteur-dashboard" element={
                 <RequireRole>
-                  <Dashboard />
-                </RequireRole>
-              } />
-              <Route path="/qa-dashboard" element={
-                <RequireRole>
-                  <QADashboard />
+                  <ExploiteurDashboard />
                 </RequireRole>
               } />
               <Route path="/client-dashboard" element={
@@ -124,6 +117,16 @@ function App() {
               <Route path="/chauffeur-dashboard" element={
                 <RequireRole>
                   <ChauffeurDashboard />
+                </RequireRole>
+              } />
+                                          <Route path="/affectations" element={
+                <RequireRole>
+                  <AffectationsPage />
+                </RequireRole>
+              } />
+              <Route path="/demandes-exploitant" element={
+                <RequireRole>
+                  <DemandesExploitantPage />
                 </RequireRole>
               } />
               <Route path="/admin-dashboard" element={
@@ -176,9 +179,9 @@ function App() {
                   <MissionTracking />
                 </RequireRole>
               } />
-              <Route path="/tracking-demo" element={
+              <Route path="/fullscreen-dashboard" element={
                 <RequireRole>
-                  <TrackingDemo />
+                  <FullscreenDashboard />
                 </RequireRole>
               } />
             </Route>
@@ -189,7 +192,7 @@ function App() {
         </Router>
         </RoleProvider>
       </AuthProvider>
-    </QueryClientProvider>
+          </QueryClientProvider>
   );
 }
 

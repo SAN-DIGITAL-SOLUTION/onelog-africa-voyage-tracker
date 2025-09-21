@@ -3,6 +3,7 @@
 describe('Admin Dashboard', () => {
   it('navigue sur /admin/dashboard et affiche les stats', () => {
     cy.visit('/admin/dashboard');
+    cy.get('[data-testid="dashboard-admin"]').should('exist');
     cy.contains('Vue générale du système');
     cy.contains('Utilisateurs');
     cy.contains('Missions');

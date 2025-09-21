@@ -92,7 +92,7 @@ export default function Auth() {
     } else if (role === "admin") {
       targetPath = "/admin-dashboard";
     } else if (role === "exploiteur") {
-      targetPath = "/qa-dashboard";
+      targetPath = "/exploiteur-dashboard";
     } else if (role === "chauffeur") {
       targetPath = "/chauffeur-dashboard";
     } else if (role === "client") {

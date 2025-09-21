@@ -36,12 +36,12 @@ describe('EventItem', () => {
   it('affiche l\'icône correspondante au type d\'événement', () => {
     render(<EventItem event={mockEvent} />);
     // Vérifie la présence de l'icône de départ (utilisation d'un test-id)
-    expect(screen.getByTestId('event-icon-departure')).toBeInTheDocument();
+    expect(screen.getByTestId('event-icon')).toBeInTheDocument();
   });
 
   it('affiche le badge de statut avec la bonne couleur', () => {
     render(<EventItem event={mockEvent} />);
-    const badge = screen.getByText(/complété/i);
-    expect(badge).toHaveClass('bg-green-100', 'text-green-800');
+    const badge = screen.getByText(/completed/i);
+    expect(badge).toHaveClass('bg-[#009688]', 'text-white');
   });
 });

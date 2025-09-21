@@ -6,7 +6,6 @@ import {
   TimelineEvent,
   TimelineFilters as TimelineFiltersType
 } from '../../components/timeline';
-import { Section } from '../../components/ui-system';
 import { useTimelineEvents } from '../../hooks/useTimelineEvents';
 import { Clock, AlertCircle } from 'lucide-react';
 
@@ -60,7 +59,7 @@ const TimelinePage: React.FC = () => {
   }, [loading]);
 
   return (
-    <Section>
+    <section>
       <div className="min-h-screen bg-neutral-light">
         <div className="container mx-auto px-4 py-8">
           {/* Header */}
@@ -154,7 +153,7 @@ const TimelinePage: React.FC = () => {
           />
         </div>
       </div>
-    </Section>
+    </section>
   );
 };
 

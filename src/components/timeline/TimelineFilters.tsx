@@ -10,7 +10,8 @@ import {
   X,
   ChevronDown
 } from 'lucide-react';
-import { Button, Badge } from '../ui-system';
+import { Button } from "@/components/ui/button"; 
+import { Badge } from '@/components/ui/badge';
 import { TimelineFilters as TimelineFiltersType, TimelineFiltersProps } from './types';
 
 const TimelineFilters: React.FC<TimelineFiltersProps> = ({
@@ -137,10 +138,7 @@ const TimelineFilters: React.FC<TimelineFiltersProps> = ({
           <Filter className="w-5 h-5 text-neutral-medium" />
           <h3 className="font-medium text-neutral-dark">Filtres</h3>
           {getActiveFiltersCount() > 0 && (
-            <Badge 
-              text={getActiveFiltersCount().toString()} 
-              color="secondary"
-            />
+            <Badge variant="secondary">{getActiveFiltersCount()}</Badge>
           )}
         </div>
         
@@ -242,7 +240,7 @@ const TimelineFilters: React.FC<TimelineFiltersProps> = ({
               Véhicules
             </label>
             <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
-              {availableVehicles.map((vehicleId) => {
+              {(availableVehicles || []).map((vehicleId) => {
                 const isSelected = filters.vehicleIds.includes(vehicleId);
                 
                 return (

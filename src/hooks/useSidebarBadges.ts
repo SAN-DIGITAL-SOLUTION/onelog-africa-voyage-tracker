@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from '@/lib/supabase';
 import { useAuth } from "@/hooks/useAuth";
 import { useRole } from "@/hooks/useRole";
 
@@ -45,7 +45,7 @@ export function useSidebarBadges() {
       .from("notifications")
       .select("id", { count: "exact", head: true })
       .eq("user_id", user.id)
-      .eq("read", false)
+      .eq("is_read", false)
       .then(({ count }) => setNotifCount(count ?? 0));
     // 4. Demandes admin en attente
     if (role === "admin") {

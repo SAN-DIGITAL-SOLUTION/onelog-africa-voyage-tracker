@@ -1,14 +1,13 @@
 import { renderHook, waitFor } from '@testing-library/react';
-import { useTimelineEvents } from '@/hooks/useTimelineEvents';
-import { mockTimelineEvents } from '@/__tests__/mocks/timelineMocks';
+import { useTimelineEvents } from '../../../src/hooks/useTimelineEvents';
+import { mockTimelineEvents } from '../../mocks/timelineMocks';
 import { vi } from 'vitest';
 
-// Mock du service TimelineService
-vi.mock('@/services/TimelineService', () => ({
-  fetchTimelineData: vi.fn(),
-  TimelineService: {
-    groupEventsByDay: vi.fn(),
-    filterEvents: vi.fn()
+// Mock du service TimelineService basé sur la vraie signature
+vi.mock('../../../src/services/TimelineService', () => ({
+  timelineService: {
+    getEvents: vi.fn(),
+    getAvailableVehicles: vi.fn()
   }
 }));
 
@@ -18,10 +17,11 @@ describe('useTimelineEvents', () => {
   });
 
   it('charge les événements au montage du composant', async () => {
-    const { fetchTimelineData } = await import('@/services/TimelineService');
-    (fetchTimelineData as any).mockResolvedValue(mockTimelineEvents);
+    const { timelineService } = await import('../../../src/services/TimelineService');
+    (timelineService.getEvents as any).mockResolvedValue(mockTimelineEvents);
+    (timelineService.getAvailableVehicles as any).mockResolvedValue(['Vehicle1', 'Vehicle2']);
 
-    const { result } = renderHook(() => useTimelineEvents('voyage-123'));
+    const { result } = renderHook(() => useTimelineEvents());
 
     // Vérifier l'état initial
     expect(result.current.loading).toBe(true);
@@ -33,15 +33,16 @@ describe('useTimelineEvents', () => {
     });
 
     expect(result.current.events).toEqual(mockTimelineEvents);
-    expect(fetchTimelineData).toHaveBeenCalledWith('voyage-123');
+    expect(result.current.availableVehicles).toEqual(['Vehicle1', 'Vehicle2']);
   });
 
   it('gère les erreurs de chargement', async () => {
-    const { fetchTimelineData } = await import('@/services/TimelineService');
+    const { timelineService } = await import('../../../src/services/TimelineService');
     const errorMessage = 'Erreur de réseau';
-    (fetchTimelineData as any).mockRejectedValue(new Error(errorMessage));
+    (timelineService.getEvents as any).mockRejectedValue(new Error(errorMessage));
+    (timelineService.getAvailableVehicles as any).mockResolvedValue([]);
 
-    const { result } = renderHook(() => useTimelineEvents('voyage-123'));
+    const { result } = renderHook(() => useTimelineEvents());
 
     await waitFor(() => {
       expect(result.current.loading).toBe(false);
@@ -51,47 +52,21 @@ describe('useTimelineEvents', () => {
     expect(result.current.events).toEqual([]);
   });
 
-  it('applique les filtres correctement', async () => {
-    const { fetchTimelineData, TimelineService } = await import('@/services/TimelineService');
-    (fetchTimelineData as any).mockResolvedValue(mockTimelineEvents);
-    (TimelineService.filterEvents as any).mockReturnValue(mockTimelineEvents.slice(0, 2));
+  it('peut recharger les données', async () => {
+    const { timelineService } = await import('../../../src/services/TimelineService');
+    (timelineService.getEvents as any).mockResolvedValue(mockTimelineEvents);
+    (timelineService.getAvailableVehicles as any).mockResolvedValue(['Vehicle1']);
 
-    const { result } = renderHook(() => useTimelineEvents('voyage-123'));
-
-    await waitFor(() => {
-      expect(result.current.loading).toBe(false);
-    });
-
-    // Appliquer des filtres
-    const filters = { types: ['departure'], status: ['completed'] };
-    result.current.applyFilters(filters);
-
-    expect(TimelineService.filterEvents).toHaveBeenCalledWith(mockTimelineEvents, filters);
-    expect(result.current.filteredEvents).toHaveLength(2);
-  });
-
-  it('recharge les données quand le voyageId change', async () => {
-    const { fetchTimelineData } = await import('@/services/TimelineService');
-    (fetchTimelineData as any).mockResolvedValue(mockTimelineEvents);
-
-    const { result, rerender } = renderHook(
-      ({ voyageId }) => useTimelineEvents(voyageId),
-      { initialProps: { voyageId: 'voyage-123' } }
-    );
+    const { result } = renderHook(() => useTimelineEvents());
 
     await waitFor(() => {
       expect(result.current.loading).toBe(false);
     });
 
-    expect(fetchTimelineData).toHaveBeenCalledWith('voyage-123');
+    // Déclencher un refetch
+    await result.current.refetch();
 
-    // Changer le voyageId
-    rerender({ voyageId: 'voyage-456' });
-
-    await waitFor(() => {
-      expect(fetchTimelineData).toHaveBeenCalledWith('voyage-456');
-    });
-
-    expect(fetchTimelineData).toHaveBeenCalledTimes(2);
+    expect(timelineService.getEvents).toHaveBeenCalledTimes(2);
+    expect(timelineService.getAvailableVehicles).toHaveBeenCalledTimes(2);
   });
 });

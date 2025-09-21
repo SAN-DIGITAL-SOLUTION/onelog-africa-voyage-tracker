@@ -9,7 +9,7 @@
     "CI/CD finalisation"
   ],
   "next_roadmap": "v1.1.0",
-  "last_update": "2025-08-29T02:41:54.691Z",
+  "last_update": "2025-08-30T08:54:23.154Z",
   "progression": 100,
   "modules": [
     {
@@ -87,11 +87,11 @@
   ],
   "statistics": {
     "total_files": 367,
-    "react_components": 205,
-    "pages": 64,
+    "react_components": 203,
+    "pages": 62,
     "services": 18,
-    "hooks": 19,
+    "hooks": 21,
     "tests": 31,
-    "migrations": 24
+    "migrations": 3
   }
 }

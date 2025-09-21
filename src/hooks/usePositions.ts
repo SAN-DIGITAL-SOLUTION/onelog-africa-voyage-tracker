@@ -35,22 +35,50 @@ export function usePositions() {
 
 // Hook avec Realtime pour mises à jour instantanées
 export function useRealtimePositions() {
-  const { data: positions, refetch } = usePositions();
+  const query = useQuery({
+    queryKey: ["positions-realtime"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("tracking_points")
+        .select(`
+          id,
+          mission_id,
+          latitude,
+          longitude,
+          speed,
+          timestamp,
+          missions(
+            id,
+            reference,
+            status,
+            vehicle_id,
+            vehicles(plate_number)
+          )
+        `)
+        .order("timestamp", { ascending: false })
+        .limit(100);
+      
+      if (error) throw new Error(error.message);
+      return data;
+    },
+    refetchInterval: 10000, // Rafraîchissement toutes les 10 secondes
+    staleTime: 5000,
+  });
 
   useEffect(() => {
     const channel = supabase
-      .channel('positions-realtime')
+      .channel('tracking-points-realtime')
       .on(
         'postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'positions' },
-        () => refetch()
+        { event: '*', schema: 'public', table: 'tracking_points' },
+        () => query.refetch()
       )
       .subscribe();
 
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [refetch]);
+  }, [query.refetch]);
 
-  return positions;
+  return query;
 }

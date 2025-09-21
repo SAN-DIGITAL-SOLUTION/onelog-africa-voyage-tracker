@@ -21,7 +21,7 @@ import {
   Users,
 } from "lucide-react";
 
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from '@/lib/supabase';
 
 import { useEffect, useState } from "react";
 import { useRole } from "@/hooks/useRole";

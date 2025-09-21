@@ -1,6 +1,6 @@
 import Twilio from 'twilio';
 import fetch from 'node-fetch';
-import { supabase } from '../integrations/supabase/client';
+import { supabase } from '@/lib/supabase';
 import { TemplateEngine } from './templateEngine';
 
 const whatsappFrom = process.env.TWILIO_WHATSAPP_FROM!;
@@ -27,7 +27,7 @@ type NotificationPreference = {
 };
 
 // Vérifie si l'utilisateur a activé les notifications pour le canal spécifié
-export async function checkNotificationPreference(
+async function checkNotificationPreference(
   userId: string,
   channel: NotificationChannel
 ): Promise<boolean> {

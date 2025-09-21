@@ -5,6 +5,7 @@ import { useAuth } from '../hooks/useAuth';
 import { MAPBOX_CONFIG } from '../config/mapbox.config';
 import StaticMap from '../components/StaticMap';
 import { Play, Pause, Maximize, Minimize, Filter, Truck, Route, Clock, AlertCircle, RefreshCw } from 'lucide-react';
+import TVModeToggle from '@/components/dashboard/TVModeToggle';
 
 const ControlRoom: React.FC = () => {
   const { user } = useAuth();
@@ -217,6 +218,7 @@ const ControlRoom: React.FC = () => {
           >
             {isFullscreen ? <Minimize className="w-4 h-4" /> : <Maximize className="w-4 h-4" />}
           </button>
+          <TVModeToggle className="bg-white/90 backdrop-blur-sm shadow-lg hover:bg-white" />
         </div>
 
         {/* Indicateurs de statut */}

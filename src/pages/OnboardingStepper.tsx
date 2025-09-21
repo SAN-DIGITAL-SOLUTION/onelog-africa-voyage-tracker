@@ -1,7 +1,7 @@
 // fichier : src/pages/OnboardingStepper.tsx
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from '@/components/ui-system';
+import { Button } from '@/components/ui/button';
 import { onboardingSteps } from '../data/onboardingSteps';
 import { trackEvent } from '@/services/analytics';
 import { StepIndicator } from '@/components/StepIndicator';

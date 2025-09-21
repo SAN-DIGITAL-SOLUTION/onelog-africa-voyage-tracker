@@ -11,7 +11,7 @@ import {
   User,
   Navigation
 } from 'lucide-react';
-import { Badge } from '../ui-system';
+import { Badge } from "@/components/ui/badge"; 
 import { TimelineEvent, EventItemProps } from './types';
 
 const EventItem: React.FC<EventItemProps> = ({
@@ -136,11 +136,7 @@ const EventItem: React.FC<EventItemProps> = ({
           </div>
           
           <div className="flex items-center space-x-2">
-            <Badge 
-              text={event.status} 
-              color={statusVariants[event.status]} 
-              data-testid="event-status"
-            />
+            <Badge variant={statusVariants[event.status]} data-testid="event-status">{event.status}</Badge>
             {event.severity && (
               <span 
                 className={`text-xs font-medium ${severityColors[event.severity]}`}

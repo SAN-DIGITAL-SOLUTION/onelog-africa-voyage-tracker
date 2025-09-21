@@ -1,4 +1,4 @@
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/lib/supabase';
 import { MissionStatusHistory } from '@/types/mission-status-history';
 
 export async function logMissionStatusChange(history: Omit<MissionStatusHistory, 'id'>): Promise<MissionStatusHistory> {
