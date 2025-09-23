@@ -6,6 +6,7 @@ import { Button } from "./ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useEffect, useState } from "react";
 import NotificationDropdown from "@/modules/adminDashboard/components/NotificationDropdown";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 // Toggle light/dark (Tailwind config)
 function ModeToggle() {
@@ -88,6 +89,7 @@ function Breadcrumb() {
 export default function Header() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   const handleLogout = async () => {
     await signOut();
@@ -99,18 +101,25 @@ export default function Header() {
   const handleSwitchRole = () => navigate("/switch-role");
 
   return (
-    <header className="flex items-center justify-between py-3 px-4 border-b bg-white dark:bg-onelog-nuit z-10" aria-label="Header principal">
-      <div className="flex items-center gap-4 min-w-max">
-  <SidebarTrigger className="md:hidden" />
-  <img src="/onelog-africa-logo-dark.png" alt="Logo OneLog Africa" className="h-10 w-auto" />
-</div>
-      <nav className="flex gap-4 font-semibold text-base items-center">
-        {/* Bouton Accueil OneLog Africa */}
-        <Button asChild variant="outline" size="sm">
-          <NavLink to="/" className="flex items-center">
-            Accueil OneLog Africa
-          </NavLink>
-        </Button>
+    <header className="flex items-center justify-between py-3 px-4 border-b bg-white dark:bg-onelog-nuit z-10">
+      <div className="flex items-center gap-2">
+        {/* SidebarTrigger visible sur mobile */}
+        <SidebarTrigger className="md:hidden" />
+        <span className={`font-bold tracking-tight flex items-center gap-2 ${isMobile ? 'text-lg' : 'text-2xl'} text-onelog-nuit dark:text-white`}>
+          <BadgeCheck size={isMobile ? 24 : 28} className="text-onelog-bleu" />
+          {!isMobile && "OneLog Africa"}
+          {isMobile && "OneLog"}
+        </span>
+      </div>
+      <nav className="flex gap-2 md:gap-4 font-semibold text-base items-center">
+        {/* Bouton Accueil - masqué sur très petit écran */}
+        {!isMobile && (
+          <Button asChild variant="outline" size="sm">
+            <NavLink to="/" className="flex items-center">
+              Accueil OneLog Africa
+            </NavLink>
+          </Button>
+        )}
         <ModeToggle />
         <div className="ml-2">
           <NotificationDropdown />
@@ -151,6 +160,7 @@ export default function Header() {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+
         )}
       </nav>
     </header>

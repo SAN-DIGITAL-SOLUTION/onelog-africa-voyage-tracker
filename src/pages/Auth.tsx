@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { motion, Variants } from "framer-motion";
 import { useAuth } from "@/hooks/useAuth";
@@ -377,7 +378,7 @@ export default function Auth() {
             </motion.div>
           </motion.div>
         </Card>
-      </motion.div>
+381→      </motion.div>
     </div>
   );
 }

@@ -20,6 +20,7 @@ import {
   Truck,
   Users,
 } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 import { supabase } from '@/lib/supabase';
 
@@ -100,8 +101,9 @@ export default function AppSidebar() {
   const { state } = useSidebar();
   const location = useLocation();
   const { missionCount, notifCount, pendingCount, role } = useSidebarBadges();
+  const isMobile = useIsMobile();
 
-  // Affichage conditionnel : attendre la résolution du hook avant d'afficher la navigation
+  // Affichage conditionnel : attendre la résolution du hook avant d'afficher la navigation
   if (userRole === undefined) {
     return null; // ou un loader si besoin
   }

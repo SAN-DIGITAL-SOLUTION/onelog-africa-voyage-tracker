@@ -3,12 +3,16 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { useRole, RoleProvider } from "@/hooks/useRole";
 import { Toaster } from "@/components/ui/toaster";
+import AppLayout from "@/components/AppLayout";
+import Index from "@/pages/Index";
 import HomeRedirect from "@/pages/HomeRedirect";
 import Auth from "@/pages/Auth";
+import Dashboard from "@/pages/Dashboard";
 import Missions from "@/pages/Missions";
 import MissionsChauffeur from "@/pages/MissionsChauffeur";
 import Notifications from "@/pages/Notifications";
 import Invoices from "@/pages/Invoices";
+import TrackingMap from "@/pages/TrackingMap";
 import ControlRoom from "@/pages/ControlRoom";
 import ExploiteurDashboard from "@/pages/ExploiteurDashboard";
 import ClientDashboard from "@/pages/ClientDashboard";
@@ -87,112 +91,51 @@ function RequireRole({ children }: { children: JSX.Element }) {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <RoleProvider>
+      <RoleProvider>
+        <AuthProvider>
           <Router>
-            <Routes>
-              {/* Route publique landing page */}
-              <Route path="/" element={<HomeRedirect />} />
-              <Route path="/landing" element={<Landing />} />
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/onboarding" element={<Onboarding />} />
-              <Route path="/waiting-approval" element={<WaitingApproval />} />
-              <Route path="/admin/role-requests" element={<RequireRole><RoleRequests /></RequireRole>} />
-              <Route path="/admin/settings" element={<RequireRole><AdminSettings /></RequireRole>} />
-              <Route path="/admin/analytics" element={<RequireRole><AdminAnalytics /></RequireRole>} />
-              <Route path="/no-role" element={<NoRole />} />
-              <Route path="/404" element={<NotFound />} />
-            {/* Routes authentifiées sous MainLayout (sidebar + header) */}
-            <Route element={<MainLayout />}>
-                            <Route path="/exploiteur-dashboard" element={
-                <RequireRole>
-                  <ExploiteurDashboard />
-                </RequireRole>
-              } />
-              <Route path="/client-dashboard" element={
-                <RequireRole>
-                  <ClientDashboard />
-                </RequireRole>
-              } />
-              <Route path="/chauffeur-dashboard" element={
-                <RequireRole>
-                  <ChauffeurDashboard />
-                </RequireRole>
-              } />
-                                          <Route path="/affectations" element={
-                <RequireRole>
-                  <AffectationsPage />
-                </RequireRole>
-              } />
-              <Route path="/demandes-exploitant" element={
-                <RequireRole>
-                  <DemandesExploitantPage />
-                </RequireRole>
-              } />
-              <Route path="/admin-dashboard" element={
-                <RequireRole>
-                  <AdminDashboard />
-                </RequireRole>
-              } />
-              <Route path="/missions/*" element={
-                <RequireRole>
-                  <Missions />
-                </RequireRole>
-              } />
-              <Route path="/missions-chauffeur" element={
-                <RequireRole>
-                  <MissionsChauffeur />
-                </RequireRole>
-              } />
-              <Route path="/timeline" element={
-                <RequireRole>
-                  <TimelinePage />
-                </RequireRole>
-              } />
-              <Route path="/timeline-optimized" element={
-                <RequireRole>
-                  <TimelinePageOptimized />
-                </RequireRole>
-              } />
-              <Route path="/notifications" element={
-                <RequireRole>
-                  <Notifications />
-                </RequireRole>
-              } />
-              <Route path="/invoices" element={
-                <RequireRole>
-                  <Invoices />
-                </RequireRole>
-              } />
-              <Route path="/tracking" element={
-                <RequireRole>
-                  <Navigate to="/control-room" replace />
-                </RequireRole>
-              } />
-              <Route path="/control-room" element={
-                <RequireRole>
-                  <ControlRoom />
-                </RequireRole>
-              } />
-              <Route path="/missions/:id/tracking" element={
-                <RequireRole>
-                  <MissionTracking />
-                </RequireRole>
-              } />
-              <Route path="/fullscreen-dashboard" element={
-                <RequireRole>
-                  <FullscreenDashboard />
-                </RequireRole>
-              } />
-            </Route>
-            <Route path="*" element={<Navigate to="/404" replace />} />
-          </Routes>
-          <Toaster />
-          <NotificationToast />
-        </Router>
-        </RoleProvider>
-      </AuthProvider>
-          </QueryClientProvider>
+            <div className="min-h-screen bg-gray-50 w-full overflow-x-hidden">
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/landing" element={<Landing />} />
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/onboarding" element={<Onboarding />} />
+                <Route path="/waiting-approval" element={<WaitingApproval />} />
+                <Route path="/admin/role-requests" element={<RequireRole><RoleRequests /></RequireRole>} />
+                <Route path="/admin/settings" element={<RequireRole><AdminSettings /></RequireRole>} />
+                <Route path="/admin/analytics" element={<RequireRole><AdminAnalytics /></RequireRole>} />
+                <Route path="/no-role" element={<NoRole />} />
+                <Route path="/404" element={<NotFound />} />
+                {/* Pages authentifiées avec layout */}
+                <Route path="/dashboard" element={<AppLayout><Dashboard /></AppLayout>} />
+                <Route path="/missions/*" element={<AppLayout><Missions /></AppLayout>} />
+                <Route path="/notifications" element={<AppLayout><Notifications /></AppLayout>} />
+                <Route path="/invoices" element={<AppLayout><Invoices /></AppLayout>} />
+                <Route path="/tracking" element={<AppLayout><TrackingMap /></AppLayout>} />
+                {/* Routes authentifiées sous MainLayout (sidebar + header) */}
+                <Route element={<MainLayout />}>
+                  <Route path="/exploiteur-dashboard" element={<RequireRole><ExploiteurDashboard /></RequireRole>} />
+                  <Route path="/client-dashboard" element={<RequireRole><ClientDashboard /></RequireRole>} />
+                  <Route path="/chauffeur-dashboard" element={<RequireRole><ChauffeurDashboard /></RequireRole>} />
+                  <Route path="/affectations" element={<RequireRole><AffectationsPage /></RequireRole>} />
+                  <Route path="/demandes-exploitant" element={<RequireRole><DemandesExploitantPage /></RequireRole>} />
+                  <Route path="/admin-dashboard" element={<RequireRole><AdminDashboard /></RequireRole>} />
+                  <Route path="/missions-chauffeur" element={<RequireRole><MissionsChauffeur /></RequireRole>} />
+                  <Route path="/timeline" element={<RequireRole><TimelinePage /></RequireRole>} />
+                  <Route path="/timeline-optimized" element={<RequireRole><TimelinePageOptimized /></RequireRole>} />
+                  <Route path="/control-room" element={<RequireRole><ControlRoom /></RequireRole>} />
+                  <Route path="/missions/:id/tracking" element={<RequireRole><MissionTracking /></RequireRole>} />
+                  <Route path="/fullscreen-dashboard" element={<RequireRole><FullscreenDashboard /></RequireRole>} />
+                </Route>
+                <Route path="*" element={<Navigate to="/404" replace />} />
+              </Routes>
+              <Toaster />
+              <NotificationToast />
+            </div>
+          </Router>
+        </AuthProvider>
+      </RoleProvider>
+    </QueryClientProvider>
   );
 }
 

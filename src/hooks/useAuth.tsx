@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback, createContext, useContext } from "rea
 import { supabase } from '@/lib/supabase';
 import type { User, Session } from "@supabase/supabase-js";
 import { fetchUserRole } from "./useFetchUserRole";
-import { useRole } from "./useRole";
 
 type AuthContextType = {
   user: User | null;
@@ -28,9 +27,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Suppression de la dépendance directe à useRole pour éviter la circularité
-  // Le rôle sera géré par un effet séparé après l'initialisation
-
   useEffect(() => {
     console.log('[useAuth] Initialisation du hook useAuth');
     
@@ -40,8 +36,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setSession(session);
       setUser(session?.user ?? null);
 
-      // Le rôle sera géré par RoleProvider séparément
-      // Ici on se contente de gérer l'authentification
       setLoading(false);
     });
 
@@ -51,9 +45,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.log('[useAuth] Session récupérée:', session);
       setSession(session);
       setUser(session?.user ?? null);
-
-      // Le rôle sera géré par RoleProvider séparément
-      // Ici on se contente de gérer l'authentification
 
       setLoading(false);
     });
