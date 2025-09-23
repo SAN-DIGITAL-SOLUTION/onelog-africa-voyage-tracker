@@ -23,7 +23,7 @@ export default defineConfig({
     ],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
+      '@': path.resolve(__dirname, 'src'),
       'next/server': path.resolve(__dirname, './__tests__/mocks/next-server.ts'),
     },
   },

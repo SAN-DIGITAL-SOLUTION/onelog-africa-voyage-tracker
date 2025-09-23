@@ -38,7 +38,7 @@ export default function MissionFeedback({ missionId, onAddFeedback }: MissionFee
     queryFn: async () => {
       const { count, error } = await supabase
         .from("mission_feedback")
-        .select("*", { count: "exact", head: true })
+        .select("*", { count: "exact" })
         .eq("mission_id", missionId);
       if (error) throw new Error(error.message);
       return count || 0;

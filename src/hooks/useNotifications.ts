@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { NotificationService } from '@/services/notificationService';
+import { useAuth } from '@/hooks/useAuth';
 import type { Notification, NotificationFilters, NotificationType } from '@/types/notifications';
 
 const notificationService = NotificationService.getInstance();

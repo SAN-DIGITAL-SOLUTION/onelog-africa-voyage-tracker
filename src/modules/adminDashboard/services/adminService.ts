@@ -3,9 +3,9 @@ import { supabase } from '@/lib/supabase';
 export async function fetchAdminStats() {
   // À adapter selon la structure réelle
   const [{ count: users }, { count: missions }, { count: notifications }] = await Promise.all([
-    supabase.from('users').select('*', { count: 'exact', head: true }),
-    supabase.from('missions').select('*', { count: 'exact', head: true }),
-    supabase.from('notifications').select('*', { count: 'exact', head: true }),
+    supabase.from('users').select('*', { count: 'exact' }),
+    supabase.from('missions').select('*', { count: 'exact' }),
+    supabase.from('notifications').select('*', { count: 'exact' }),
   ]);
   // Taux d'envoi fictif pour l'exemple
   return { users, missions, notifications, sendRate: 98 };
@@ -33,7 +33,7 @@ export async function fetchMetricsData() {
   for (const date of labels) {
     const { count } = await supabase
       .from('notifications')
-      .select('*', { count: 'exact', head: true })
+      .select('*', { count: 'exact' })
       .gte('created_at', date + 'T00:00:00.000Z')
       .lt('created_at', date + 'T23:59:59.999Z');
     data.push(count || 0);

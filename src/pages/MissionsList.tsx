@@ -3,9 +3,10 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from '@/lib/supabase';
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, Truck } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { toast } from "@/hooks/use-toast";
 type Mission = {
   id: string;
   ref: string;
@@ -21,6 +22,78 @@ type Mission = {
   lieu_livraison?: string;
 };
 import MissionFilters from "./missions/MissionFilters";
+
+// Composants manquants - créons des placeholders temporaires
+const MissionsExportDropdown = ({ missions }: { missions: any[] }) => (
+  <Button variant="outline">Exporter ({missions.length})</Button>
+);
+
+const MissionsFilters = ({ searchTerm, onSearchChange, statusFilter, onStatusChange }: any) => (
+  <div className="mb-4">
+    <input 
+      placeholder="Rechercher..." 
+      value={searchTerm} 
+      onChange={(e) => onSearchChange(e.target.value)}
+      className="border rounded px-3 py-2 mr-2"
+    />
+    <select value={statusFilter} onChange={(e) => onStatusChange(e.target.value)} className="border rounded px-3 py-2">
+      <option value="all">Tous les statuts</option>
+      <option value="pending">En attente</option>
+      <option value="in_progress">En cours</option>
+      <option value="completed">Terminé</option>
+    </select>
+  </div>
+);
+
+const MissionsTable = ({ missions, onDeleteMission }: any) => (
+  <div className="border rounded">
+    {missions.length === 0 ? (
+      <p className="p-4 text-center text-gray-500">Aucune mission trouvée</p>
+    ) : (
+      <div className="space-y-2 p-4">
+        {missions.map((mission: any) => (
+          <div key={mission.id} className="border rounded p-3">
+            <h3 className="font-semibold">{mission.ref || mission.id}</h3>
+            <p className="text-sm text-gray-600">{mission.client || 'Client non défini'}</p>
+            <p className="text-xs text-gray-500">{mission.status || 'Statut inconnu'}</p>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+);
+
+const MissionsPagination = ({ currentPage, totalCount, pageSize, onPageChange, hasActiveFilters, filteredCount }: any) => (
+  <div className="flex justify-between items-center mt-4">
+    <span className="text-sm text-gray-600">
+      {filteredCount} mission(s) trouvée(s)
+    </span>
+    <div className="flex gap-2">
+      <Button 
+        variant="outline" 
+        size="sm" 
+        onClick={() => onPageChange(currentPage - 1)}
+        disabled={currentPage <= 1}
+      >
+        Précédent
+      </Button>
+      <Button 
+        variant="outline" 
+        size="sm" 
+        onClick={() => onPageChange(currentPage + 1)}
+        disabled={currentPage * pageSize >= totalCount}
+      >
+        Suivant
+      </Button>
+    </div>
+  </div>
+);
+
+const RealtimeStatusIndicator = () => (
+  <div className="fixed bottom-4 right-4 bg-green-500 text-white px-3 py-1 rounded text-sm">
+    ● En ligne
+  </div>
+);
 
 export default function MissionsList() {
   const { user } = useAuth();

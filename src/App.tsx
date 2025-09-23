@@ -7,7 +7,6 @@ import AppLayout from "@/components/AppLayout";
 import Index from "@/pages/Index";
 import HomeRedirect from "@/pages/HomeRedirect";
 import Auth from "@/pages/Auth";
-import Dashboard from "@/pages/Dashboard";
 import Missions from "@/pages/Missions";
 import MissionsChauffeur from "@/pages/MissionsChauffeur";
 import Notifications from "@/pages/Notifications";
@@ -107,7 +106,7 @@ function App() {
                 <Route path="/no-role" element={<NoRole />} />
                 <Route path="/404" element={<NotFound />} />
                 {/* Pages authentifiées avec layout */}
-                <Route path="/dashboard" element={<AppLayout><Dashboard /></AppLayout>} />
+                <Route path="/dashboard" element={<Navigate to="/admin-dashboard" replace />} />
                 <Route path="/missions/*" element={<AppLayout><Missions /></AppLayout>} />
                 <Route path="/notifications" element={<AppLayout><Notifications /></AppLayout>} />
                 <Route path="/invoices" element={<AppLayout><Invoices /></AppLayout>} />

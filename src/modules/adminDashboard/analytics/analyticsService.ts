@@ -11,7 +11,7 @@ export async function fetchUsersPerDay(days = 7) {
   for (const date of labels) {
     const { count } = await supabase
       .from('users')
-      .select('*', { count: 'exact', head: true })
+      .select('*', { count: 'exact' })
       .gte('created_at', date + 'T00:00:00.000Z')
       .lt('created_at', date + 'T23:59:59.999Z');
     data.push(count || 0);
@@ -30,7 +30,7 @@ export async function fetchMissionsPerDay(days = 7) {
   for (const date of labels) {
     const { count } = await supabase
       .from('missions')
-      .select('*', { count: 'exact', head: true })
+      .select('*', { count: 'exact' })
       .gte('created_at', date + 'T00:00:00.000Z')
       .lt('created_at', date + 'T23:59:59.999Z');
     data.push(count || 0);

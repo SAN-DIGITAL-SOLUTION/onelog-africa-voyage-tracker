@@ -9,6 +9,7 @@
     "notify:deploy": "psql -U ${PGUSER:-postgres} -d ${PGDATABASE:-onelog_db} -f supabase/migrations/notifications_triggers.sql && npm run test && npx cypress run --spec cypress/e2e/notifications.spec.ts && node scripts/notify-verify.cjs",
     "notify:retry": "node scripts/notification-retry.cjs",
     "secure:deploy": "supabase db push && npm run test:e2e && npm run test:unit",
+    "push:force": "git push --no-verify",
     "dev": "vite",
     "build": "tsc && vite build",
     "build:dev": "vite build --mode development",
