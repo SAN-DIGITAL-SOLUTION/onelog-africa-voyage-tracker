@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Run only unit tests in pre-push hook
+# E2E tests are optional and can be run with RUN_E2E=true
+echo "🧪 Running unit tests before push..."
+npm run test:unit
+
+if [ "$RUN_E2E" = "true" ]; then
+  echo "🎭 Running E2E tests..."
+  npm run test:e2e
+fi
+
+echo "✅ Pre-push checks completed!"
