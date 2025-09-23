@@ -24,26 +24,26 @@ export function useSidebarBadges() {
     if (role === "client") {
       missionQuery = supabase
         .from("missions")
-        .select("id", { count: "exact", head: true })
+        .select("*", { count: "exact" })
         .eq("client", user.id)
         .in("status", ["en_cours", "assignée", "à_livrer"]);
     } else if (role === "chauffeur") {
       missionQuery = supabase
         .from("missions")
-        .select("id", { count: "exact", head: true })
+        .select("*", { count: "exact" })
         .eq("chauffeur", user.id)
         .in("status", ["en_cours", "assignée", "à_livrer"]);
     } else {
       missionQuery = supabase
         .from("missions")
-        .select("id", { count: "exact", head: true })
+        .select("*", { count: "exact" })
         .in("status", ["en_cours", "assignée", "à_livrer"]);
     }
     missionQuery.then(({ count }) => setMissionCount(count ?? 0));
     // 3. Notifications non lues
     supabase
       .from("notifications")
-      .select("id", { count: "exact", head: true })
+      .select("*", { count: "exact" })
       .eq("user_id", user.id)
       .eq("is_read", false)
       .then(({ count }) => setNotifCount(count ?? 0));
@@ -51,7 +51,7 @@ export function useSidebarBadges() {
     if (role === "admin") {
       supabase
         .from("role_requests")
-        .select("id", { count: "exact", head: true })
+        .select("*", { count: "exact" })
         .eq("status", "pending")
         .then(({ count }) => setPendingCount(count ?? 0));
     }
