@@ -31,3 +31,11 @@ dist-ssr
 
 *storybook.log
 storybook-static
+
+# Playwright / test artifacts
+playwright-report/
+test-results/
+*.webm
+*.zip
+TEST_AUTOMATION_REPORT.md
+pnpm-lock.yaml
