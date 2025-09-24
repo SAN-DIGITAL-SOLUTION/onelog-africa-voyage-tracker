@@ -1,0 +1,51 @@
+{
+    "name": "onelog-africa/voyage-tracker",
+    "description": "Module de suivi des voyages pour OneLog Africa",
+    "type": "project",
+    "require": {
+        "php": ">=7.4.0",
+        "ext-json": "*",
+        "ext-pdo": "*"
+    },
+    "require-dev": {
+        "php-http/guzzle7-adapter": "^1.0",
+        "php-http/mock-client": "^1.5",
+        "phpstan/phpstan": "^1.4",
+        "phpunit/phpunit": "*",
+        "slevomat/coding-standard": "^7.0",
+        "squizlabs/php_codesniffer": "^3.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "OneLogAfrica\\VoyageTracker\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "test-coverage": "phpunit --coverage-html coverage",
+        "cs-check": "phpcs",
+        "cs-fix": "phpcbf",
+        "analyse": "phpstan analyse",
+        "check-all": [
+            "@cs-check",
+            "@analyse",
+            "@test"
+        ]
+    },
+    "config": {
+        "sort-packages": true,
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "php-http/discovery": true
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

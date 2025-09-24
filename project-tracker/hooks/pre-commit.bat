@@ -1,0 +1,10 @@
+@echo off
+python -m project_tracker.scripts.cli build --json project-status.json --readme README.md --template project-tracker/templates/readme_template.md
+if %errorlevel% neq 0 exit /b %errorlevel%
+python -m project_tracker.scripts.cli changelog --json project-status.json --template project-tracker/templates/changelog_template.md --output CHANGELOG.md
+if %errorlevel% neq 0 exit /b %errorlevel%
+python -m project_tracker.scripts.cli contributing --template project-tracker/templates/contributing_template.md --output CONTRIBUTING.md
+if %errorlevel% neq 0 exit /b %errorlevel%
+python -m project_tracker.scripts.cli roadmap --json project-status.json --template project-tracker/templates/roadmap_template.md --output ROADMAP.md
+if %errorlevel% neq 0 exit /b %errorlevel%
+git add README.md CHANGELOG.md CONTRIBUTING.md ROADMAP.md

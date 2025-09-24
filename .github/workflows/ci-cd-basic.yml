@@ -1,0 +1,58 @@
+name: CI/CD Basic
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build_and_test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: |
+          if npm run | grep -q "test"; then
+            npm test
+          else
+            echo "No test script found, skipping tests"
+          fi
+
+      - name: Upload test results (if any)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            coverage/**
+            junit.xml
+          if-no-files-found: ignore
+
+  deploy_on_main:
+    name: Deploy on main (stub)
+    needs: build_and_test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - name: Log ready to deploy
+        env:
+          HAS_KEY: ${{ secrets.PROD_DEPLOY_KEY != '' }}
+        run: |
+          if [ -n "${{ secrets.PROD_DEPLOY_KEY }}" ]; then
+            echo "ready to deploy"
+          else
+            echo "PROD_DEPLOY_KEY not set. Skipping real deployment." && exit 0
+          fi

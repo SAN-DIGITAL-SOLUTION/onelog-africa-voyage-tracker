@@ -1,0 +1,224 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 6,
+    "passes": 0,
+    "pending": 0,
+    "failures": 6,
+    "start": "2025-08-31T01:11:20.529Z",
+    "end": "2025-08-31T01:13:04.096Z",
+    "duration": 103567,
+    "testsRegistered": 6,
+    "passPercent": 0,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "5c766833-3d8e-4553-a7ad-b2ce223ef9b9",
+      "title": "",
+      "fullFile": "cypress\\e2e\\tracking_map.cy.ts",
+      "file": "cypress\\e2e\\tracking_map.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "0dbf9df4-fa2b-412d-8091-5315373c8047",
+          "title": "TrackingMap Page",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "affiche la carte avec markers",
+              "fullTitle": "TrackingMap Page affiche la carte avec markers",
+              "timedOut": null,
+              "duration": 39758,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.intercept(\"GET\", \"**/positions*\", { fixture: \"positions.json\" }).as(\"getPositions\");\ncy.visit(\"/tracking-map\");\ncy.contains(\"Chargement des positions...\");\ncy.wait(\"@getPositions\");\ncy.get(\".mapboxgl-map\").should(\"exist\");\ncy.get(\".mapboxgl-marker\").should(\"have.length.greaterThan\", 0);",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 4000ms: Expected to find content: 'Chargement des positions...' but never did.",
+                "estack": "AssertionError: Timed out retrying after 4000ms: Expected to find content: 'Chargement des positions...' but never did.\n    at Context.eval (webpack://vite_react_shadcn_ts/./cypress/e2e/tracking_map.cy.ts:6:0)",
+                "diff": null
+              },
+              "uuid": "ac94c975-f3fe-4bef-97ec-e5bd3ad22514",
+              "parentUUID": "0dbf9df4-fa2b-412d-8091-5315373c8047",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "permet de zoomer et déplacer la carte",
+              "fullTitle": "TrackingMap Page permet de zoomer et déplacer la carte",
+              "timedOut": null,
+              "duration": 14458,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.intercept(\"GET\", \"**/positions*\", { fixture: \"positions.json\" }).as(\"getPositions\");\ncy.visit(\"/tracking-map\");\ncy.wait(\"@getPositions\");\ncy.get(\".mapboxgl-map\").should(\"exist\");\n// Zoom avant\ncy.get('.mapboxgl-ctrl-zoom-in').click();\n// Zoom arrière\ncy.get('.mapboxgl-ctrl-zoom-out').click();\n// Drag (pan)\ncy.get('.mapboxgl-canvas')\n    .trigger('mousedown', { which: 1, pageX: 300, pageY: 300 })\n    .trigger('mousemove', { which: 1, pageX: 350, pageY: 350 })\n    .trigger('mouseup');\n// Vérifie que la carte est toujours affichée\ncy.get(\".mapboxgl-map\").should(\"exist\");",
+              "err": {
+                "message": "CypressError: Timed out retrying after 5000ms: `cy.wait()` timed out waiting `5000ms` for the 1st request to the route: `getPositions`. No request ever occurred.\n\nhttps://on.cypress.io/wait",
+                "estack": "CypressError: Timed out retrying after 5000ms: `cy.wait()` timed out waiting `5000ms` for the 1st request to the route: `getPositions`. No request ever occurred.\n\nhttps://on.cypress.io/wait\n    at cypressErr (http://localhost:5173/__cypress/runner/cypress_runner.js:76065:18)\n    at Object.errByPath (http://localhost:5173/__cypress/runner/cypress_runner.js:76119:10)\n    at checkForXhr (http://localhost:5173/__cypress/runner/cypress_runner.js:135342:84)\n    at <unknown> (http://localhost:5173/__cypress/runner/cypress_runner.js:135368:28)\n    at tryCatcher (http://localhost:5173/__cypress/runner/cypress_runner.js:1830:23)\n    at Promise.attempt.Promise.try (http://localhost:5173/__cypress/runner/cypress_runner.js:4338:29)\n    at whenStable (http://localhost:5173/__cypress/runner/cypress_runner.js:143744:68)\n    at <unknown> (http://localhost:5173/__cypress/runner/cypress_runner.js:143685:14)\n    at tryCatcher (http://localhost:5173/__cypress/runner/cypress_runner.js:1830:23)\n    at Promise._settlePromiseFromHandler (http://localhost:5173/__cypress/runner/cypress_runner.js:1542:31)\n    at Promise._settlePromise (http://localhost:5173/__cypress/runner/cypress_runner.js:1599:18)\n    at Promise._settlePromise0 (http://localhost:5173/__cypress/runner/cypress_runner.js:1644:10)\n    at Promise._settlePromises (http://localhost:5173/__cypress/runner/cypress_runner.js:1724:18)\n    at Promise._fulfill (http://localhost:5173/__cypress/runner/cypress_runner.js:1668:18)\n    at <unknown> (http://localhost:5173/__cypress/runner/cypress_runner.js:5473:46)\nFrom Your Spec Code:\n    at Context.eval (webpack://vite_react_shadcn_ts/./cypress/e2e/tracking_map.cy.ts:14:0)",
+                "diff": null
+              },
+              "uuid": "7fc01fc6-50fc-4ec7-ae00-ba55677a0ffd",
+              "parentUUID": "0dbf9df4-fa2b-412d-8091-5315373c8047",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "affiche un popup au clic sur un marker",
+              "fullTitle": "TrackingMap Page affiche un popup au clic sur un marker",
+              "timedOut": null,
+              "duration": 11811,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.intercept(\"GET\", \"**/positions*\", { fixture: \"positions.json\" }).as(\"getPositions\");\ncy.visit(\"/tracking-map\");\ncy.wait(\"@getPositions\");\ncy.get(\".mapboxgl-marker\").first().click({ force: true });\ncy.get(\".mapboxgl-popup\").should(\"exist\");\n// Vérifie la présence d'un texte dynamique (adapter selon contenu réel du popup)\ncy.get(\".mapboxgl-popup\").should(\"contain.text\", \"veh-001\");",
+              "err": {
+                "message": "CypressError: Timed out retrying after 5000ms: `cy.wait()` timed out waiting `5000ms` for the 1st request to the route: `getPositions`. No request ever occurred.\n\nhttps://on.cypress.io/wait",
+                "estack": "CypressError: Timed out retrying after 5000ms: `cy.wait()` timed out waiting `5000ms` for the 1st request to the route: `getPositions`. No request ever occurred.\n\nhttps://on.cypress.io/wait\n    at cypressErr (http://localhost:5173/__cypress/runner/cypress_runner.js:76065:18)\n    at Object.errByPath (http://localhost:5173/__cypress/runner/cypress_runner.js:76119:10)\n    at checkForXhr (http://localhost:5173/__cypress/runner/cypress_runner.js:135342:84)\n    at <unknown> (http://localhost:5173/__cypress/runner/cypress_runner.js:135368:28)\n    at tryCatcher (http://localhost:5173/__cypress/runner/cypress_runner.js:1830:23)\n    at Promise.attempt.Promise.try (http://localhost:5173/__cypress/runner/cypress_runner.js:4338:29)\n    at whenStable (http://localhost:5173/__cypress/runner/cypress_runner.js:143744:68)\n    at <unknown> (http://localhost:5173/__cypress/runner/cypress_runner.js:143685:14)\n    at tryCatcher (http://localhost:5173/__cypress/runner/cypress_runner.js:1830:23)\n    at Promise._settlePromiseFromHandler (http://localhost:5173/__cypress/runner/cypress_runner.js:1542:31)\n    at Promise._settlePromise (http://localhost:5173/__cypress/runner/cypress_runner.js:1599:18)\n    at Promise._settlePromise0 (http://localhost:5173/__cypress/runner/cypress_runner.js:1644:10)\n    at Promise._settlePromises (http://localhost:5173/__cypress/runner/cypress_runner.js:1724:18)\n    at Promise._fulfill (http://localhost:5173/__cypress/runner/cypress_runner.js:1668:18)\n    at <unknown> (http://localhost:5173/__cypress/runner/cypress_runner.js:5473:46)\nFrom Your Spec Code:\n    at Context.eval (webpack://vite_react_shadcn_ts/./cypress/e2e/tracking_map.cy.ts:31:0)",
+                "diff": null
+              },
+              "uuid": "56e8c1c6-33dd-4bb8-90dc-df2d92b93023",
+              "parentUUID": "0dbf9df4-fa2b-412d-8091-5315373c8047",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "affiche un message d'état si aucune donnée n'est disponible",
+              "fullTitle": "TrackingMap Page affiche un message d'état si aucune donnée n'est disponible",
+              "timedOut": null,
+              "duration": 10513,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.intercept(\"GET\", \"**/positions*\", []).as(\"getPositionsEmpty\");\ncy.visit(\"/tracking-map\");\ncy.wait(\"@getPositionsEmpty\");\ncy.get(\".mapboxgl-marker\").should(\"have.length\", 0);\ncy.contains(\"Aucune donnée disponible\");",
+              "err": {
+                "message": "CypressError: Timed out retrying after 5000ms: `cy.wait()` timed out waiting `5000ms` for the 1st request to the route: `getPositionsEmpty`. No request ever occurred.\n\nhttps://on.cypress.io/wait",
+                "estack": "CypressError: Timed out retrying after 5000ms: `cy.wait()` timed out waiting `5000ms` for the 1st request to the route: `getPositionsEmpty`. No request ever occurred.\n\nhttps://on.cypress.io/wait\n    at cypressErr (http://localhost:5173/__cypress/runner/cypress_runner.js:76065:18)\n    at Object.errByPath (http://localhost:5173/__cypress/runner/cypress_runner.js:76119:10)\n    at checkForXhr (http://localhost:5173/__cypress/runner/cypress_runner.js:135342:84)\n    at <unknown> (http://localhost:5173/__cypress/runner/cypress_runner.js:135368:28)\n    at tryCatcher (http://localhost:5173/__cypress/runner/cypress_runner.js:1830:23)\n    at Promise.attempt.Promise.try (http://localhost:5173/__cypress/runner/cypress_runner.js:4338:29)\n    at whenStable (http://localhost:5173/__cypress/runner/cypress_runner.js:143744:68)\n    at <unknown> (http://localhost:5173/__cypress/runner/cypress_runner.js:143685:14)\n    at tryCatcher (http://localhost:5173/__cypress/runner/cypress_runner.js:1830:23)\n    at Promise._settlePromiseFromHandler (http://localhost:5173/__cypress/runner/cypress_runner.js:1542:31)\n    at Promise._settlePromise (http://localhost:5173/__cypress/runner/cypress_runner.js:1599:18)\n    at Promise._settlePromise0 (http://localhost:5173/__cypress/runner/cypress_runner.js:1644:10)\n    at Promise._settlePromises (http://localhost:5173/__cypress/runner/cypress_runner.js:1724:18)\n    at Promise._fulfill (http://localhost:5173/__cypress/runner/cypress_runner.js:1668:18)\n    at <unknown> (http://localhost:5173/__cypress/runner/cypress_runner.js:5473:46)\nFrom Your Spec Code:\n    at Context.eval (webpack://vite_react_shadcn_ts/./cypress/e2e/tracking_map.cy.ts:40:0)",
+                "diff": null
+              },
+              "uuid": "85f92ea7-a1db-42e0-8baf-1192a58673bf",
+              "parentUUID": "0dbf9df4-fa2b-412d-8091-5315373c8047",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "affiche une erreur si le token Mapbox est invalide",
+              "fullTitle": "TrackingMap Page affiche une erreur si le token Mapbox est invalide",
+              "timedOut": null,
+              "duration": 9724,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "// Simule un token erroné via variable d'env ou interception\ncy.intercept(\"GET\", /mapbox.*access_token=invalid/, { statusCode: 401 }).as(\"getMapboxInvalidToken\");\n// Ici, il faudrait forcer le token à 'invalid' côté app, ou mocker la config\ncy.visit(\"/tracking-map?token=invalid\"); // À adapter selon implémentation\ncy.wait(1000); // Laisse le temps à la carte d'essayer de charger\ncy.contains(/carte indisponible|erreur/i);",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 4000ms: Expected to find content: '/carte indisponible|erreur/i' but never did.",
+                "estack": "AssertionError: Timed out retrying after 4000ms: Expected to find content: '/carte indisponible|erreur/i' but never did.\n    at Context.eval (webpack://vite_react_shadcn_ts/./cypress/e2e/tracking_map.cy.ts:50:0)",
+                "diff": null
+              },
+              "uuid": "cff11036-1bad-453e-a62e-c51b5e977fdc",
+              "parentUUID": "0dbf9df4-fa2b-412d-8091-5315373c8047",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "affiche une erreur si l'API Mapbox est indisponible",
+              "fullTitle": "TrackingMap Page affiche une erreur si l'API Mapbox est indisponible",
+              "timedOut": null,
+              "duration": 12800,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.intercept(\"GET\", /mapbox.*tiles/, { forceNetworkError: true }).as(\"getMapboxTilesError\");\ncy.visit(\"/tracking-map\");\ncy.wait(1000);\ncy.contains(/carte indisponible|erreur/i);",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 4000ms: Expected to find content: '/carte indisponible|erreur/i' but never did.",
+                "estack": "AssertionError: Timed out retrying after 4000ms: Expected to find content: '/carte indisponible|erreur/i' but never did.\n    at Context.eval (webpack://vite_react_shadcn_ts/./cypress/e2e/tracking_map.cy.ts:56:0)",
+                "diff": null
+              },
+              "uuid": "dba45759-669a-48e2-a9ab-8d2d7d3336f6",
+              "parentUUID": "0dbf9df4-fa2b-412d-8091-5315373c8047",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [],
+          "failures": [
+            "ac94c975-f3fe-4bef-97ec-e5bd3ad22514",
+            "7fc01fc6-50fc-4ec7-ae00-ba55677a0ffd",
+            "56e8c1c6-33dd-4bb8-90dc-df2d92b93023",
+            "85f92ea7-a1db-42e0-8baf-1192a58673bf",
+            "cff11036-1bad-453e-a62e-c51b5e977fdc",
+            "dba45759-669a-48e2-a9ab-8d2d7d3336f6"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 99064,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.0.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": false,
+        "json": true
+      },
+      "version": "6.2.0"
+    }
+  }
+}

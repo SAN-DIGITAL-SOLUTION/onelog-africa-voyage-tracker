@@ -6,7 +6,7 @@ import { CSVLink } from "react-csv";
 import jsPDF from "jspdf";
 // @ts-ignore
 import autoTable from "jspdf-autotable";
-import logo from "/public/lovable-uploads/91fd0505-b323-44ce-8632-1456882003e9.png";
+const logo = "/lovable-uploads/91fd0505-b323-44ce-8632-1456882003e9.png";
 
 type Mission = {
   id: string;

@@ -1,0 +1,90 @@
+# =======================================
+# CONFIGURATION COMPLÈTE .env OneLog Africa
+# Copiez ce contenu dans votre fichier .env
+# =======================================
+
+# =======================================
+# 1. CONFIGURATION VITE (Frontend)
+# =======================================
+VITE_PORT=5173
+
+# =======================================
+# 2. CONFIGURATION SUPABASE (Base de données)
+# =======================================
+VITE_SUPABASE_URL=https://fhiegxnqgjlgpbywujzo.supabase.co
+VITE_SUPABASE_ANON_KEY=sb_publishable_UArRfUwuJwHYYMXCQbTbaQ_BlEH0Meo
+
+# =======================================
+# 3. CONFIGURATION GOOGLE MAPS
+# =======================================
+VITE_GOOGLE_MAPS_API_KEY=AIzaSyCvN20PQZPi1PEe7DMOsLCIQh_rXF-MbAc
+
+# =======================================
+# 4. CONFIGURATION TWILIO (SMS/WhatsApp)
+# =======================================
+# Production - Remplacez par vos vraies clés
+TWILIO_ACCOUNT_SID=YOUR_REAL_TWILIO_SID
+TWILIO_AUTH_TOKEN=YOUR_REAL_TWILIO_TOKEN
+TWILIO_WHATSAPP_FROM=whatsapp:+14155238886
+TWILIO_SMS_FROM=+1234567890
+
+# Test - Gardez pour les tests
+TWILIO_TEST_ACCOUNT_SID=AC365c44f862369890f379ba8266ab0a17
+TWILIO_TEST_AUTH_TOKEN=8d24c9444c8d5451a7c0ea090e546300
+
+# =======================================
+# 5. CONFIGURATION EMAIL (Optionnel)
+# =======================================
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=your-email@gmail.com
+MAIL_PASSWORD=your-app-password
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=notifications@onelog-africa.com
+MAIL_FROM_NAME="OneLog Africa"
+
+# =======================================
+# 6. CONFIGURATION APPLICATION
+# =======================================
+APP_ENV=production
+APP_DEBUG=false
+APP_URL=https://your-domain.com
+APP_TIMEZONE=Africa/Abidjan
+
+# =======================================
+# 7. CONFIGURATION JWT (Authentification)
+# =======================================
+JWT_SECRET=your-super-secret-jwt-key-here-min-32-chars
+JWT_ALGO=HS256
+JWT_TTL=1440
+
+# =======================================
+# 8. CONFIGURATION WEBHOOKS
+# =======================================
+VITE_WEBHOOK_URL=https://your-domain.com
+TWILIO_WEBHOOK_URL=${VITE_WEBHOOK_URL}/api/webhooks/twilio
+
+# =======================================
+# 9. CONFIGURATION LOGS ET CACHE
+# =======================================
+LOG_CHANNEL=stack
+LOG_LEVEL=info
+CACHE_DRIVER=file
+SESSION_DRIVER=file
+SESSION_LIFETIME=120
+QUEUE_CONNECTION=sync
+
+# =======================================
+# 10. CONFIGURATION SENTRY (Monitoring)
+# =======================================
+VITE_SENTRY_DSN=your-sentry-dsn-here
+SENTRY_TRACES_SAMPLE_RATE=0.1
+
+# =======================================
+# 11. CONFIGURATION DÉVELOPPEMENT
+# =======================================
+# Décommentez pour le développement local
+# APP_ENV=development
+# APP_DEBUG=true
+# LOG_LEVEL=debug

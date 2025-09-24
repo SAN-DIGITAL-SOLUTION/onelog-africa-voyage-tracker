@@ -1,0 +1,11 @@
+:root {
+  --color-primary: #1A3C40;
+  --color-secondary: #F9A825;
+  --color-accent-cta: #E65100;
+  --color-tertiary-fresh: #009688;
+  --color-text-main: #263238;
+  --color-background-light: #F4F4F4;
+
+  --font-title: 'Montserrat', sans-serif;
+  --font-text: 'Open Sans', sans-serif;
+}

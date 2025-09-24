@@ -1,0 +1,36 @@
+name: Validate Notification Templates
+
+on:
+  push:
+    paths:
+      - 'templates/**'
+      - 'scripts/validate-templates.ts'
+      - '.github/workflows/validate-templates.yml'
+  pull_request:
+    paths:
+      - 'templates/**'
+      - 'scripts/validate-templates.ts'
+
+jobs:
+  validate-templates:
+    runs-on: [self-hosted, windows-latest]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run template validation script
+        run: npx ts-node scripts/validate-templates.ts
+
+      - name: Upload validation log
+        uses: actions/upload-artifact@v3
+        with:
+          name: template-validation-log
+          path: logs/test-results.log

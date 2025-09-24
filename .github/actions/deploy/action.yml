@@ -1,0 +1,52 @@
+name: 'Deploy OneLog Africa'
+description: 'Deploy OneLog Africa to specified environment'
+
+inputs:
+  environment:
+    description: 'Target environment (staging/production)'
+    required: true
+  image-tag:
+    description: 'Docker image tag to deploy'
+    required: true
+  supabase-url:
+    description: 'Supabase URL for the environment'
+    required: true
+  supabase-key:
+    description: 'Supabase anon key for the environment'
+    required: true
+  sentry-dsn:
+    description: 'Sentry DSN for error tracking'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: 🔧 Configure environment
+      shell: bash
+      run: |
+        echo "VITE_SUPABASE_URL=${{ inputs.supabase-url }}" >> .env.production
+        echo "VITE_SUPABASE_ANON_KEY=${{ inputs.supabase-key }}" >> .env.production
+        echo "VITE_SENTRY_DSN=${{ inputs.sentry-dsn }}" >> .env.production
+        echo "VITE_ENVIRONMENT=${{ inputs.environment }}" >> .env.production
+
+    - name: 🚀 Deploy to Vercel
+      shell: bash
+      run: |
+        npx vercel --token ${{ env.VERCEL_TOKEN }} --prod=${{ inputs.environment == 'production' }}
+      env:
+        VERCEL_TOKEN: ${{ env.VERCEL_TOKEN }}
+        VERCEL_ORG_ID: ${{ env.VERCEL_ORG_ID }}
+        VERCEL_PROJECT_ID: ${{ env.VERCEL_PROJECT_ID }}
+
+    - name: 🗄️ Run database migrations
+      shell: bash
+      run: |
+        npx supabase db push --db-url ${{ inputs.supabase-url }}
+      env:
+        SUPABASE_ACCESS_TOKEN: ${{ env.SUPABASE_ACCESS_TOKEN }}
+
+    - name: 🔄 Warm up application
+      shell: bash
+      run: |
+        sleep 30
+        curl -f https://${{ inputs.environment == 'production' && 'onelog-africa.com' || 'staging.onelog-africa.com' }}/api/health

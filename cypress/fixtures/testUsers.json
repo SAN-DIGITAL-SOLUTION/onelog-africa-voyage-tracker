@@ -1,0 +1,42 @@
+{
+  "admin": {
+    "email": "admin@qa.test",
+    "password": "Password123!",
+    "id": "admin-uid-0001",
+    "role": "admin",
+    "role_status": "approved",
+    "token": "admin-token"
+  },
+  "norole": {
+    "email": "norole@qa.test",
+    "password": "Password123!",
+    "id": "norole-uid-0002",
+    "role": "user",
+    "role_status": "none",
+    "token": "norole-token"
+  },
+  "pending": {
+    "email": "pending@qa.test",
+    "password": "Password123!",
+    "id": "pending-uid-0003",
+    "role": "user",
+    "role_status": "pending",
+    "token": "pending-token"
+  },
+  "self": {
+    "email": "self@qa.test",
+    "password": "Password123!",
+    "id": "self-uid-0004",
+    "role": "user",
+    "role_status": "approved",
+    "token": "self-token"
+  },
+  "chauffeur": {
+    "email": "chauffeur@qa.test",
+    "password": "Password123!",
+    "id": "chauffeur-uid-0005",
+    "role": "chauffeur",
+    "role_status": "approved",
+    "token": "chauffeur-token"
+  }
+}

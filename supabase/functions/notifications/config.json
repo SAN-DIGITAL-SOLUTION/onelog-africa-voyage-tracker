@@ -1,0 +1,10 @@
+{
+  "name": "notifications",
+  "version": "1.0.0",
+  "description": "Handle Twilio webhook notifications and process them",
+  "main": "src/index.ts",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
+    "twilio": "^4.23.0"
+  }
+}

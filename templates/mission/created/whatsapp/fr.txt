@@ -1,0 +1,5 @@
+Bonjour {{clientName}},
+Votre mission de transport a bien été créée !
+Numéro de mission : {{missionId}}
+Date : {{date}}
+Merci de faire confiance à OneLog Africa.

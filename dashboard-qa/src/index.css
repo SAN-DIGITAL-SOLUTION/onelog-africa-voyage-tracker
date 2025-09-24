@@ -1,0 +1,8 @@
+body {
+  font-family: 'Inter', sans-serif;
+  background: #f7fafc;
+  color: #222;
+}
+.table th, .table td {
+  padding: 0.5rem;
+}

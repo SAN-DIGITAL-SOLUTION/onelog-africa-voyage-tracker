@@ -1,0 +1,243 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 1,
+    "passes": 0,
+    "pending": 0,
+    "failures": 1,
+    "start": "2025-06-22T06:08:53.913Z",
+    "end": "2025-06-22T06:08:54.407Z",
+    "duration": 494,
+    "testsRegistered": 8,
+    "passPercent": 0,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 7,
+    "hasSkipped": true
+  },
+  "results": [
+    {
+      "uuid": "9a12abf8-9e06-4343-8805-69c353a47782",
+      "title": "",
+      "fullFile": "cypress\\e2e\\mission_tracking.cy.ts",
+      "file": "cypress\\e2e\\mission_tracking.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "e9db767f-a37d-4c1a-bbcc-e6c3e509ed2e",
+          "title": "Suivi en temps réel – Mission Tracking",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "affiche la carte Google Maps",
+              "fullTitle": "Suivi en temps réel – Mission Tracking affiche la carte Google Maps",
+              "timedOut": null,
+              "duration": 286,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.get('div[data-testid=\"google-map-container\"]').should('exist');",
+              "err": {
+                "message": "TypeError: cy.login is not a function\n\nBecause this error occurred during a `before each` hook we are skipping the remaining tests in the current suite: `Suivi en temps réel – Missi...`",
+                "estack": "TypeError: cy.login is not a function\n\nBecause this error occurred during a `before each` hook we are skipping the remaining tests in the current suite: `Suivi en temps réel – Missi...`\n    at Context.eval (webpack://vite_react_shadcn_ts/./cypress/e2e/mission_tracking.cy.ts:5:0)",
+                "diff": null
+              },
+              "uuid": "8606a0b5-cd6a-4299-828e-0732bc463df5",
+              "parentUUID": "e9db767f-a37d-4c1a-bbcc-e6c3e509ed2e",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "affiche le polyline et les markers",
+              "fullTitle": "Suivi en temps réel – Mission Tracking affiche le polyline et les markers",
+              "timedOut": null,
+              "duration": 0,
+              "state": "skipped",
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.get('div[aria-label=\"Marker\"]').should('have.length.at.least', 1);",
+              "err": {},
+              "uuid": "d8d4bf26-966e-4163-a466-56d5a3f0aa15",
+              "parentUUID": "e9db767f-a37d-4c1a-bbcc-e6c3e509ed2e",
+              "isHook": false,
+              "skipped": true
+            },
+            {
+              "title": "met à jour la carte lorsqu’un nouveau point arrive",
+              "fullTitle": "Suivi en temps réel – Mission Tracking met à jour la carte lorsqu’un nouveau point arrive",
+              "timedOut": null,
+              "duration": 0,
+              "state": "skipped",
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.window().then(function (win) {\n    var channel = win.supabase.channel();\n    channel.handlers[0].callback({\n        new: { id: 'p3', mission_id: missionId, latitude: 6.5260, longitude: 3.3810, created_at: new Date().toISOString() },\n    });\n});\ncy.get('div[aria-label=\"Marker\"]').should('have.length.at.least', 3);",
+              "err": {},
+              "uuid": "a05f20a8-d9bd-45c5-9fd9-2e3e0fc9ccf8",
+              "parentUUID": "e9db767f-a37d-4c1a-bbcc-e6c3e509ed2e",
+              "isHook": false,
+              "skipped": true
+            },
+            {
+              "title": "affiche un message si aucun point GPS n’est disponible",
+              "fullTitle": "Suivi en temps réel – Mission Tracking affiche un message si aucun point GPS n’est disponible",
+              "timedOut": null,
+              "duration": 0,
+              "state": "skipped",
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.intercept('GET', \"/tracking_points?mission_id=eq.empty-mission*\", {\n    statusCode: 200,\n    body: [],\n});\ncy.visit('/missions/empty-mission/tracking');\ncy.contains('En attente de position GPS').should('be.visible');",
+              "err": {},
+              "uuid": "8c2b28c5-f1bb-4667-8725-ac842bcfc738",
+              "parentUUID": "e9db767f-a37d-4c1a-bbcc-e6c3e509ed2e",
+              "isHook": false,
+              "skipped": true
+            },
+            {
+              "title": "gère une erreur de récupération des points",
+              "fullTitle": "Suivi en temps réel – Mission Tracking gère une erreur de récupération des points",
+              "timedOut": null,
+              "duration": 0,
+              "state": "skipped",
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.intercept('GET', \"/tracking_points?mission_id=eq.error-mission*\", {\n    statusCode: 500,\n    body: { error: 'Server error' },\n});\ncy.visit('/missions/error-mission/tracking');\ncy.contains(/erreur|impossible/i, { matchCase: false });",
+              "err": {},
+              "uuid": "8390705b-bbb7-4d3c-a52a-9b0ad9e67981",
+              "parentUUID": "e9db767f-a37d-4c1a-bbcc-e6c3e509ed2e",
+              "isHook": false,
+              "skipped": true
+            },
+            {
+              "title": "bloque l’accès si non authentifié",
+              "fullTitle": "Suivi en temps réel – Mission Tracking bloque l’accès si non authentifié",
+              "timedOut": null,
+              "duration": 0,
+              "state": "skipped",
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.clearCookies();\ncy.visit(\"/missions/\".concat(missionId, \"/tracking\"));\ncy.contains(/connexion|authentification/i, { matchCase: false });",
+              "err": {},
+              "uuid": "827f33db-8232-43e3-bfd0-6f4d91358237",
+              "parentUUID": "e9db767f-a37d-4c1a-bbcc-e6c3e509ed2e",
+              "isHook": false,
+              "skipped": true
+            },
+            {
+              "title": "bloque l’accès à une mission non autorisée",
+              "fullTitle": "Suivi en temps réel – Mission Tracking bloque l’accès à une mission non autorisée",
+              "timedOut": null,
+              "duration": 0,
+              "state": "skipped",
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "// Simuler une mission dont le chauffeur n’est pas propriétaire\ncy.login('autre@qa.test', 'password123');\ncy.intercept('GET', \"/tracking_points?mission_id=eq.unauth-mission*\", {\n    statusCode: 403,\n    body: { error: 'Forbidden' },\n});\ncy.visit('/missions/unauth-mission/tracking');\ncy.contains(/non autorisé|forbidden|accès refusé/i, { matchCase: false });",
+              "err": {},
+              "uuid": "18205f90-89d9-445e-81fe-870aed6698be",
+              "parentUUID": "e9db767f-a37d-4c1a-bbcc-e6c3e509ed2e",
+              "isHook": false,
+              "skipped": true
+            },
+            {
+              "title": "affiche une info de chargement pendant le fetch",
+              "fullTitle": "Suivi en temps réel – Mission Tracking affiche une info de chargement pendant le fetch",
+              "timedOut": null,
+              "duration": 0,
+              "state": "skipped",
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.intercept('GET', \"/tracking_points?mission_id=eq.\".concat(missionId, \"*\"), function (req) {\n    req.on('response', function (res) {\n        setTimeout(function () { return res.send(); }, 1000); // délai artificiel\n    });\n});\ncy.visit(\"/missions/\".concat(missionId, \"/tracking\"));\ncy.contains(/chargement/i, { matchCase: false });",
+              "err": {},
+              "uuid": "adee06c3-2da9-4660-a3fa-686ffef0fcfc",
+              "parentUUID": "e9db767f-a37d-4c1a-bbcc-e6c3e509ed2e",
+              "isHook": false,
+              "skipped": true
+            }
+          ],
+          "suites": [],
+          "passes": [],
+          "failures": [
+            "8606a0b5-cd6a-4299-828e-0732bc463df5"
+          ],
+          "pending": [],
+          "skipped": [
+            "d8d4bf26-966e-4163-a466-56d5a3f0aa15",
+            "a05f20a8-d9bd-45c5-9fd9-2e3e0fc9ccf8",
+            "8c2b28c5-f1bb-4667-8725-ac842bcfc738",
+            "8390705b-bbb7-4d3c-a52a-9b0ad9e67981",
+            "827f33db-8232-43e3-bfd0-6f4d91358237",
+            "18205f90-89d9-445e-81fe-870aed6698be",
+            "adee06c3-2da9-4660-a3fa-686ffef0fcfc"
+          ],
+          "duration": 286,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.0.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": false,
+        "json": true
+      },
+      "version": "6.2.0"
+    }
+  }
+}

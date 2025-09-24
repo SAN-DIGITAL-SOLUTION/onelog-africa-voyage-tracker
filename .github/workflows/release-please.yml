@@ -1,0 +1,23 @@
+name: release-please
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      - name: Install release-please
+        run: npm install -g release-please
+      - name: Run release-please
+        run: |
+          release-please release-pr --manifest .release-please-manifest.json --config .release-please-config.json || true
+        working-directory: notifications-core

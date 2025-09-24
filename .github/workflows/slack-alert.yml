@@ -1,0 +1,20 @@
+name: Slack Alert on Failure
+
+on:
+  workflow_run:
+    workflows: ["Admin Dashboard CI", "dashboard-ci.yml"]
+    types:
+      - completed
+
+jobs:
+  notify:
+    if: ${{ github.event.workflow_run.conclusion != 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Slack notification on failure
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ github.event.workflow_run.conclusion }}
+          fields: repo,commit,author,workflow,job,took
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
