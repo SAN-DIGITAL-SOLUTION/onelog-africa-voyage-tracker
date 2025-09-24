@@ -6,10 +6,23 @@ import path from 'path';
 const dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
+  resolve: {
+    alias: [
+      {
+        find: '@',
+        replacement: path.resolve(dirname, 'src'),
+      },
+      {
+        find: /^next\/server$/,
+        replacement: path.resolve(dirname, '__tests__/mocks/next-server.ts'),
+      },
+    ],
+  },
   test: {
     globals: true,
     environment: 'jsdom',
     include: ['src/__tests__/**/*.test.ts', '__tests__/**/*.test.{ts,tsx}'],
+    exclude: ['__tests__/e2e/**/*', 'e2e/**/*', '**/*.e2e.test.*'],
     setupFiles: ['./src/test/setup.ts'],
     testTimeout: 20000,
     
@@ -32,20 +45,6 @@ export default defineConfig({
         '**/*.d.ts',
         '**/*.stories.{js,jsx,ts,tsx}',
         '**/stories/**',
-      ],
-    },
-    
-    // Configuration des alias
-    resolve: {
-      alias: [
-        {
-          find: '@',
-          replacement: path.resolve(dirname, 'src'),
-        },
-        {
-          find: /^next\/server$/,
-          replacement: path.resolve(dirname, '__tests__/mocks/next-server.ts'),
-        },
       ],
     },
   },
