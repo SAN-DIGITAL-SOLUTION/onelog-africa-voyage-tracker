@@ -22,7 +22,7 @@
     "storybook": "storybook dev -p 6007",
     "build-storybook": "storybook build",
     "test": "vitest run --config vitest.config.ts --coverage",
-    "test:unit": "vitest run --config vitest.config.ts",
+    "test:unit": "npx vitest run",
     "docs:update": "node scripts/update-documentation.js",
     "docs:auto": "npm run docs:update && git add README.md project-status.json docs/auto-update-report.json && git commit -m 'docs: auto-update documentation' || true",
     "test:ui": "vitest --ui",
