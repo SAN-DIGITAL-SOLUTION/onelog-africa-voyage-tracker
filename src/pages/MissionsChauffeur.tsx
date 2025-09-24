@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Truck, Clock, CheckCircle, AlertTriangle, MapPin, Phone, User } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Button, Badge } from "@/components/ui";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/hooks/useAuth";
 import RequireAuth from "@/components/RequireAuth";
