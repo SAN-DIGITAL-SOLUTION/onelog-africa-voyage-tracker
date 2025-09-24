@@ -11,7 +11,7 @@ import {
   User,
   Navigation
 } from 'lucide-react';
-import { Badge } from "@/components/ui/badge"; 
+import { Badge } from "@/components/ui"; 
 import { TimelineEvent, EventItemProps } from './types';
 
 const EventItem: React.FC<EventItemProps> = ({

@@ -10,8 +10,7 @@ import {
   X,
   ChevronDown
 } from 'lucide-react';
-import { Button } from "@/components/ui/button"; 
-import { Badge } from '@/components/ui/badge';
+import { Button, Badge } from "@/components/ui"; 
 import { TimelineFilters as TimelineFiltersType, TimelineFiltersProps } from './types';
 
 const TimelineFilters: React.FC<TimelineFiltersProps> = ({
