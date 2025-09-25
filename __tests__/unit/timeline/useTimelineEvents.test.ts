@@ -1,4 +1,4 @@
-import { renderHook, waitFor } from '@testing-library/react';
+import { renderHook, waitFor, act } from '@testing-library/react';
 import { useTimelineEvents } from '../../../src/hooks/useTimelineEvents';
 import { mockTimelineEvents } from '../../mocks/timelineMocks';
 import { vi } from 'vitest';
@@ -63,8 +63,10 @@ describe('useTimelineEvents', () => {
       expect(result.current.loading).toBe(false);
     });
 
-    // Déclencher un refetch
-    await result.current.refetch();
+    // Déclencher un refetch et envelopper la mise à jour d'état dans act
+    await act(async () => {
+      await result.current.refetch();
+    });
 
     expect(timelineService.getEvents).toHaveBeenCalledTimes(2);
     expect(timelineService.getAvailableVehicles).toHaveBeenCalledTimes(2);

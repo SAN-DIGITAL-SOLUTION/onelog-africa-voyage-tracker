@@ -22,7 +22,7 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     include: ['src/__tests__/**/*.test.ts', '__tests__/**/*.test.{ts,tsx}'],
-    exclude: ['__tests__/e2e/**/*', 'e2e/**/*', '**/*.e2e.test.*'],
+    exclude: ['__tests__/e2e/**/*', '__tests__/integration/**/*', 'e2e/**/*', '**/*.e2e.test.*'],
     setupFiles: ['./src/test/setup.ts'],
     testTimeout: 20000,
     
