@@ -12,7 +12,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "build:dev": "vite build --mode development",
-  "lint": "eslint --config ./eslint.config.js --ignore-pattern vendor/** --ignore-pattern node_modules/** --ext .ts,.tsx src cypress scripts vite.config.ts vitest.config.ts",
+  "lint": "eslint --config ./eslint.config.js --ignore-pattern vendor/** --ignore-pattern node_modules/** --no-error-on-unmatched-pattern --ext .ts,.tsx \"src/**/*.{ts,tsx}\" \"cypress/**/*.{ts,tsx}\" \"scripts/**/*.{ts,tsx}\" vite.config.ts vitest.config.ts",
   "type-check": "tsc --noEmit",
   "preview": "vite preview",
     "backend": "node server.js",
