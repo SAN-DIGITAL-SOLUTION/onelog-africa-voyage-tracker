@@ -5,6 +5,7 @@ on:
     branches: [ main, develop ]
   pull_request:
     branches: [ main, develop ]
+  workflow_dispatch:
 
 env:
   # Secrets requis pour QA/Sécurité/E2E
@@ -28,7 +29,7 @@ jobs:
         run: |
           psql "$SUPABASE_DB_URL" -f scripts/audit_rls_policies_full.sql -o rls_audit_report.txt
       - name: Upload audit report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: rls_audit_report
           path: rls_audit_report.txt

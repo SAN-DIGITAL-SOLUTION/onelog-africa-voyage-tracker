@@ -9,7 +9,7 @@
     "CI/CD finalisation"
   ],
   "next_roadmap": "v1.1.0",
-  "last_update": "2025-09-24T09:24:16.540Z",
+  "last_update": "2025-09-25T21:11:56.450Z",
   "progression": 100,
   "modules": [
     {
@@ -86,7 +86,7 @@
     "Déploiement environnement staging"
   ],
   "statistics": {
-    "total_files": 387,
+    "total_files": 389,
     "react_components": 215,
     "pages": 65,
     "services": 19,
