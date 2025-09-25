@@ -6,12 +6,15 @@ on:
   pull_request:
     branches: [ main ]
 
+env:
+  NODE_VERSION: '20'
+
 jobs:
   e2e-docker:
     runs-on: ubuntu-latest
     services:
       app:
-        image: node:18
+        image: node:20
         ports: ['5173:5173']
         volumes:
           - ./:/app
@@ -39,7 +42,6 @@ jobs:
             ${{ runner.os }}-node-
 
   backend-tests:
-    needs: setup
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -48,7 +50,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: '20'
 
       - name: Install backend deps
         working-directory: server
@@ -76,7 +78,6 @@ jobs:
           path: server/coverage/
 
   frontend-tests:
-    needs: setup
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -85,13 +86,13 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: '20'
 
       - name: Install frontend deps
         run: npm ci
 
       - name: Run unit tests
-        run: npm test -- --reporters=default --reporters=jest-junit --coverage
+        run: npx vitest run --reporter=junit --coverage
 
       - name: Upload frontend coverage
         uses: actions/upload-artifact@v4
@@ -100,7 +101,7 @@ jobs:
           path: coverage/
 
   frontend-e2e:
-    needs: [setup, backend-tests]
+    needs: backend-tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -109,7 +110,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: '20'
 
       - name: Install frontend deps
         run: npm ci
@@ -120,14 +121,14 @@ jobs:
 
       - name: Build Frontend
         run: npm run build
-      # Vérification du healthcheck API
+      # Vérification du healthcheck Frontend
       - name: Start app in background
         run: |
-          npm start &
-          sleep 10
+          npm run preview -- --port 5173 &
+          sleep 5
       - name: Test healthcheck endpoint
         run: |
-          curl -f http://localhost:3000/api/health
+          curl -f http://localhost:5173
       # Build Docker (vérification Dockerfile)
       - name: Build Docker image
         run: docker build .

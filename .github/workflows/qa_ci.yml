@@ -6,6 +6,16 @@ on:
   pull_request:
     branches: [ main, develop ]
 
+env:
+  # Secrets requis pour QA/Sécurité/E2E
+  SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+  SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+  SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+  SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL_QA }}
+  VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+  VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+  MAPBOX_PUBLIC_KEY: ${{ secrets.MAPBOX_PUBLIC_KEY }}
+
 jobs:
   audit-rls:
     runs-on: ubuntu-latest
@@ -23,21 +33,16 @@ jobs:
 
   cypress-e2e:
     runs-on: ubuntu-latest
-    name: Cypress E2E Tests
+    name: Cypress E2E Tests (Smoke)
     steps:
       - uses: actions/checkout@v3
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20
       - name: Install dependencies
         run: npm ci
-      - name: Start web app
-        run: npm run dev &
-        env:
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
-      - name: Run Cypress
+      - name: Run Cypress smoke suite
         uses: cypress-io/github-action@v5
         with:
           start: npm run dev
@@ -52,8 +57,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20
       - name: Install dependencies
         run: npm ci
-      - name: Run Vitest
-        run: npx vitest run
+      - name: Run Vitest (junit + coverage)
+        run: npx vitest run --reporter=junit --coverage

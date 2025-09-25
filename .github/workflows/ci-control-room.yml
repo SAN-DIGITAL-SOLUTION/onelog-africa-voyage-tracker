@@ -9,11 +9,12 @@ on:
     - cron: '0 2 * * *' # nightly run at 02:00 UTC
 
 env:
-  NODE_VERSION: '18'
+  NODE_VERSION: '20'
   SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
   SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
   SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
   VITE_MAPBOX_ACCESS_TOKEN: ${{ secrets.MAPBOX_PUBLIC_KEY }}
+  MAPBOX_PUBLIC_KEY: ${{ secrets.MAPBOX_PUBLIC_KEY }}
   SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 
 jobs:
@@ -51,7 +52,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: '20'
 
       - name: Install backend deps
         working-directory: server
@@ -88,13 +89,13 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: '20'
 
       - name: Install frontend deps
         run: npm ci
 
-      - name: Run unit tests
-        run: npm test -- --reporters=default --reporters=jest-junit --coverage
+      - name: Run unit tests (Vitest junit + coverage)
+        run: npx vitest run --reporter=junit --coverage
 
       - name: Upload frontend coverage
         uses: actions/upload-artifact@v4

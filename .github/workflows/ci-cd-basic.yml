@@ -1,10 +1,8 @@
-name: CI/CD Basic
+name: CI/CD Basic (disabled)
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  # Désactivé pour éviter les doublons avec le pipeline principal ci-cd-production.yml
+  workflow_dispatch:
 
 jobs:
   build_and_test:
@@ -17,7 +15,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
           cache: npm
 
       - name: Install dependencies
