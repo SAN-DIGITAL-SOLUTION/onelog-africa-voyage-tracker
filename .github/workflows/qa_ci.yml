@@ -22,6 +22,8 @@ jobs:
     name: Audit RLS Policies
     steps:
       - uses: actions/checkout@v3
+      - name: Install PostgreSQL client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
       - name: Run RLS Audit SQL
         run: |
           psql "$SUPABASE_DB_URL" -f scripts/audit_rls_policies_full.sql -o rls_audit_report.txt
@@ -48,6 +50,15 @@ jobs:
           start: npm run dev
           wait-on: 'http://localhost:5173'
           wait-on-timeout: 60
+      - name: Upload Cypress artifacts (on failure)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-results
+          path: |
+            cypress/screenshots/**
+            cypress/videos/**
+            cypress/results/**
 
   vitest-unit:
     runs-on: ubuntu-latest
