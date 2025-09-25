@@ -62,7 +62,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/Avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { User, UserCog, Repeat, LogOut } from "lucide-react";
 
 import { Link, useLocation } from 'react-router-dom';
