@@ -39,3 +39,4 @@ test-results/
 *.zip
 TEST_AUTOMATION_REPORT.md
 pnpm-lock.yaml
+coverage/

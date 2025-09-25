@@ -181,7 +181,7 @@ console.log(msg);
 6. ✅ **Objectif** : Déploiement production 9 septembre 2025
 ---
 
-*Dernière mise à jour : 2025-09-22 - Documentation synchronisée automatiquement*
+*Dernière mise à jour : 2025-09-24 - Documentation synchronisée automatiquement*
 
 ## ⚠️ Limitations d’environnement local Windows
 
