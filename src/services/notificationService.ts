@@ -1,5 +1,6 @@
 import { supabase } from '@/integrations/supabase/client';
 import type { Notification, NotificationFilters, CreateNotificationParams } from '@/types/notifications';
+import { auditService } from '@/services/auditService';
 
 export class NotificationService {
   private static instance: NotificationService;
@@ -70,7 +71,18 @@ export class NotificationService {
     }
   }
 
-  async markAllAsRead(userId: string): Promise<void> {
+  async markAllAsRead(userId: string, actorId?: string): Promise<void> {
+    const { data: notificationsBefore, error: fetchError } = await supabase
+      .from('notifications')
+      .select('id')
+      .eq('user_id', userId)
+      .eq('status', 'pending');
+
+    if (fetchError) {
+      console.error('Erreur lors de la récupération des notifications:', fetchError);
+      throw fetchError;
+    }
+
     const { error } = await supabase
       .from('notifications')
       .update({ status: 'read', read_at: new Date().toISOString() })
@@ -81,9 +93,23 @@ export class NotificationService {
       console.error('Erreur lors du marquage de toutes les notifications comme lues:', error);
       throw error;
     }
+
+    // Audit trail: Log bulk mark as read
+    if (actorId && notificationsBefore && notificationsBefore.length > 0) {
+      await auditService.logUpdate(
+        actorId,
+        'notification',
+        userId, // Using userId as entity_id for bulk operations
+        { 
+          action: 'mark_all_as_read',
+          count: notificationsBefore.length,
+          notification_ids: notificationsBefore.map(n => n.id)
+        }
+      );
+    }
   }
 
-  async createNotification(params: CreateNotificationParams): Promise<Notification> {
+  async createNotification(params: CreateNotificationParams, actorId?: string): Promise<Notification> {
     const { data, error } = await supabase
       .from('notifications')
       .insert([{
@@ -107,6 +133,21 @@ export class NotificationService {
     if (error) {
       console.error('Erreur lors de la création de la notification:', error);
       throw error;
+    }
+
+    // Audit trail: Log manual notification creation
+    if (actorId) {
+      await auditService.logCreate(
+        actorId,
+        'notification',
+        data.id,
+        { 
+          type: params.type,
+          priority: params.priority || 'medium',
+          recipient: params.userId,
+          title: params.title
+        }
+      );
     }
 
     return data;
