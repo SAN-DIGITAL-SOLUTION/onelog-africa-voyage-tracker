@@ -658,6 +658,11 @@ src/
 | 2025-09-30 10:10 | Phase P0.1 | Unification clients Supabase | ✅ Fait | 7f335c0 | 158 fichiers + client canonique |
 | 2025-09-30 10:15 | Phase P0.2 | Documentation secrets | ✅ Fait | 2057af3 | .env.example + SECRETS.md |
 | 2025-09-30 10:18 | Phase P0.2 | Script validation DB | ✅ Fait | 521045e | validate-db-connection.ts |
+| 2025-09-30 10:25 | Phase P1.1 | Instrumentation missions.ts | ✅ Fait | dca9efe | 4 opérations CRUD auditées |
+| 2025-09-30 10:35 | Phase P1.1 | Instrumentation notifications | ✅ Fait | fe9afa3 | 2 ops + bulk markAllAsRead |
+| 2025-09-30 10:50 | Phase P1.1 | Instrumentation users.ts | ✅ Fait | ad64919 | 2 ops + role change detection |
+| 2025-09-30 11:10 | Phase P1.1 | Instrumentation billing | ✅ Fait | 1b9215d | 2 ops financières auditées |
+| 2025-09-30 11:40 | Phase P1.1 | Rapport session P1 | ✅ Fait | RAPPORT_SESSION_P1.md | 10 opérations instrumentées |
 
 ### Métriques
 
