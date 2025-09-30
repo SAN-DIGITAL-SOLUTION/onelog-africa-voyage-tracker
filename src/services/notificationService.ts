@@ -1,6 +1,8 @@
 import { supabase } from '@/integrations/supabase/client';
 import type { Notification, NotificationFilters, CreateNotificationParams } from '@/types/notifications';
 import { auditService } from '@/services/auditService';
+import { notificationRepository } from '@/repositories/notificationRepository';
+import type { CreateNotificationData } from '@/repositories/notificationRepository';
 
 export class NotificationService {
   private static instance: NotificationService;
@@ -13,34 +15,11 @@ export class NotificationService {
   }
 
   async getUserNotifications(userId: string, filters: NotificationFilters = {}): Promise<Notification[]> {
-    const { data, error } = await supabase
-      .from('notifications')
-      .select('*')
-      .eq('user_id', userId)
-      .order('created_at', { ascending: false })
-      .limit(filters.limit || 50);
-
-    if (error) {
-      console.error('Erreur lors de la récupération des notifications:', error);
-      return [];
-    }
-
-    return data || [];
+    return await notificationRepository.findByUserId(userId, filters);
   }
 
   async getUnreadCount(userId: string): Promise<number> {
-    const { count, error } = await supabase
-      .from('notifications')
-      .select('*', { count: 'exact' })
-      .eq('user_id', userId)
-      .eq('status', 'pending');
-
-    if (error) {
-      console.error('Erreur lors du comptage des notifications non lues:', error);
-      return 0;
-    }
-
-    return count || 0;
+    return await notificationRepository.getUnreadCount(userId);
   }
 
   async getUserPreferences(userId: string): Promise<any> {
@@ -59,88 +38,51 @@ export class NotificationService {
   }
 
   async markAsRead(notificationId: string, userId: string): Promise<void> {
-    const { error } = await supabase
-      .from('notifications')
-      .update({ status: 'read', read_at: new Date().toISOString() })
-      .eq('id', notificationId)
-      .eq('user_id', userId);
-
-    if (error) {
-      console.error('Erreur lors du marquage comme lu:', error);
-      throw error;
-    }
+    await notificationRepository.markAsRead(notificationId);
   }
 
   async markAllAsRead(userId: string, actorId?: string): Promise<void> {
-    const { data: notificationsBefore, error: fetchError } = await supabase
-      .from('notifications')
-      .select('id')
-      .eq('user_id', userId)
-      .eq('status', 'pending');
-
-    if (fetchError) {
-      console.error('Erreur lors de la récupération des notifications:', fetchError);
-      throw fetchError;
-    }
-
-    const { error } = await supabase
-      .from('notifications')
-      .update({ status: 'read', read_at: new Date().toISOString() })
-      .eq('user_id', userId)
-      .eq('status', 'pending');
-
-    if (error) {
-      console.error('Erreur lors du marquage de toutes les notifications comme lues:', error);
-      throw error;
-    }
+    const count = await notificationRepository.markAllAsRead(userId);
 
     // Audit trail: Log bulk mark as read
-    if (actorId && notificationsBefore && notificationsBefore.length > 0) {
+    if (actorId && count > 0) {
       await auditService.logUpdate(
         actorId,
         'notification',
         userId, // Using userId as entity_id for bulk operations
         { 
           action: 'mark_all_as_read',
-          count: notificationsBefore.length,
-          notification_ids: notificationsBefore.map(n => n.id)
+          count: count
         }
       );
     }
   }
 
   async createNotification(params: CreateNotificationParams, actorId?: string): Promise<Notification> {
-    const { data, error } = await supabase
-      .from('notifications')
-      .insert([{
-        title: params.title,
-        message: params.message,
-        type: params.type,
-        priority: params.priority || 'medium',
-        user_id: params.userId,
-        billing_partner_id: params.billingPartnerId,
-        related_entity_type: params.relatedEntityType,
-        related_entity_id: params.relatedEntityId,
-        metadata: params.metadata,
-        status: 'pending',
-        channel: 'in_app',
-        scheduled_at: new Date().toISOString(),
-        retry_count: 0
-      }])
-      .select()
-      .single();
+    const notificationData: CreateNotificationData = {
+      title: params.title,
+      message: params.message,
+      type: params.type,
+      priority: params.priority || 'medium',
+      channel: 'in_app',
+      user_id: params.userId,
+      billing_partner_id: params.billingPartnerId,
+      related_entity_type: params.relatedEntityType,
+      related_entity_id: params.relatedEntityId,
+      metadata: params.metadata,
+      status: 'pending',
+      scheduled_at: new Date().toISOString(),
+      retry_count: 0
+    };
 
-    if (error) {
-      console.error('Erreur lors de la création de la notification:', error);
-      throw error;
-    }
+    const notification = await notificationRepository.create(notificationData);
 
     // Audit trail: Log manual notification creation
     if (actorId) {
       await auditService.logCreate(
         actorId,
         'notification',
-        data.id,
+        notification.id,
         { 
           type: params.type,
           priority: params.priority || 'medium',
@@ -150,7 +92,7 @@ export class NotificationService {
       );
     }
 
-    return data;
+    return notification;
   }
 
   async updateUserPreferences(userId: string, preferences: any): Promise<void> {
