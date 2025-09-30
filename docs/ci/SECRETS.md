@@ -14,14 +14,18 @@ Ce document liste les secrets et variables d’environnement à créer dans GitH
   - CODECOV_TOKEN (upload couverture unit/php – ci-cd-production)
 
 - SUPABASE (QA/DEV/PROD)
-  - SUPABASE_URL (CI Control Room, QA)
-  - SUPABASE_ANON_KEY (CI Control Room, QA)
-  - SUPABASE_SERVICE_ROLE_KEY (CI Control Room)
+  - VITE_SUPABASE_URL (Client-side URL - QA/CI)
+  - VITE_SUPABASE_ANON_KEY (Client-side anon key - QA/CI)
+  - SUPABASE_SERVICE_ROLE_KEY (Server-side - bypass RLS pour audit logs)
+  - SUPABASE_DB_URL (PostgreSQL direct connection format: postgres://postgres:[password]@db.[ref].supabase.co:5432/postgres)
   - SUPABASE_DB_URL_QA (Audit RLS en QA – qa_ci)
   - STAGING_SUPABASE_URL (déploiement staging – ci-cd-production)
   - STAGING_SUPABASE_ANON_KEY (déploiement staging – ci-cd-production)
   - PROD_SUPABASE_URL (déploiement prod – ci-cd-production)
   - PROD_SUPABASE_ANON_KEY (déploiement prod – ci-cd-production)
+  
+- ADMIN API
+  - ADMIN_API_KEY (Sécurisation endpoints admin - doit être généré aléatoirement)
 
 - SENTRY
   - STAGING_SENTRY_DSN (déploiement staging – ci-cd-production)
