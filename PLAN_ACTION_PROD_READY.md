@@ -654,6 +654,10 @@ src/
 | 2025-09-30 08:43 | Phase 1A | Création auditService.ts | ✅ Fait | - | Service complet avec 7 méthodes |
 | 2025-09-30 08:44 | Phase 1A | Création auditRepository.ts | ✅ Fait | - | Repository CRUD + stats |
 | 2025-09-30 08:45 | Phase 1A | Tests unitaires auditService | ✅ Fait | - | 7 tests avec mocks |
+| 2025-09-30 10:05 | Phase P0.1 | Diagnostic technique complet | ✅ Fait | DIAGNOSTIC_TECHNIQUE_COMPLET.md | 8 problèmes identifiés P0/P1/P2 |
+| 2025-09-30 10:10 | Phase P0.1 | Unification clients Supabase | ✅ Fait | 7f335c0 | 158 fichiers + client canonique |
+| 2025-09-30 10:15 | Phase P0.2 | Documentation secrets | ✅ Fait | 2057af3 | .env.example + SECRETS.md |
+| 2025-09-30 10:18 | Phase P0.2 | Script validation DB | ✅ Fait | 521045e | validate-db-connection.ts |
 
 ### Métriques
 
