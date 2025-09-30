@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 
 export async function getNotifications({ onlyUnread = false, filter = 'all' } = {}) {
   let query = supabase.from('notifications').select('*').order('created_at', { ascending: false });

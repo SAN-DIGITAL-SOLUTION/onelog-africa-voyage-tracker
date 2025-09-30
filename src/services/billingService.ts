@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 import type { BillingPartner, GroupedInvoice } from '@/types/billing';
 import type { Mission } from '@/types/mission';
 

@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 import { Mission, MissionStatus } from '@/types/mission';
 import { MissionStatusHistory } from '@/types/mission-status-history';
 

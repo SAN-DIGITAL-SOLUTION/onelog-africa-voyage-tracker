@@ -3,7 +3,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 import RequireAuth from "@/components/RequireAuth";
 import { SlideDownHeader } from "@/components/SlideDownHeader";
 import { CardFade } from "@/components/CardFade";

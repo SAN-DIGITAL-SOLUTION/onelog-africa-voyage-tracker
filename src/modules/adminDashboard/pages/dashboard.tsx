@@ -5,7 +5,7 @@ import useAdminStats from '../hooks/useAdminStats';
 import AnalyticsDashboard from '../analytics/AnalyticsDashboard';
 
 import { GetServerSidePropsContext } from 'next';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 
 export default function AdminDashboardPage() {
   const stats = useAdminStats();

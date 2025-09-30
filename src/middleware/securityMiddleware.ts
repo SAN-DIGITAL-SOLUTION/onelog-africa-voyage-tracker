@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import { SECURITY_CONFIG, securityUtils } from '@/config/security.config';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 
 // Interface pour les requêtes avec utilisateur authentifié
 interface AuthenticatedRequest extends Request {

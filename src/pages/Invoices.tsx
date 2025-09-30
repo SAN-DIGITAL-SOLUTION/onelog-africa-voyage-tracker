@@ -1,6 +1,6 @@
 import { FileText, Download } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 import RequireAuth from "@/components/RequireAuth";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";

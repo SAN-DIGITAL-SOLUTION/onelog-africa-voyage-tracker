@@ -1,5 +1,5 @@
 // Utilisation du client Supabase principal pour éviter les instances multiples
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 
 export async function login(email: string, password: string) {
   return supabase.auth.signInWithPassword({ email, password });

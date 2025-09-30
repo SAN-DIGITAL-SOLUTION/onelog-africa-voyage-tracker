@@ -2,7 +2,7 @@ import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, Clock, Truck, User, Package } from "lucide-react";
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 
 const STATUS_STEPS = [
   { key: "Créée", label: "Créée", icon: Clock },

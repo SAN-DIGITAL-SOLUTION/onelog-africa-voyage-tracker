@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 import type { Notification, NotificationFilters, CreateNotificationParams } from '@/types/notifications';
 
 export class NotificationService {

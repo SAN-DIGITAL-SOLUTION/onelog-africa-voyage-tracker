@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Paperclip } from "lucide-react";
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 
 type Mission = {
   id: string;

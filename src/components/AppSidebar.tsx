@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 
 import { useEffect, useState } from "react";
 import { useRole } from "@/hooks/useRole";

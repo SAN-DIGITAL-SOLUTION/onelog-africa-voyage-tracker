@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 
 export function useNotificationsRealtime(onNew: (notif: any) => void) {
   useEffect(() => {

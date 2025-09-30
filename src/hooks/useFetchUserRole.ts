@@ -1,5 +1,5 @@
 
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 import type { AppRole } from "./useRole";
 
 // Fonctions RPC supprimées car inexistantes dans Supabase
