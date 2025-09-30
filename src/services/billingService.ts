@@ -2,6 +2,8 @@ import { supabase } from '@/integrations/supabase/client';
 import type { BillingPartner, GroupedInvoice } from '@/types/billing';
 import type { Mission } from '@/types/mission';
 import { auditService } from '@/services/auditService';
+import { invoiceRepository } from '@/repositories/invoiceRepository';
+import type { CreateInvoiceData } from '@/repositories/invoiceRepository';
 
 interface ClientInvoiceData {
   missions: Mission[];
@@ -123,51 +125,36 @@ export class BillingService {
   /**
    * Crée une facture groupée
    */
-  private async createGroupedInvoice(
+  private async createInvoice(
     partnerId: string,
-    clientId: string,
     missions: Mission[],
     periodStart: Date,
     periodEnd: Date,
     totalAmount: number
   ): Promise<GroupedInvoice> {
     // 1. Créer l'enregistrement de facture
-    const { data: invoice, error } = await supabase
-      .from('grouped_invoices')
-      .insert({
-        billing_partner_id: partnerId,
-        period_start: periodStart.toISOString(),
-        period_end: periodEnd.toISOString(),
-        total_amount: totalAmount,
-        status: 'draft'
-      })
-      .select()
-      .single();
+    const invoiceData: CreateInvoiceData = {
+      billing_partner_id: partnerId,
+      period_start: periodStart.toISOString(),
+      period_end: periodEnd.toISOString(),
+      total_amount: totalAmount,
+      status: 'draft'
+    };
 
-    if (error) throw error;
+    const invoice = await invoiceRepository.create(invoiceData);
 
     // 2. Associer les missions à la facture
-    const missionLinks = missions.map(mission => ({
-      invoice_id: invoice.id,
-      mission_id: mission.id,
-      amount: mission.price || 0
-    }));
-
-    const { error: linkError } = await supabase
-      .from('invoice_missions')
-      .insert(missionLinks);
-
-    if (linkError) throw linkError;
+    const missionIds = missions.map(m => m.id!).filter(Boolean);
+    await invoiceRepository.addMissions(invoice.id, missionIds);
 
     // 3. Générer et attacher les documents
     const documents = await this.generateDocuments(invoice.id, missions);
     
-    await supabase
-      .from('grouped_invoices')
-      .update({ document_urls: documents })
-      .eq('id', invoice.id);
+    const updatedInvoice = await invoiceRepository.update(invoice.id, { 
+      document_urls: documents 
+    });
 
-    return invoice;
+    return updatedInvoice;
   }
 
   /**
@@ -215,25 +202,14 @@ export class BillingService {
    * Récupère les factures d'un partenaire
    */
   async getInvoicesByPartner(partnerId: string): Promise<GroupedInvoice[]> {
-    const { data, error } = await supabase
-      .from('grouped_invoices')
-      .select('*, billing_partners(name)')
-      .eq('billing_partner_id', partnerId)
-      .order('created_at', { ascending: false });
-
-    if (error) throw error;
-    return data || [];
+    return await invoiceRepository.findByPartnerId(partnerId);
   }
 
   /**
    * Envoie une facture par email
    */
   async sendInvoice(invoiceId: string, email: string, actorId?: string): Promise<void> {
-    const { data: invoice } = await supabase
-      .from('grouped_invoices')
-      .select('*, billing_partners(*)')
-      .eq('id', invoiceId)
-      .single();
+    const invoice = await invoiceRepository.findById(invoiceId);
 
     if (!invoice) throw new Error('Invoice not found');
 
@@ -241,10 +217,10 @@ export class BillingService {
     await this.sendEmailWithInvoice(invoice, email);
 
     // Marquer comme envoyée
-    await supabase
-      .from('grouped_invoices')
-      .update({ sent_at: new Date().toISOString() })
-      .eq('id', invoiceId);
+    await invoiceRepository.update(invoiceId, { 
+      sent_at: new Date().toISOString(),
+      status: 'sent'
+    });
 
     // Audit trail: Log invoice sending
     if (actorId) {
