@@ -2,34 +2,30 @@ import { supabase } from '@/integrations/supabase/client';
 import { Mission, MissionStatus } from '@/types/mission';
 import { MissionStatusHistory } from '@/types/mission-status-history';
 import { auditService } from '@/services/auditService';
+import { missionRepository } from '@/repositories/missionRepository';
 
 export async function fetchMissions(): Promise<Mission[]> {
-  const { data, error } = await supabase.from('missions').select('*').order('created_at', { ascending: false });
-  if (error) throw new Error(error.message);
-  return data || [];
+  return await missionRepository.findAll();
 }
 
 export async function fetchMission(id: string): Promise<Mission | null> {
-  const { data, error } = await supabase.from('missions').select('*').eq('id', id).single();
-  if (error) throw new Error(error.message);
-  return data;
+  return await missionRepository.findById(id);
 }
 
 export async function createMission(mission: Omit<Mission, 'id'>, actorId?: string): Promise<Mission> {
-  const { data, error } = await supabase.from('missions').insert([mission]).select().single();
-  if (error) throw new Error(error.message);
+  const data = await missionRepository.create(mission);
   
   // Audit trail: Log mission creation
   if (actorId) {
     await auditService.logCreate(
       actorId,
       'mission',
-      data.id,
+      data.id!,
       { 
         title: data.title,
         status: data.status,
-        pickup_location: data.pickup_location,
-        delivery_location: data.delivery_location
+        pickup_location: data.lieu_enlevement,
+        delivery_location: data.lieu_livraison
       }
     );
   }
@@ -47,12 +43,14 @@ const statusTransitions: Record<MissionStatus, MissionStatus[]> = {
 
 export async function updateMission(id: string, mission: Partial<Mission>, actorId?: string): Promise<Mission> {
   // Récupérer l'état avant modification pour l'audit
-  const { data: beforeUpdate, error: fetchError } = await supabase.from('missions').select('*').eq('id', id).single();
-  if (fetchError) throw new Error(fetchError.message);
+  const beforeUpdate = await missionRepository.findById(id);
+  if (!beforeUpdate) {
+    throw new Error(`Mission ${id} non trouvée`);
+  }
   
   // Si on souhaite changer le statut, contrôler la transition
   if (mission.status) {
-    const previousStatus = beforeUpdate?.status as MissionStatus;
+    const previousStatus = beforeUpdate.status as MissionStatus;
     if (previousStatus && mission.status !== previousStatus) {
       const allowed = statusTransitions[previousStatus] || [];
       if (!allowed.includes(mission.status as MissionStatus)) {
@@ -69,8 +67,7 @@ export async function updateMission(id: string, mission: Partial<Mission>, actor
     }
   }
   
-  const { data, error } = await supabase.from('missions').update(mission).eq('id', id).select().single();
-  if (error) throw new Error(error.message);
+  const data = await missionRepository.update(id, mission);
   
   // Audit trail: Log mission update
   if (actorId) {
@@ -91,9 +88,12 @@ export async function updateMission(id: string, mission: Partial<Mission>, actor
 
 export async function changeMissionStatus(id: string, newStatus: MissionStatus, changedBy: string): Promise<Mission> {
   // Récupérer la mission actuelle
-  const { data: current, error: fetchError } = await supabase.from('missions').select('*').eq('id', id).single();
-  if (fetchError) throw new Error(fetchError.message);
-  const previousStatus = current?.status as MissionStatus;
+  const current = await missionRepository.findById(id);
+  if (!current) {
+    throw new Error(`Mission ${id} non trouvée`);
+  }
+  
+  const previousStatus = current.status as MissionStatus;
   const allowed = statusTransitions[previousStatus] || [];
   if (!allowed.includes(newStatus)) {
     throw new Error(`Transition de statut non autorisée : ${previousStatus} → ${newStatus}`);
@@ -108,9 +108,8 @@ export async function changeMissionStatus(id: string, newStatus: MissionStatus, 
     changed_by: changedBy,
   });
   
-  // Mettre à jour la mission
-  const { data, error } = await supabase.from('missions').update({ status: newStatus }).eq('id', id).select().single();
-  if (error) throw new Error(error.message);
+  // Mettre à jour la mission via repository
+  const data = await missionRepository.changeStatus(id, newStatus);
   
   // Audit trail: Log status change
   await auditService.logUpdate(
@@ -121,7 +120,7 @@ export async function changeMissionStatus(id: string, newStatus: MissionStatus, 
       action: 'status_change',
       from: previousStatus,
       to: newStatus,
-      mission_title: current?.title
+      mission_title: current.title
     }
   );
   
@@ -130,14 +129,15 @@ export async function changeMissionStatus(id: string, newStatus: MissionStatus, 
 
 export async function deleteMission(id: string, actorId?: string): Promise<void> {
   // Récupérer la mission avant suppression pour l'audit
-  const { data: missionToDelete, error: fetchError } = await supabase.from('missions').select('*').eq('id', id).single();
-  if (fetchError) throw new Error(fetchError.message);
+  const missionToDelete = await missionRepository.findById(id);
+  if (!missionToDelete) {
+    throw new Error(`Mission ${id} non trouvée`);
+  }
   
-  const { error } = await supabase.from('missions').delete().eq('id', id);
-  if (error) throw new Error(error.message);
+  await missionRepository.delete(id);
   
   // Audit trail: Log mission deletion
-  if (actorId && missionToDelete) {
+  if (actorId) {
     await auditService.logDelete(
       actorId,
       'mission',
