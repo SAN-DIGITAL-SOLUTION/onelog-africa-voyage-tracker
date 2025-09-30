@@ -1,6 +1,7 @@
 import { supabase } from '@/integrations/supabase/client';
 import type { BillingPartner, GroupedInvoice } from '@/types/billing';
 import type { Mission } from '@/types/mission';
+import { auditService } from '@/services/auditService';
 
 interface ClientInvoiceData {
   missions: Mission[];
@@ -28,7 +29,7 @@ export class BillingService {
   /**
    * Appelle la fonction Supabase pour générer une facture groupée et renvoie l'URL du PDF.
    */
-  async generateGroupedInvoice(partnerId: string, startDate: Date, endDate: Date): Promise<string> {
+  async generateGroupedInvoice(partnerId: string, startDate: Date, endDate: Date, actorId?: string): Promise<string> {
     const { data, error } = await supabase.functions.invoke('generate-grouped-invoice-pdf', {
       body: {
         billing_partner_id: partnerId,
@@ -43,6 +44,22 @@ export class BillingService {
 
     if (!data.pdfUrl) {
       throw new Error('Aucune URL de PDF retournée par la fonction.');
+    }
+
+    // Audit trail: Log invoice generation
+    if (actorId) {
+      await auditService.logCreate(
+        actorId,
+        'invoice',
+        partnerId, // Using partnerId as entity_id
+        { 
+          action: 'generate_grouped_invoice',
+          partner_id: partnerId,
+          period_start: startDate.toISOString().split('T')[0],
+          period_end: endDate.toISOString().split('T')[0],
+          pdf_url: data.pdfUrl
+        }
+      );
     }
 
     return data.pdfUrl;
@@ -211,7 +228,7 @@ export class BillingService {
   /**
    * Envoie une facture par email
    */
-  async sendInvoice(invoiceId: string, email: string): Promise<void> {
+  async sendInvoice(invoiceId: string, email: string, actorId?: string): Promise<void> {
     const { data: invoice } = await supabase
       .from('grouped_invoices')
       .select('*, billing_partners(*)')
@@ -228,6 +245,21 @@ export class BillingService {
       .from('grouped_invoices')
       .update({ sent_at: new Date().toISOString() })
       .eq('id', invoiceId);
+
+    // Audit trail: Log invoice sending
+    if (actorId) {
+      await auditService.logUpdate(
+        actorId,
+        'invoice',
+        invoiceId,
+        { 
+          action: 'send_invoice',
+          recipient_email: email,
+          partner_name: invoice.billing_partners?.name,
+          sent_at: new Date().toISOString()
+        }
+      );
+    }
   }
 
   /**
