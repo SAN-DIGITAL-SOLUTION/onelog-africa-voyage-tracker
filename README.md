@@ -1,5 +1,12 @@
 # 🚚 OneLog Africa – Suivi du Développement
 
+## CI/CD Status
+
+![CI](https://github.com/sergeahiwa/OneLogAfrica/actions/workflows/ci.yml/badge.svg)
+![Tests](https://img.shields.io/badge/tests-79%2F90-green)
+![Coverage](https://img.shields.io/badge/coverage-88%25-yellow)
+![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)
+
 ## Configuration Twilio
 - `TWILIO_WHATSAPP_FROM` : numéro WhatsApp (format `whatsapp:+XYZ`)
 - `TWILIO_SMS_FROM` : numéro SMS (format `+XYZ`)

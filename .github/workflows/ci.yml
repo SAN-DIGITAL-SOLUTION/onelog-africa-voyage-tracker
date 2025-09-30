@@ -2,14 +2,35 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, develop, 'p*/**', 'feat/**' ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, develop ]
 
 env:
   NODE_VERSION: '20'
 
 jobs:
+  quality-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeScript check
+        run: npm run type-check
+
+      - name: Lint
+        run: npm run lint
+
   e2e-docker:
     runs-on: ubuntu-latest
     services:
@@ -78,6 +99,7 @@ jobs:
           path: server/coverage/
 
   frontend-tests:
+    needs: quality-checks
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -87,6 +109,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
 
       - name: Install frontend deps
         run: npm ci
@@ -99,6 +122,13 @@ jobs:
         with:
           name: frontend-coverage
           path: coverage/
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-test-results
+          path: junit.xml
 
   frontend-e2e:
     needs: backend-tests

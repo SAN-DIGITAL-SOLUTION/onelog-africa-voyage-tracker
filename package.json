@@ -34,6 +34,8 @@
     "test:coverage": "vitest run --coverage --reporter=lcov",
     "test:coverage:storybook": "test-storybook --coverage",
     "coverage:report": "c8 report --reporter=text --reporter=lcov",
+    "ci:check": "npm run lint && npm run type-check && npm run test:unit",
+    "ci:coverage": "npm run test:unit -- --coverage",
     "postinstall": "npm run docs:update"
   },
   "dependencies": {
