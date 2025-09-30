@@ -1,10 +1,9 @@
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Paperclip, X } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from '@/integrations/supabase/client';
 
 export type MissionDocUpload = { id?: string, filename: string, url: string };
 

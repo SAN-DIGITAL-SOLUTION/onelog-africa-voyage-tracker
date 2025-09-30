@@ -1,10 +1,11 @@
 
 import { NavLink, useNavigate } from "react-router-dom";
-import { BadgeCheck, LogOut } from "lucide-react";
+import { BadgeCheck } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "./ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useEffect, useState } from "react";
+import NotificationDropdown from "@/modules/adminDashboard/components/NotificationDropdown";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 // Toggle light/dark (Tailwind config)
@@ -53,6 +54,38 @@ function ModeToggle() {
   );
 }
 
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { User, UserCog, Repeat, LogOut } from "lucide-react";
+
+import { Link, useLocation } from 'react-router-dom';
+
+function Breadcrumb() {
+  const location = useLocation();
+  const pathnames = location.pathname.split('/').filter(Boolean);
+  return (
+    <nav aria-label="breadcrumb" className="flex items-center gap-2 text-sm">
+      <Link to="/" className="font-bold text-[#1A3C40] hover:text-[#F9A825]">Accueil</Link>
+      {pathnames.map((name, idx) => {
+        const routeTo = '/' + pathnames.slice(0, idx + 1).join('/');
+        return (
+          <span key={routeTo} className="flex items-center gap-2">
+            <span className="mx-1 text-gray-400">/</span>
+            <Link to={routeTo} className="capitalize text-[#1A3C40] hover:text-[#F9A825]">{name.replace(/-/g, ' ')}</Link>
+          </span>
+        );
+      })}
+    </nav>
+  );
+}
+
 export default function Header() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
@@ -63,14 +96,16 @@ export default function Header() {
     navigate("/auth");
   };
 
+  const handleProfile = () => navigate("/profile");
+  const handleOnboarding = () => navigate("/onboarding");
+  const handleSwitchRole = () => navigate("/switch-role");
+
   return (
     <header className="flex items-center justify-between py-3 px-4 border-b bg-white dark:bg-onelog-nuit z-10">
       <div className="flex items-center gap-2">
         {/* SidebarTrigger visible sur mobile */}
         <SidebarTrigger className="md:hidden" />
-        <span className={`font-bold tracking-tight flex items-center gap-2 ${
-          isMobile ? 'text-lg' : 'text-2xl'
-        } text-onelog-nuit dark:text-white`}>
+        <span className={`font-bold tracking-tight flex items-center gap-2 ${isMobile ? 'text-lg' : 'text-2xl'} text-onelog-nuit dark:text-white`}>
           <BadgeCheck size={isMobile ? 24 : 28} className="text-onelog-bleu" />
           {!isMobile && "OneLog Africa"}
           {isMobile && "OneLog"}
@@ -86,16 +121,46 @@ export default function Header() {
           </Button>
         )}
         <ModeToggle />
+        <div className="ml-2">
+          <NotificationDropdown />
+        </div>
         {user && (
-          <Button
-            variant="outline"
-            size="sm"
-            className="flex gap-2 items-center"
-            onClick={handleLogout}
-          >
-            <LogOut size={18} />
-            <span className="hidden sm:inline">Déconnexion</span>
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                className="ml-4 flex items-center focus:outline-none focus:ring-2 focus:ring-accent rounded-full"
+                aria-label="Ouvrir le menu utilisateur"
+              >
+                <Avatar>
+                  <AvatarImage src={user.user_metadata?.avatar_url} alt={user.email} />
+                  <AvatarFallback>{user.email?.[0]?.toUpperCase() || "U"}</AvatarFallback>
+                </Avatar>
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuLabel className="flex flex-col gap-1">
+                <span className="font-bold truncate">{user.email}</span>
+                <span className="text-xs text-muted-foreground">{user.user_metadata?.role || "Utilisateur"}</span>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onSelect={handleProfile} className="flex items-center gap-2 cursor-pointer">
+                <User size={16} /> Profil
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={handleOnboarding} className="flex items-center gap-2 cursor-pointer">
+                <Repeat size={16} /> Revoir l’onboarding
+              </DropdownMenuItem>
+              {user.user_metadata?.roles?.length > 1 && (
+                <DropdownMenuItem onSelect={handleSwitchRole} className="flex items-center gap-2 cursor-pointer">
+                  <UserCog size={16} /> Changer de rôle
+                </DropdownMenuItem>
+              )}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onSelect={handleLogout} className="flex items-center gap-2 cursor-pointer text-red-600">
+                <LogOut size={16} /> Déconnexion
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
         )}
       </nav>
     </header>

@@ -1,0 +1,211 @@
+name: CI - Control Room Tests & E2E
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 2 * * *' # nightly run at 02:00 UTC
+
+env:
+  NODE_VERSION: '20'
+  SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+  SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+  SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+  VITE_MAPBOX_ACCESS_TOKEN: ${{ secrets.MAPBOX_PUBLIC_KEY }}
+  MAPBOX_PUBLIC_KEY: ${{ secrets.MAPBOX_PUBLIC_KEY }}
+  SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      node-mod-cache: ${{ steps.cache.outputs.cache-hit }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Cache node modules
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            **/node_modules
+            server/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+  backend-tests:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install backend deps
+        working-directory: server
+        run: npm ci
+
+      - name: Run Jest tests
+        working-directory: server
+        env:
+          NODE_ENV: test
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          npm test -- --ci --reporters=default --reporters=jest-junit --coverage
+
+      - name: Upload Jest junit
+        uses: actions/upload-artifact@v4
+        with:
+          name: jest-junit-backend
+          path: server/junit.xml
+
+      - name: Upload coverage reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage
+          path: server/coverage/
+
+  frontend-tests:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install frontend deps
+        run: npm ci
+
+      - name: Run unit tests (Vitest junit + coverage)
+        run: npx vitest run --reporter=junit --coverage
+
+      - name: Upload frontend coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-coverage
+          path: coverage/
+
+  frontend-e2e:
+    needs: [setup, backend-tests]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install frontend deps
+        run: npm ci
+
+      - name: Install backend deps
+        working-directory: server
+        run: npm ci
+
+      - name: Build Frontend
+        run: npm run build
+
+      - name: Start backend in background
+        working-directory: server
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          FRONTEND_URL: http://localhost:5173
+          PORT: 3001
+        run: |
+          npm start &
+          sleep 5
+
+      - name: Run Cypress (headless)
+        uses: cypress-io/github-action@v6
+        with:
+          build: npm run build
+          start: npm run dev
+          wait-on: 'http://localhost:5173, http://localhost:3001/health'
+          wait-on-timeout: 120
+          browser: chrome
+          record: false
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          VITE_MAPBOX_ACCESS_TOKEN: ${{ secrets.MAPBOX_PUBLIC_KEY }}
+          CYPRESS_BASE_URL: http://localhost:5173
+
+      - name: Upload Cypress artifacts
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-results
+          path: |
+            cypress/screenshots/
+            cypress/videos/
+            cypress/results/
+
+  health-check:
+    needs: [backend-tests, frontend-e2e]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install backend deps
+        working-directory: server
+        run: npm ci
+
+      - name: Start services
+        working-directory: server
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          npm start &
+          sleep 3
+
+      - name: Health check
+        run: |
+          curl -f http://localhost:3001/health || exit 1
+          curl -f http://localhost:3001/metrics || exit 1
+
+  notify:
+    needs: [backend-tests, frontend-tests, frontend-e2e, health-check]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Notify Slack on failure
+        if: ${{ failure() && secrets.SLACK_WEBHOOK }}
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_TITLE: 'Control Room CI Status'
+          SLACK_MESSAGE: |
+            CI ${{ job.status }} on ${{ github.ref }}
+            Workflow: ${{ github.workflow }}
+            Run: ${{ github.run_number }}
+            Commit: ${{ github.sha }}
+          SLACK_FOOTER: 'OneLog Africa Control Room'

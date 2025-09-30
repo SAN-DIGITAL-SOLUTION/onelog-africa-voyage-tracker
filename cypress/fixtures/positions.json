@@ -1,0 +1,12 @@
+[
+  {
+    "vehicle_id": "veh-001",
+    "longitude": 2.3912,
+    "latitude": 6.3703
+  },
+  {
+    "vehicle_id": "veh-002",
+    "longitude": 2.3950,
+    "latitude": 6.3720
+  }
+]

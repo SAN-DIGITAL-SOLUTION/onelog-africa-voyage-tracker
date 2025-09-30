@@ -1,9 +1,7 @@
-
 import { useState, useEffect, useCallback, createContext, useContext } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from '@/integrations/supabase/client';
 import type { User, Session } from "@supabase/supabase-js";
 import { fetchUserRole } from "./useFetchUserRole";
-import { useRole } from "./useRole";
 
 type AuthContextType = {
   user: User | null;
@@ -12,54 +10,41 @@ type AuthContextType = {
   signUp: (email: string, password: string) => Promise<{ error: string | null }>;
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
+  refreshUser?: () => Promise<void>;
 };
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextType>({
+  user: null,
+  session: null,
+  loading: true,
+  signUp: async () => ({ error: null }),
+  signIn: async () => ({ error: null }),
+  signOut: async () => {},
+});
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Get role context functions
-  const { setRole, setLoadingRole } = useRole();
-
   useEffect(() => {
+    console.log('[useAuth] Initialisation du hook useAuth');
+    
     // 1. Set up auth state listener first
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log(`[useAuth] Événement d'authentification: ${event}`, { session });
       setSession(session);
       setUser(session?.user ?? null);
 
-      // Charger le rôle _uniquement_ si l'utilisateur est connecté
-      if (session?.user) {
-        setLoadingRole(true);
-        fetchUserRole(session.user.id).then((role) => {
-          setRole(role);
-          setLoadingRole(false);
-        });
-      } else {
-        setRole(null);
-        setLoadingRole(false);
-      }
       setLoading(false);
     });
 
     // 2. Check for existing session after
+    console.log('[useAuth] Vérification de la session existante...');
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('[useAuth] Session récupérée:', session);
       setSession(session);
       setUser(session?.user ?? null);
-
-      // Idem ici
-      if (session?.user) {
-        setLoadingRole(true);
-        fetchUserRole(session.user.id).then((role) => {
-          setRole(role);
-          setLoadingRole(false);
-        });
-      } else {
-        setRole(null);
-        setLoadingRole(false);
-      }
 
       setLoading(false);
     });
@@ -67,11 +52,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => {
       subscription.unsubscribe();
     };
-  }, [setRole, setLoadingRole]);
+  }, []);
 
   const signUp = useCallback(async (email: string, password: string) => {
     setLoading(true);
-    const redirectTo = `${window.location.origin}/`;
+    const redirectTo = `${window.location.origin}/onboarding`;
     const { error } = await supabase.auth.signUp({
       email,
       password,
@@ -97,9 +82,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setLoading(false);
   }, []);
 
+  // Méthode pour rafraîchir le user après onboarding
+  const refreshUser = useCallback(async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    setSession(session);
+    setUser(session?.user ?? null);
+    // Le rôle sera rafraîchi par RoleProvider qui écoute les changements d'user
+  }, []);
+
   return (
     <AuthContext.Provider
-      value={{ user, session, loading, signUp, signIn, signOut }}
+      value={{ user, session, loading, signUp, signIn, signOut, refreshUser }}
     >
       {children}
     </AuthContext.Provider>

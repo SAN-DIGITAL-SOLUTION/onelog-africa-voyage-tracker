@@ -1,0 +1,33 @@
+{
+  "name": "@your-org/user-profiles",
+  "version": "1.0.0",
+  "description": "Module Profils Utilisateurs pour OneLog Africa — gestion, rôles, Supabase integration",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/your-org/your-repo.git"
+  },
+  "author": "OneLog Africa <contact@onelog.africa>",
+  "license": "MIT",
+  "files": [
+    "dist/**/*"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "prepublishOnly": "npm run build",
+    "test": "vitest",
+    "lint": "eslint . --ext .ts,.tsx",
+    "docs": "npx typedoc --entryPointStrategy expand --out docs/api src/modules/userProfiles"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "next": "^14.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "vitest": "^0.31.2",
+    "eslint": "^8.36.0",
+    "typedoc": "^0.25.0"
+  }
+}

@@ -1,0 +1,155 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 3,
+    "passes": 0,
+    "pending": 0,
+    "failures": 3,
+    "start": "2025-06-22T06:09:07.268Z",
+    "end": "2025-06-22T06:09:08.866Z",
+    "duration": 1598,
+    "testsRegistered": 3,
+    "passPercent": 0,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "f1f6b772-eced-4c9d-ba8f-7b08ae98fe68",
+      "title": "",
+      "fullFile": "cypress\\e2e\\route_protection.cy.ts",
+      "file": "cypress\\e2e\\route_protection.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "a1aaac60-05b1-494a-8b5d-caa419eae0e8",
+          "title": "Protection des routes",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Bloque /dashboard si pas de rôle validé",
+              "fullTitle": "Protection des routes Bloque /dashboard si pas de rôle validé",
+              "timedOut": null,
+              "duration": 315,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.login(users.norole.email, users.norole.password);\ncy.visit('/dashboard');\ncy.url().should('include', '/onboarding');",
+              "err": {
+                "message": "TypeError: cy.login is not a function",
+                "estack": "TypeError: cy.login is not a function\n    at Context.eval (webpack://vite_react_shadcn_ts/./cypress/e2e/route_protection.cy.ts:11:0)",
+                "diff": null
+              },
+              "uuid": "d84e4c8b-77d8-47f1-9931-f5d7ac56d3d2",
+              "parentUUID": "a1aaac60-05b1-494a-8b5d-caa419eae0e8",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Autorise /dashboard si role_status = approved",
+              "fullTitle": "Protection des routes Autorise /dashboard si role_status = approved",
+              "timedOut": null,
+              "duration": 658,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.login(users.self.email, users.self.password);\ncy.visit('/dashboard');\ncy.contains('Bienvenue').should('exist');",
+              "err": {
+                "message": "TypeError: cy.login is not a function",
+                "estack": "TypeError: cy.login is not a function\n    at Context.eval (webpack://vite_react_shadcn_ts/./cypress/e2e/route_protection.cy.ts:16:0)",
+                "diff": null
+              },
+              "uuid": "5e9eb3b9-bdf9-4472-bb0f-8bf4fe0cc064",
+              "parentUUID": "a1aaac60-05b1-494a-8b5d-caa419eae0e8",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Autorise /admin/dashboard pour admin uniquement",
+              "fullTitle": "Protection des routes Autorise /admin/dashboard pour admin uniquement",
+              "timedOut": null,
+              "duration": 363,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.login(users.admin.email, users.admin.password);\ncy.visit('/admin/dashboard');\ncy.contains('Admin').should('exist');",
+              "err": {
+                "message": "TypeError: cy.login is not a function",
+                "estack": "TypeError: cy.login is not a function\n    at Context.eval (webpack://vite_react_shadcn_ts/./cypress/e2e/route_protection.cy.ts:21:0)",
+                "diff": null
+              },
+              "uuid": "336b78a4-2e34-4f32-98f0-af4ab1e1cc85",
+              "parentUUID": "a1aaac60-05b1-494a-8b5d-caa419eae0e8",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [],
+          "failures": [
+            "d84e4c8b-77d8-47f1-9931-f5d7ac56d3d2",
+            "5e9eb3b9-bdf9-4472-bb0f-8bf4fe0cc064",
+            "336b78a4-2e34-4f32-98f0-af4ab1e1cc85"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 1336,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.0.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": false,
+        "json": true
+      },
+      "version": "6.2.0"
+    }
+  }
+}

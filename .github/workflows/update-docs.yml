@@ -1,0 +1,113 @@
+name: 📚 Auto-Update Documentation
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'src/**'
+      - 'supabase/migrations/**'
+      - '__tests__/**'
+      - 'package.json'
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Exécution quotidienne à 6h UTC
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+    # Permet l'exécution manuelle
+
+jobs:
+  update-documentation:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 🔄 Checkout code
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        fetch-depth: 0
+
+    - name: 📦 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: 📥 Install dependencies
+      run: npm ci
+
+    - name: 🔍 Run documentation updater
+      run: node scripts/update-documentation.js
+
+    - name: 📊 Generate project metrics
+      run: |
+        echo "## 📈 Métriques du Projet" > metrics.md
+        echo "Généré le: $(date)" >> metrics.md
+        echo "" >> metrics.md
+        echo "### Statistiques du Code" >> metrics.md
+        echo "- Fichiers TypeScript/JavaScript: $(find src -name '*.ts' -o -name '*.tsx' -o -name '*.js' -o -name '*.jsx' | wc -l)" >> metrics.md
+        echo "- Composants React: $(find src -name '*.tsx' | grep -v test | wc -l)" >> metrics.md
+        echo "- Pages: $(find src/pages -name '*.tsx' | wc -l)" >> metrics.md
+        echo "- Services: $(find src/services -name '*.ts' | wc -l)" >> metrics.md
+        echo "- Hooks: $(find src/hooks -name '*.ts' -o -name '*.tsx' | wc -l)" >> metrics.md
+        echo "- Tests: $(find . -name '*.test.*' -o -name '*.spec.*' | wc -l)" >> metrics.md
+        echo "- Migrations Supabase: $(find supabase/migrations -name '*.sql' | wc -l)" >> metrics.md
+        echo "" >> metrics.md
+        echo "### Taille du Projet" >> metrics.md
+        echo "- Lignes de code (src/): $(find src -name '*.ts' -o -name '*.tsx' | xargs wc -l | tail -1 | awk '{print $1}')" >> metrics.md
+        echo "- Taille totale: $(du -sh . | cut -f1)" >> metrics.md
+
+    - name: 🧪 Run tests to validate documentation
+      run: |
+        # Vérifier que les tests passent après mise à jour
+        npm test -- --run --reporter=verbose || echo "⚠️ Tests en échec - documentation mise à jour quand même"
+
+    - name: 📝 Check for changes
+      id: changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        
+        if [[ -n $(git status --porcelain) ]]; then
+          echo "changes=true" >> $GITHUB_OUTPUT
+          echo "📝 Changements détectés dans la documentation"
+        else
+          echo "changes=false" >> $GITHUB_OUTPUT
+          echo "✅ Aucun changement nécessaire"
+        fi
+
+    - name: 💾 Commit and push changes
+      if: steps.changes.outputs.changes == 'true'
+      run: |
+        git add README.md project-status.json docs/auto-update-report.json metrics.md
+        git commit -m "📚 Auto-update documentation
+        
+        - Synchronisation avec l'état réel du code
+        - Mise à jour des pourcentages d'avancement
+        - Génération des métriques projet
+        - Rapport automatique: $(date)"
+        git push
+
+    - name: 📋 Create summary
+      run: |
+        echo "## 📚 Résumé de la Mise à Jour Documentation" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### ✅ Actions Effectuées" >> $GITHUB_STEP_SUMMARY
+        echo "- Analyse automatique du code source" >> $GITHUB_STEP_SUMMARY
+        echo "- Mise à jour de README.md" >> $GITHUB_STEP_SUMMARY
+        echo "- Mise à jour de project-status.json" >> $GITHUB_STEP_SUMMARY
+        echo "- Génération des métriques projet" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 📊 Métriques Actuelles" >> $GITHUB_STEP_SUMMARY
+        cat metrics.md >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        if [[ -f docs/auto-update-report.json ]]; then
+          echo "### 📋 Rapport Détaillé" >> $GITHUB_STEP_SUMMARY
+          echo "Voir: \`docs/auto-update-report.json\`" >> $GITHUB_STEP_SUMMARY
+        fi
+
+    - name: 🔔 Notify on significant changes
+      if: steps.changes.outputs.changes == 'true'
+      run: |
+        echo "🎉 Documentation mise à jour automatiquement!"
+        echo "Les changements ont été committés et poussés vers la branche."

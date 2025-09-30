@@ -1,0 +1,77 @@
+name: QA & Security CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+env:
+  # Secrets requis pour QA/Sécurité/E2E
+  SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+  SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+  SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+  SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL_QA }}
+  VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+  VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+  MAPBOX_PUBLIC_KEY: ${{ secrets.MAPBOX_PUBLIC_KEY }}
+
+jobs:
+  audit-rls:
+    runs-on: ubuntu-latest
+    name: Audit RLS Policies
+    if: ${{ env.SUPABASE_DB_URL != '' }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install PostgreSQL client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+      - name: Run RLS Audit SQL
+        run: |
+          psql "$SUPABASE_DB_URL" -f scripts/audit_rls_policies_full.sql -o rls_audit_report.txt
+      - name: Upload audit report
+        uses: actions/upload-artifact@v4
+        with:
+          name: rls_audit_report
+          path: rls_audit_report.txt
+
+  cypress-e2e:
+    runs-on: ubuntu-latest
+    name: Cypress E2E Tests (Smoke)
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - name: Install dependencies
+        run: npm ci
+      - name: Run Cypress smoke suite
+        uses: cypress-io/github-action@v5
+        with:
+          start: npm run dev
+          wait-on: 'http://localhost:5173'
+          wait-on-timeout: 60
+      - name: Upload Cypress artifacts (on failure)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-results
+          path: |
+            cypress/screenshots/**
+            cypress/videos/**
+            cypress/results/**
+
+  vitest-unit:
+    runs-on: ubuntu-latest
+    name: Vitest Unit Tests
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - name: Install dependencies
+        run: npm ci
+      - name: Run Vitest (junit + coverage)
+        run: npx vitest run --reporter=junit --coverage

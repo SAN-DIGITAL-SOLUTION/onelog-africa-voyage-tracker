@@ -57,7 +57,6 @@ export default function LandingMadeInAfrica() {
             src="/lovable-uploads/91fd0505-b323-44ce-8632-1456882003e9.png"
             alt="Carte de l'Afrique avec camion - Made in Africa"
             className="w-full max-w-[420px] rounded-2xl shadow-lg border border-gray-100 animate-fade-in"
-            loading="lazy"
           />
         </div>
       </div>

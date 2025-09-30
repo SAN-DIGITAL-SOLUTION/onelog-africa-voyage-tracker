@@ -1,14 +1,14 @@
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from '@/integrations/supabase/client';
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, Edit, FileText } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import MissionOverview from "./mission-detail/MissionOverview";
 import MissionTrackingHistory from "./mission-detail/MissionTrackingHistory";
 import MissionExtraDetails from "./mission-detail/MissionExtraDetails";
-import MissionStatusTimeline from "./mission-detail/MissionStatusTimeline";
+import { MissionStatusTimeline } from "@/components/MissionStatusTimeline";
 import MissionFeedback from "./mission-detail/MissionFeedback";
 import FeedbackForm from "./mission-detail/FeedbackForm";
 import RealtimeStatusIndicator from "@/components/RealtimeStatusIndicator";
@@ -133,7 +133,11 @@ export default function MissionDetail() {
         </div>
         <MissionOverview mission={mission} />
         {/* Timeline */}
-        <MissionStatusTimeline missionId={id!} />
+        <div className="mb-4">
+          <h3 className="font-semibold mb-2">Historique des statuts</h3>
+          <MissionStatusTimeline missionId={id!} />
+        </div>
+        <StatusSelector missionId={id!} currentStatus={mission.status} />
         <MissionTrackingHistory points={loadingTracking ? [] : trackingPoints || []} />
         <MissionExtraDetails mission={mission} />
         {/* Feedback section */}

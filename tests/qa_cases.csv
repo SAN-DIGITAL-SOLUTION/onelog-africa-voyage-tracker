@@ -1,0 +1,6 @@
+user_id,email,role,role_status,requested_role,expected_access,expected_message
+user-norole-uuid,norole@qa.test,,,
+  dashboard: denied, onboarding: yes,Aucun rôle attribué
+user-pending-uuid,pending@qa.test,,pending,client,dashboard: denied, onboarding: yes,En attente de validation
+user-self-uuid,self@qa.test,chauffeur,approved,,dashboard: allowed,Bienvenue
+admin-uuid,admin@qa.test,admin,approved,,dashboard: allowed; admin: allowed,Bienvenue admin

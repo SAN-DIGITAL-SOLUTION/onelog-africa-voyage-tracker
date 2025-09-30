@@ -1,0 +1,270 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 8,
+    "passes": 0,
+    "pending": 0,
+    "failures": 8,
+    "start": "2025-08-28T19:28:54.040Z",
+    "end": "2025-08-28T19:32:32.700Z",
+    "duration": 218660,
+    "testsRegistered": 8,
+    "passPercent": 0,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "0879d296-c910-4950-93e3-c0a1cd4f4b63",
+      "title": "",
+      "fullFile": "cypress\\e2e\\mission_tracking.cy.ts",
+      "file": "cypress\\e2e\\mission_tracking.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "c110f4cd-3ad7-4224-84b2-af1e0adf87cf",
+          "title": "Suivi en temps réel – Mission Tracking",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "affiche la carte Google Maps",
+              "fullTitle": "Suivi en temps réel – Mission Tracking affiche la carte Google Maps",
+              "timedOut": null,
+              "duration": 26846,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.get('div[data-testid=\"google-map-container\"]').should('exist');",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `div[data-testid=\"google-map-container\"]`, but never found it.",
+                "estack": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `div[data-testid=\"google-map-container\"]`, but never found it.\n    at Context.eval (webpack://vite_react_shadcn_ts/./cypress/e2e/mission_tracking.cy.ts:22:0)",
+                "diff": null
+              },
+              "uuid": "3a010d16-0dcf-492c-9d29-e3a6d47f5693",
+              "parentUUID": "c110f4cd-3ad7-4224-84b2-af1e0adf87cf",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "affiche le polyline et les markers",
+              "fullTitle": "Suivi en temps réel – Mission Tracking affiche le polyline et les markers",
+              "timedOut": null,
+              "duration": 13054,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.get('div[aria-label=\"Marker\"]').should('have.length.at.least', 1);",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `div[aria-label=\"Marker\"]`, but never found it.",
+                "estack": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `div[aria-label=\"Marker\"]`, but never found it.\n    at Context.eval (webpack://vite_react_shadcn_ts/./cypress/e2e/mission_tracking.cy.ts:25:0)",
+                "diff": null
+              },
+              "uuid": "9ab0fe19-4247-4c1b-bb04-10989d4187ea",
+              "parentUUID": "c110f4cd-3ad7-4224-84b2-af1e0adf87cf",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "met à jour la carte lorsqu’un nouveau point arrive",
+              "fullTitle": "Suivi en temps réel – Mission Tracking met à jour la carte lorsqu’un nouveau point arrive",
+              "timedOut": null,
+              "duration": 20568,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.window().then(function (win) {\n    var channel = win.supabase.channel();\n    channel.handlers[0].callback({\n        new: { id: 'p3', mission_id: missionId, latitude: 6.5260, longitude: 3.3810, created_at: new Date().toISOString() },\n    });\n});\ncy.get('div[aria-label=\"Marker\"]').should('have.length.at.least', 3);",
+              "err": {
+                "message": "TypeError: Cannot read properties of undefined (reading 'channel')",
+                "estack": "TypeError: Cannot read properties of undefined (reading 'channel')\n    at Context.eval (webpack://vite_react_shadcn_ts/./cypress/e2e/mission_tracking.cy.ts:29:0)",
+                "diff": null
+              },
+              "uuid": "d76c654a-ab01-406a-8f8c-0662e2b3faac",
+              "parentUUID": "c110f4cd-3ad7-4224-84b2-af1e0adf87cf",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "affiche un message si aucun point GPS n’est disponible",
+              "fullTitle": "Suivi en temps réel – Mission Tracking affiche un message si aucun point GPS n’est disponible",
+              "timedOut": null,
+              "duration": 37835,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.intercept('GET', \"/tracking_points?mission_id=eq.empty-mission*\", {\n    statusCode: 200,\n    body: [],\n});\ncy.visit('/missions/empty-mission/tracking');\ncy.contains('En attente de position GPS').should('be.visible');",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 4000ms: Expected to find content: 'En attente de position GPS' but never did.",
+                "estack": "AssertionError: Timed out retrying after 4000ms: Expected to find content: 'En attente de position GPS' but never did.\n    at Context.eval (webpack://vite_react_shadcn_ts/./cypress/e2e/mission_tracking.cy.ts:43:0)",
+                "diff": null
+              },
+              "uuid": "484a14a1-968b-40dd-80d1-10a6869590bf",
+              "parentUUID": "c110f4cd-3ad7-4224-84b2-af1e0adf87cf",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "gère une erreur de récupération des points",
+              "fullTitle": "Suivi en temps réel – Mission Tracking gère une erreur de récupération des points",
+              "timedOut": null,
+              "duration": 26585,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.intercept('GET', \"/tracking_points?mission_id=eq.error-mission*\", {\n    statusCode: 500,\n    body: { error: 'Server error' },\n});\ncy.visit('/missions/error-mission/tracking');\ncy.contains(/erreur|impossible/i, { matchCase: false });",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 4000ms: Expected to find content: '/erreur|impossible/i' but never did.",
+                "estack": "AssertionError: Timed out retrying after 4000ms: Expected to find content: '/erreur|impossible/i' but never did.\n    at Context.eval (webpack://vite_react_shadcn_ts/./cypress/e2e/mission_tracking.cy.ts:51:0)",
+                "diff": null
+              },
+              "uuid": "9f12dec8-f420-4349-ba2b-2576248b4bd6",
+              "parentUUID": "c110f4cd-3ad7-4224-84b2-af1e0adf87cf",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "bloque l’accès si non authentifié",
+              "fullTitle": "Suivi en temps réel – Mission Tracking bloque l’accès si non authentifié",
+              "timedOut": null,
+              "duration": 32694,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.clearCookies();\ncy.visit(\"/missions/\".concat(missionId, \"/tracking\"));\ncy.contains(/connexion|authentification/i, { matchCase: false });",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 4000ms: Expected to find content: '/connexion|authentification/i' but never did.",
+                "estack": "AssertionError: Timed out retrying after 4000ms: Expected to find content: '/connexion|authentification/i' but never did.\n    at Context.eval (webpack://vite_react_shadcn_ts/./cypress/e2e/mission_tracking.cy.ts:56:0)",
+                "diff": null
+              },
+              "uuid": "81f63a13-bbc2-4e7c-be7f-d5c5e4c46416",
+              "parentUUID": "c110f4cd-3ad7-4224-84b2-af1e0adf87cf",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "bloque l’accès à une mission non autorisée",
+              "fullTitle": "Suivi en temps réel – Mission Tracking bloque l’accès à une mission non autorisée",
+              "timedOut": null,
+              "duration": 20079,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "// Simuler une mission dont le chauffeur n’est pas propriétaire\ncy.login('autre@qa.test', 'password123');\ncy.intercept('GET', \"/tracking_points?mission_id=eq.unauth-mission*\", {\n    statusCode: 403,\n    body: { error: 'Forbidden' },\n});\ncy.visit('/missions/unauth-mission/tracking');\ncy.contains(/non autorisé|forbidden|accès refusé/i, { matchCase: false });",
+              "err": {
+                "message": "Error: Aucun utilisateur de test trouvé pour l'email autre@qa.test",
+                "estack": "Error: Aucun utilisateur de test trouvé pour l'email autre@qa.test\n    at Context.eval (webpack://vite_react_shadcn_ts/./cypress/support/commands.ts:19:0)",
+                "diff": null
+              },
+              "uuid": "9c48926e-556a-4a71-89c2-3b96a37e9fcf",
+              "parentUUID": "c110f4cd-3ad7-4224-84b2-af1e0adf87cf",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "affiche une info de chargement pendant le fetch",
+              "fullTitle": "Suivi en temps réel – Mission Tracking affiche une info de chargement pendant le fetch",
+              "timedOut": null,
+              "duration": 37853,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.intercept('GET', \"/tracking_points?mission_id=eq.\".concat(missionId, \"*\"), function (req) {\n    req.on('response', function (res) {\n        setTimeout(function () { return res.send(); }, 1000); // délai artificiel\n    });\n});\ncy.visit(\"/missions/\".concat(missionId, \"/tracking\"));\ncy.contains(/chargement/i, { matchCase: false });",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 4000ms: Expected to find content: '/chargement/i' but never did.",
+                "estack": "AssertionError: Timed out retrying after 4000ms: Expected to find content: '/chargement/i' but never did.\n    at Context.eval (webpack://vite_react_shadcn_ts/./cypress/e2e/mission_tracking.cy.ts:75:0)",
+                "diff": null
+              },
+              "uuid": "de14e444-6c59-4190-bec0-a8c0cdca7c79",
+              "parentUUID": "c110f4cd-3ad7-4224-84b2-af1e0adf87cf",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [],
+          "failures": [
+            "3a010d16-0dcf-492c-9d29-e3a6d47f5693",
+            "9ab0fe19-4247-4c1b-bb04-10989d4187ea",
+            "d76c654a-ab01-406a-8f8c-0662e2b3faac",
+            "484a14a1-968b-40dd-80d1-10a6869590bf",
+            "9f12dec8-f420-4349-ba2b-2576248b4bd6",
+            "81f63a13-bbc2-4e7c-be7f-d5c5e4c46416",
+            "9c48926e-556a-4a71-89c2-3b96a37e9fcf",
+            "de14e444-6c59-4190-bec0-a8c0cdca7c79"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 215514,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.0.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": false,
+        "json": true
+      },
+      "version": "6.2.0"
+    }
+  }
+}

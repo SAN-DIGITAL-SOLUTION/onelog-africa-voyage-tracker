@@ -1,0 +1,38 @@
+name: 'Rollback OneLog Africa'
+description: 'Rollback OneLog Africa to previous stable version'
+
+inputs:
+  environment:
+    description: 'Target environment (staging/production)'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: 🔍 Get previous deployment
+      shell: bash
+      id: previous
+      run: |
+        PREVIOUS_DEPLOYMENT=$(vercel ls --token ${{ env.VERCEL_TOKEN }} | grep ${{ inputs.environment }} | head -2 | tail -1 | awk '{print $1}')
+        echo "deployment-id=$PREVIOUS_DEPLOYMENT" >> $GITHUB_OUTPUT
+
+    - name: ↩️ Promote previous deployment
+      shell: bash
+      run: |
+        vercel promote ${{ steps.previous.outputs.deployment-id }} --token ${{ env.VERCEL_TOKEN }}
+      env:
+        VERCEL_TOKEN: ${{ env.VERCEL_TOKEN }}
+
+    - name: 🔍 Verify rollback
+      shell: bash
+      run: |
+        sleep 30
+        curl -f https://${{ inputs.environment == 'production' && 'onelog-africa.com' || 'staging.onelog-africa.com' }}/api/health
+
+    - name: 📝 Log rollback
+      shell: bash
+      run: |
+        echo "Rollback completed for ${{ inputs.environment }} at $(date)" >> rollback.log
+        git add rollback.log
+        git commit -m "chore: rollback ${{ inputs.environment }} to previous version"
+        git push

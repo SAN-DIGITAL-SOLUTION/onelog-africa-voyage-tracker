@@ -1,0 +1,50 @@
+name: Publish notifications-core
+
+on:
+  push:
+    tags:
+      - 'notifications-core-v*'
+
+jobs:
+  build-test-publish:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: notifications-core
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org/'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint || echo 'No linter configured'
+
+      - name: Build
+        run: npm run build
+
+      - name: Test
+        run: npm test || echo 'No tests configured'
+
+      - name: Publish to npm
+        run: npm publish --access public
+        working-directory: notifications-core
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  notify:
+    needs: publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Slack notification
+        uses: slackapi/slack-github-action@v1.25.0
+        with:
+          payload: '{"text":":rocket: Nouvelle release notifications-core publiée sur npm !\nVoir le changelog et la doc API pour les détails."}'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

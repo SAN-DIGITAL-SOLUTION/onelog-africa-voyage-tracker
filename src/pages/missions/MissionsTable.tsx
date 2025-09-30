@@ -6,7 +6,7 @@ import { Eye, Edit, Trash2, MoreVertical } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from '@/integrations/supabase/client';
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
   DropdownMenu,
@@ -114,7 +114,7 @@ function MissionCard({ mission, onEdit, onView, onDelete, isDeleting }: {
 }
 
 export default function MissionsTable({
-  missionsPage,
+  missionsPage = [], // fallback par défaut
   isLoading,
   error,
   onDeleteSuccess,

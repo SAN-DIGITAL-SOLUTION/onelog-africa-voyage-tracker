@@ -1,0 +1,70 @@
+name: UserProfiles CI
+
+on:
+  push:
+    paths:
+      - 'src/modules/userProfiles/**'
+      - '.github/workflows/userProfiles-ci.yml'
+  pull_request:
+    paths:
+      - 'src/modules/userProfiles/**'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      - name: Install deps
+        run: npm ci
+      - name: Lint
+        run: npm run lint
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      - name: Install deps
+        run: npm ci
+      - name: Run unit tests
+        run: npm run test -- src/modules/userProfiles
+      - name: Coverage
+        run: npm run test:coverage
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-userProfiles
+          path: coverage/
+
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      - name: Install deps
+        run: npm ci
+      - name: Run E2E tests
+        run: npm run test:e2e -- src/modules/userProfiles
+
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Audit npm
+        run: npm audit --audit-level=high
+      - name: Secret scan
+        uses: github/codeql-action/init@v2
+        with:
+          languages: javascript
+      - name: CodeQL Analyze
+        uses: github/codeql-action/analyze@v2

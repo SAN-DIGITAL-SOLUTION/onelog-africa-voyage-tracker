@@ -1,0 +1,14 @@
+{
+  "timestamp": "2025-09-30T08:44:02.560Z",
+  "progress": 100,
+  "statistics": {
+    "totalFiles": 390,
+    "reactComponents": 215,
+    "pages": 65,
+    "services": 20,
+    "hooks": 22,
+    "tests": 31,
+    "migrations": 6
+  },
+  "recommendations": []
+}

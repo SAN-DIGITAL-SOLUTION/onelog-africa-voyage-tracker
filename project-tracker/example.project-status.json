@@ -1,0 +1,36 @@
+{
+  "project": "Nom du projet",
+  "description": "Courte description du projet.",
+  "progression": 0,
+  "modules": [
+    {
+      "name": "Module principal",
+      "status": "not_started",
+      "progress": 0,
+      "details": "Description du module.",
+      "submodules": [
+        {
+          "name": "Sous-module",
+          "status": "not_started",
+          "progress": 0,
+          "details": "Description du sous-module."
+        }
+      ]
+    }
+  ],
+  "missing_files": [
+    "exemple.md"
+  ],
+  "next_steps": [
+    "Décrire la prochaine étape ici."
+  ],
+  "changelog": [
+    {"date": "2025-06-18", "title": "Initialisation du projet", "details": "Création de la structure de base."},
+    {"date": "2025-06-19", "title": "Ajout du module d'authentification", "details": "Connexion, inscription, gestion des rôles."}
+  ],
+  "roadmap": {
+    "short": ["Livrer MVP", "Déployer CI/CD"],
+    "medium": ["Ajouter analytics", "Support multi-langues"],
+    "long": ["Ouverture API publique", "Marketplace de modules"]
+  }
+}

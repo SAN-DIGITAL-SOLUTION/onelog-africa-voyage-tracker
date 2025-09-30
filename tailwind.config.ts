@@ -1,4 +1,7 @@
 import type { Config } from "tailwindcss";
+import typography from "@tailwindcss/typography";
+import forms from "@tailwindcss/forms";
+import animate from "tailwindcss-animate";
 
 export default {
   darkMode: ["class"],
@@ -18,35 +21,43 @@ export default {
     },
     extend: {
       fontFamily: {
-        montserrat: ["Montserrat", "Bebas Neue", "ui-sans-serif", "system-ui"],
-        sans: ["Open Sans", "Lato", "ui-sans-serif", "system-ui", "sans-serif"],
+        sans: ["Inter", "ui-sans-serif", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "Noto Sans", "sans-serif"],
+        display: ["Lexend", "ui-sans-serif", "system-ui"],
       },
       colors: {
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "#1A3C40",
-          foreground: "#F4F4F4",
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
-          DEFAULT: "#F9A825",
-          foreground: "#1A3C40",
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
         },
         accent: {
-          DEFAULT: "#E65100",
-          hover: "#cf4a05",
-          foreground: "#fff",
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
         },
-        fresh: {
-          DEFAULT: "#009688",
-          light: "#33bbae",
-          dark: "#00695c",
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
         },
-        textmain: "#263238",
-        background: "#F4F4F4",
-        "gray-light": "#F4F4F4",
-        "african-line": "#F9A825",
-        // Pour le dark mode, inversion
-        "dm-bg": "#1A3C40",
-        "dm-text": "#F4F4F4",
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
       },
       boxShadow: {
         cta: "0 2px 16px 0 #E6510033",
@@ -68,8 +79,8 @@ export default {
     },
   },
   plugins: [
-    require("@tailwindcss/typography"),
-    require("@tailwindcss/forms"),
-    require("tailwindcss-animate"),
+    typography,
+    forms,
+    animate,
   ],
 } satisfies Config;

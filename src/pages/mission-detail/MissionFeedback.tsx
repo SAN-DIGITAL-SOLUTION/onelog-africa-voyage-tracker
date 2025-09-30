@@ -1,7 +1,6 @@
-
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from '@/integrations/supabase/client';
 import { Star, MessageSquare, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -39,7 +38,7 @@ export default function MissionFeedback({ missionId, onAddFeedback }: MissionFee
     queryFn: async () => {
       const { count, error } = await supabase
         .from("mission_feedback")
-        .select("*", { count: "exact", head: true })
+        .select("*", { count: "exact" })
         .eq("mission_id", missionId);
       if (error) throw new Error(error.message);
       return count || 0;
