@@ -1,27 +1,27 @@
 import { supabase } from '@/integrations/supabase/client';
 import { auditService } from '@/services/auditService';
+import { userRepository } from '@/repositories/userRepository';
+import type { CreateUserData } from '@/repositories/userRepository';
 
 export async function getUserProfile(userId: string) {
-  // Fetch from extended users table
-  const { data, error } = await supabase
-    .from("users")
-    .select("id, name, email, role, created_at")
-    .eq("id", userId)
-    .single();
-  if (error && error.code !== "PGRST116") throw error;
-  return data;
+  return await userRepository.findById(userId);
 }
 
 export async function createUserProfile(userId: string, values: { name: string; email: string; role: string }, actorId?: string) {
-  // Insert into users table, update metadata if needed
-  const { error } = await supabase.from("users").insert([
-    { id: userId, ...values },
-  ]);
-  if (error) throw error;
+  // Create user in users table
+  const userData: CreateUserData = {
+    id: userId,
+    name: values.name,
+    email: values.email,
+    role: values.role as any // Type assertion for role
+  };
   
-  // Optionally update Supabase Auth metadata
-  await supabase.auth.admin.updateUserById(userId, {
-    user_metadata: { name: values.name, role: values.role },
+  const user = await userRepository.create(userData);
+  
+  // Update Supabase Auth metadata
+  await userRepository.updateAuthMetadata(userId, {
+    name: values.name,
+    role: values.role
   });
   
   // Audit trail: Log user profile creation
@@ -37,43 +37,47 @@ export async function createUserProfile(userId: string, values: { name: string; 
       }
     );
   }
+  
+  return user;
 }
 
 export async function updateUserProfile(userId: string, values: { name: string; role: string }, actorId?: string) {
   // Fetch before state for audit
-  const { data: beforeUpdate } = await supabase
-    .from("users")
-    .select("name, role")
-    .eq("id", userId)
-    .single();
+  const beforeUpdate = await userRepository.findById(userId);
+  if (!beforeUpdate) {
+    throw new Error(`Utilisateur ${userId} non trouvé`);
+  }
   
-  const { error } = await supabase
-    .from("users")
-    .update({ name: values.name, role: values.role })
-    .eq("id", userId);
-  if (error) throw error;
+  // Update user in users table
+  const updatedUser = await userRepository.update(userId, {
+    name: values.name,
+    role: values.role as any // Type assertion for role
+  });
   
-  // Optionally update Supabase Auth metadata
-  await supabase.auth.admin.updateUserById(userId, {
-    user_metadata: { name: values.name, role: values.role },
+  // Update Supabase Auth metadata
+  await userRepository.updateAuthMetadata(userId, {
+    name: values.name,
+    role: values.role
   });
   
   // Audit trail: Log user profile update (especially role changes)
   if (actorId) {
-    const roleChanged = beforeUpdate?.role !== values.role;
+    const roleChanged = beforeUpdate.role !== values.role;
     await auditService.logUpdate(
       actorId,
       'user',
       userId,
       { 
-        before: beforeUpdate,
+        before: { name: beforeUpdate.name, role: beforeUpdate.role },
         after: values,
         role_changed: roleChanged,
         ...(roleChanged && { 
-          previous_role: beforeUpdate?.role,
+          previous_role: beforeUpdate.role,
           new_role: values.role 
         })
       }
     );
   }
+  
+  return updatedUser;
 }
