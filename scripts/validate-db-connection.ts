@@ -9,10 +9,14 @@
  * 
  * Usage: 
  *   npm run validate:db
- *   ou: ts-node scripts/validate-db-connection.ts
+ *   ou: tsx scripts/validate-db-connection.ts
  */
 
+import dotenv from 'dotenv';
 import { createClient } from '@supabase/supabase-js';
+
+// Charger les variables d'environnement depuis .env
+dotenv.config();
 
 // Codes de couleur pour output terminal
 const colors = {
@@ -129,7 +133,8 @@ async function checkCriticalTables(): Promise<ValidationResult[]> {
     'users',
     'missions',
     'notifications',
-    'notification_preferences'
+    'notification_preferences',
+    'audit_logs'
   ];
   
   for (const table of criticalTables) {
