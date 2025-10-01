@@ -1,17 +1,20 @@
-import { cn } from "@/lib/utils";
-import { HTMLAttributes } from "react";
+import * as React from "react";
 
-export function Badge({
-  className,
-  ...props
-}: HTMLAttributes<HTMLSpanElement>) {
+import { cn } from "@/lib/utils";
+
+import { badgeVariants, type BadgeVariantProps } from "./variants";
+
+export interface BadgeProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    BadgeVariantProps {}
+
+export function Badge({ className, variant, children, ...props }: BadgeProps) {
   return (
-    <span
-      className={cn(
-        "inline-flex items-center rounded-md bg-primary px-2 py-1 text-xs font-medium text-primary-foreground ring-1 ring-inset ring-primary",
-        className
-      )}
+    <div
+      className={cn(badgeVariants({ variant }), className)}
       {...props}
-    />
+    >
+      {children}
+    </div>
   );
 }
