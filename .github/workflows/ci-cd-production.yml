@@ -27,8 +27,6 @@ jobs:
   code-quality:
     name: 🔍 Code Quality & Security
     runs-on: ubuntu-latest
-    env:
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
@@ -54,11 +52,11 @@ jobs:
         run: npm audit --audit-level moderate
 
       - name: 📊 SonarCloud Scan
-        if: ${{ env.SONAR_TOKEN != '' }}
+        if: ${{ secrets.SONAR_TOKEN != '' }}
         uses: SonarSource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ env.SONAR_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   # ===== TESTS =====
   unit-tests:
