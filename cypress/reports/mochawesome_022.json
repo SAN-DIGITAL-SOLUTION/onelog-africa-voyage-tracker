@@ -1,0 +1,186 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 1,
+    "passes": 0,
+    "pending": 0,
+    "failures": 1,
+    "start": "2025-08-28T19:35:58.842Z",
+    "end": "2025-08-28T19:36:24.680Z",
+    "duration": 25838,
+    "testsRegistered": 5,
+    "passPercent": 0,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 4,
+    "hasSkipped": true
+  },
+  "results": [
+    {
+      "uuid": "8cd7061e-a27e-4879-ad19-6c4a0aa780cf",
+      "title": "",
+      "fullFile": "cypress\\e2e\\timeline\\navigation.cy.ts",
+      "file": "cypress\\e2e\\timeline\\navigation.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "12507cf6-659b-4f7c-9ae5-214297ec9292",
+          "title": "Navigation et fonctionnalités de la Timeline",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "affiche la liste des événements au chargement",
+              "fullTitle": "Navigation et fonctionnalités de la Timeline affiche la liste des événements au chargement",
+              "timedOut": null,
+              "duration": 25652,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "// Vérifier que des événements sont affichés\ncy.get('[data-testid^=\"event-item-\"]').should('have.length.greaterThan', 0);\n// Vérifier que les événements sont groupés par jour\ncy.get('[data-testid^=\"day-divider-\"]').should('exist');",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `[data-testid=\"timeline-container\"]`, but never found it.\n\nBecause this error occurred during a `before each` hook we are skipping the remaining tests in the current suite: `Navigation et fonctionnalit...`",
+                "estack": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `[data-testid=\"timeline-container\"]`, but never found it.\n\nBecause this error occurred during a `before each` hook we are skipping the remaining tests in the current suite: `Navigation et fonctionnalit...`\n    at Context.eval (webpack://vite_react_shadcn_ts/./cypress/e2e/timeline/navigation.cy.ts:7:0)",
+                "diff": null
+              },
+              "uuid": "3c2ecb15-316e-4939-afc6-f7bb7294f7bc",
+              "parentUUID": "12507cf6-659b-4f7c-9ae5-214297ec9292",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "permet de filtrer les événements par type",
+              "fullTitle": "Navigation et fonctionnalités de la Timeline permet de filtrer les événements par type",
+              "timedOut": null,
+              "duration": 0,
+              "state": "skipped",
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "// Ouvrir le menu déroulant des filtres\ncy.get('[data-testid=\"filter-type-button\"]').click();\n// Sélectionner le filtre \"Départ\"\ncy.get('[data-testid=\"filter-option-departure\"]').click();\n// Vérifier que seuls les événements de type \"Départ\" sont visibles\ncy.get('[data-testid^=\"event-item-\"]').each(function ($el) {\n    cy.wrap($el).should('contain', 'Départ');\n});",
+              "err": {},
+              "uuid": "d1054a93-3b39-44f1-a8b2-f2ea82e1d4e2",
+              "parentUUID": "12507cf6-659b-4f7c-9ae5-214297ec9292",
+              "isHook": false,
+              "skipped": true
+            },
+            {
+              "title": "affiche les détails d'un événement au clic",
+              "fullTitle": "Navigation et fonctionnalités de la Timeline affiche les détails d'un événement au clic",
+              "timedOut": null,
+              "duration": 0,
+              "state": "skipped",
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "// Cliquer sur le premier événement\ncy.get('[data-testid^=\"event-item-\"]').first().click();\n// Vérifier que la modale de détails s'affiche\ncy.get('[data-testid=\"event-detail-modal\"]').should('be.visible');\n// Vérifier que le bouton de fermeture fonctionne\ncy.get('[data-testid=\"close-modal-button\"]').click();\ncy.get('[data-testid=\"event-detail-modal\"]').should('not.exist');",
+              "err": {},
+              "uuid": "b99e7c34-4981-44f5-9bca-76c8be395441",
+              "parentUUID": "12507cf6-659b-4f7c-9ae5-214297ec9292",
+              "isHook": false,
+              "skipped": true
+            },
+            {
+              "title": "permet de naviguer entre les jours avec le sélecteur de date",
+              "fullTitle": "Navigation et fonctionnalités de la Timeline permet de naviguer entre les jours avec le sélecteur de date",
+              "timedOut": null,
+              "duration": 0,
+              "state": "skipped",
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "// Vérifier que le sélecteur de date est présent\ncy.get('[data-testid=\"date-picker\"]').should('exist');\n// Sélectionner une date différente\ncy.get('[data-testid=\"date-picker\"]').click();\ncy.get('.react-datepicker__day--015').click();\n// Vérifier que la timeline se met à jour\ncy.get('[data-testid^=\"day-divider-\"]').first().should('contain', '15');",
+              "err": {},
+              "uuid": "5224ac8c-999f-4075-a8fe-1c44d95e6b64",
+              "parentUUID": "12507cf6-659b-4f7c-9ae5-214297ec9292",
+              "isHook": false,
+              "skipped": true
+            },
+            {
+              "title": "affiche un message quand il n'y a pas d'événements",
+              "fullTitle": "Navigation et fonctionnalités de la Timeline affiche un message quand il n'y a pas d'événements",
+              "timedOut": null,
+              "duration": 0,
+              "state": "skipped",
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "// Simuler une réponse vide de l'API\ncy.intercept('GET', '/api/timeline/*', []).as('getEmptyTimeline');\n// Recharger la page\ncy.reload();\n// Vérifier que le message d'absence d'événements est affiché\ncy.get('[data-testid=\"no-events-message\"]').should('be.visible');",
+              "err": {},
+              "uuid": "0fd277fc-008a-4a3f-8c5c-2d488c9b64e7",
+              "parentUUID": "12507cf6-659b-4f7c-9ae5-214297ec9292",
+              "isHook": false,
+              "skipped": true
+            }
+          ],
+          "suites": [],
+          "passes": [],
+          "failures": [
+            "3c2ecb15-316e-4939-afc6-f7bb7294f7bc"
+          ],
+          "pending": [],
+          "skipped": [
+            "d1054a93-3b39-44f1-a8b2-f2ea82e1d4e2",
+            "b99e7c34-4981-44f5-9bca-76c8be395441",
+            "5224ac8c-999f-4075-a8fe-1c44d95e6b64",
+            "0fd277fc-008a-4a3f-8c5c-2d488c9b64e7"
+          ],
+          "duration": 25652,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.0.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": false,
+        "json": true
+      },
+      "version": "6.2.0"
+    }
+  }
+}

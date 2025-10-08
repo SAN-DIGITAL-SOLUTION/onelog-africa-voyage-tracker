@@ -160,7 +160,7 @@ export default function LandingHeroIllustration() {
       {/* Image "carte + camion + trajet" */}
       <img
         src="/lovable-uploads/ad2ed356-4438-4b30-b028-c3ac91515ba9.png"
-        alt="Carte animée d'Afrique OneLog"
+        alt="Carte animée d'Afrique OneLog, illustrant le suivi GPS et le parcours des camions sur le continent africain."
         className="absolute top-0 left-0 w-full h-full object-contain rounded-xl shadow-lg border border-gray-100"
         draggable={false}
         aria-hidden="true"

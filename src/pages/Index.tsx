@@ -1,29 +1,39 @@
-
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuth";
+import { Navigate } from 'react-router-dom';
+import { useRole } from '@/hooks/useRole';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function Index() {
-  const { user, loading } = useAuth();
-  const navigate = useNavigate();
+  const { role, loadingRole } = useRole();
+  const { user, loading: authLoading } = useAuth();
 
-  useEffect(() => {
-    if (!loading) {
-      if (user) {
-        navigate("/dashboard");
-      } else {
-        navigate("/landing");
-      }
-    }
-  }, [user, loading, navigate]);
-
-  if (loading) {
+  // Afficher un indicateur de chargement pendant la vérification
+  if (authLoading || loadingRole) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
       </div>
     );
   }
 
-  return null;
+  // Si l'utilisateur n'est pas connecté, rediriger vers l'authentification
+  if (!user) {
+    return <Navigate to="/auth" replace />;
+  }
+
+  // Si l'utilisateur n'a pas de rôle, rediriger vers l'onboarding
+  if (!role) {
+    return <Navigate to="/onboarding" replace />;
+  }
+
+  // Rediriger vers le dashboard approprié selon le rôle
+  const dashboardMap = {
+    'admin': '/admin-dashboard',
+    'super_admin': '/admin-dashboard', 
+    'chauffeur': '/chauffeur-dashboard',
+    'exploiteur': '/qa-dashboard',
+    'client': '/client-dashboard'
+  };
+
+  const targetPath = dashboardMap[role] || '/dashboard';
+  return <Navigate to={targetPath} replace />;
 }

@@ -1,6 +1,5 @@
-
 import React, { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from '@/lib/supabase';
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -56,7 +55,7 @@ export default function Inscription() {
       email: form.email,
       password: form.password,
       options: {
-        emailRedirectTo: window.location.origin + "/dashboard",
+        emailRedirectTo: window.location.origin + "/onboarding",
       },
     });
 

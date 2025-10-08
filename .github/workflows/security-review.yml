@@ -1,0 +1,38 @@
+name: Security Review
+
+on:
+  pull_request:
+    paths:
+      - 'notifications-core/**'
+  push:
+    paths:
+      - 'notifications-core/**'
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        run: npm ci
+        working-directory: notifications-core
+      - name: Audit dependencies
+        run: npm audit --audit-level=critical
+        working-directory: notifications-core
+      - name: Scan for secrets (truffleHog)
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: notifications-core
+      - name: Check SECURITY.md compliance
+        run: |
+          if ! grep -q 'auth=1' notifications-core/SECURITY.md; then
+            echo 'SECURITY.md policy not found or incomplete.'
+            exit 1
+          fi
+      - name: Block on vulnerabilities or secrets
+        if: failure()
+        run: exit 1

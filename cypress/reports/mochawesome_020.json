@@ -1,0 +1,109 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 1,
+    "passes": 0,
+    "pending": 0,
+    "failures": 1,
+    "start": "2025-08-28T19:34:14.430Z",
+    "end": "2025-08-28T19:34:35.686Z",
+    "duration": 21256,
+    "testsRegistered": 1,
+    "passPercent": 0,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "89d81218-57fe-4735-841a-fddd7653ec7c",
+      "title": "",
+      "fullFile": "cypress\\e2e\\onboarding_stepindicator.cy.ts",
+      "file": "cypress\\e2e\\onboarding_stepindicator.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "2375f199-9571-493c-80d3-886a444546d7",
+          "title": "Onboarding StepIndicator",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "affiche la barre de progression et évolue lors de la navigation",
+              "fullTitle": "Onboarding StepIndicator affiche la barre de progression et évolue lors de la navigation",
+              "timedOut": null,
+              "duration": 20915,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.visit('/onboarding');\ncy.contains('Suivant').should('exist');\ncy.get('[aria-label=\"Progress\"]').should('exist');\n// Vérifie que la première étape est active\ncy.get('[aria-label=\"Progress\"] li').first().find('span').first().should('have.class', 'bg-accentCTA');\n// Passe à l’étape suivante\ncy.contains('Suivant').click();\ncy.get('[aria-label=\"Progress\"] li').eq(1).find('span').first().should('have.class', 'bg-accentCTA');",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 4000ms: Expected to find content: 'Suivant' but never did.",
+                "estack": "AssertionError: Timed out retrying after 4000ms: Expected to find content: 'Suivant' but never did.\n    at Context.eval (webpack://vite_react_shadcn_ts/./cypress/e2e/onboarding_stepindicator.cy.ts:5:0)",
+                "diff": null
+              },
+              "uuid": "6e245e7a-79e2-4891-8c50-93a9029fd87f",
+              "parentUUID": "2375f199-9571-493c-80d3-886a444546d7",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [],
+          "failures": [
+            "6e245e7a-79e2-4891-8c50-93a9029fd87f"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 20915,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.0.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": false,
+        "json": true
+      },
+      "version": "6.2.0"
+    }
+  }
+}

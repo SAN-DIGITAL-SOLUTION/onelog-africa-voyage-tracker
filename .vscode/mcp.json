@@ -1,0 +1,38 @@
+{
+  "$schema": "https://raw.githubusercontent.com/modelcontextprotocol/specification/refs/heads/main/schema/mcp.json",
+  "mcpServers": {
+    "github-remote": {
+      "type": "remote",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "headers": {
+        "Authorization": "Bearer ${input:github_token}"
+      }
+    },
+    "github-docker-local": {
+      "type": "command",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "GITHUB_PERSONAL_ACCESS_TOKEN",
+        "ghcr.io/github/github-mcp-server"
+      ]
+    }
+  },
+  "inputs": {
+    "github_token": {
+      "type": "string",
+      "description": "GitHub Personal Access Token (PAT) for MCP remote server",
+      "required": true,
+      "visibility": "secret",
+      "prompt": {
+        "type": "promptString",
+        "password": true,
+        "title": "Enter your GitHub Personal Access Token (PAT)",
+        "placeHolder": "ghp_..."
+      }
+    }
+  }
+}

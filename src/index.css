@@ -1,102 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Lexend:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
-  html {
-    /* Ajout polices Google Fonts dans index.html :
-      <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
-    */
-    font-family: 'Open Sans', ui-sans-serif, system-ui, sans-serif;
-    background-color: #F4F4F4;
-    color: #263238;
-    scroll-behavior: smooth;
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+    --radius: 0.5rem;
   }
 
-  h1, h2, h3 {
-    font-family: 'Montserrat', 'Bebas Neue', ui-sans-serif, system-ui;
-    font-weight: 700;
-    color: #1A3C40;
-    letter-spacing: 0.01em;
-  }
-
-  /* Visibilité focus */
-  a:focus, button:focus, input:focus, select:focus {
-    outline: 2px solid #F9A825;
-    outline-offset: 2px;
-  }
-
-  /* Dark mode */
   .dark {
-    background-color: #1A3C40;
-    color: #F4F4F4;
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+  }
+
+  * {
+    @apply border-border;
   }
 
   html, body {
-    background: #F4F4F4;
-    color: #263238;
+    @apply bg-background text-foreground;
+    font-family: 'Inter', sans-serif;
   }
-}
 
-@layer components {
-  .btn-cta {
-    @apply bg-accent text-white font-bold rounded-full px-7 py-3 shadow-cta transition-cta duration-300 hover:bg-accent-hover hover:shadow-lg focus:ring-4 focus:ring-secondary;
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Lexend', sans-serif;
   }
-  .banner-notif {
-    @apply w-full fixed z-40 top-0 left-0 text-base text-primary px-2 py-1 font-semibold bg-secondary border-b-2 border-accent shadow;
-    letter-spacing: 0.01em;
-    /* Instead of using @apply animate-fade-in, use the class in JSX */
-  }
-  /* SUPPRIMÉ : .african-texture (motif africain) */
-  /* Animation plus appuyée pour la pulsation du GPS */
-  .animate-pulse-gps {
-    animation: pulse-gps 1.9s cubic-bezier(0.4,0,0.6,1) infinite;
-  }
-}
-
-/* Animations personnalisées pour african motifs, gradients, GPS pulse, CTA pulse */
-@keyframes african-glow-move {
-  0%   { background-position: 60% 38%;}
-  100% { background-position: 67% 44%;}
-}
-@keyframes african-gradient-move {
-  0%   { background-position: 61% 40%;}
-  100% { background-position: 70% 63%;}
-}
-@keyframes pulse-gps {
-  0%, 100% {
-    opacity: 0.18;
-    transform: scale(1.0);
-  }
-  40% {
-    opacity: 0.34;
-    transform: scale(1.17);
-  }
-  55% {
-    opacity: 0.19;
-    transform: scale(1.03);
-  }
-  72% {
-    opacity: 0.12;
-    transform: scale(1.11);
-  }
-}
-/* Animation du bouton CTA */
-@keyframes cta-pulse {
-  0%, 100% {
-    box-shadow: 0 0 0 0 #F9A82544, 0 4px 24px 0 #F9A82544;
-    filter: brightness(1.04);
-  }
-  56% {
-    box-shadow: 0 0 0 10px #F9A82533, 0 8px 22px 0 #F9A82570;
-    filter: brightness(1.12);
-  }
-  81% {
-    box-shadow: 0 0 0 0 #F9A82544, 0 4px 18px 0 #F9A82533;
-    filter: brightness(1.07);
-  }
-}
-.animate-cta-pulse {
-  animation: cta-pulse 1.65s cubic-bezier(0.4,0,0.7,1) infinite;
 }

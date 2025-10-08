@@ -1,0 +1,1 @@
+Bonjour {{clientName}}, votre mission {{missionId}} a bien été créée le {{date}}. Merci d'utiliser OneLog Africa.

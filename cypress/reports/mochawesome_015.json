@@ -1,0 +1,186 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 1,
+    "passes": 0,
+    "pending": 0,
+    "failures": 1,
+    "start": "2025-08-28T19:25:51.633Z",
+    "end": "2025-08-28T19:26:25.575Z",
+    "duration": 33942,
+    "testsRegistered": 5,
+    "passPercent": 0,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 4,
+    "hasSkipped": true
+  },
+  "results": [
+    {
+      "uuid": "95ac533c-56d4-4813-a99d-e13298364e07",
+      "title": "",
+      "fullFile": "cypress\\e2e\\client_dashboard.cy.ts",
+      "file": "cypress\\e2e\\client_dashboard.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "8d289bfa-f0ee-41b2-8082-2496dc63a120",
+          "title": "Client Dashboard - Parcours complet",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Affiche les sections principales du dashboard",
+              "fullTitle": "Client Dashboard - Parcours complet Affiche les sections principales du dashboard",
+              "timedOut": null,
+              "duration": 33917,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.contains('Tableau de bord Client');\ncy.contains('Missions en cours');\ncy.contains('Factures récentes');\ncy.contains('Notifications');",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `input[name=email]`, but never found it.\n\nBecause this error occurred during a `before all` hook we are skipping the remaining tests in the current suite: `Client Dashboard - Parcours...`",
+                "estack": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `input[name=email]`, but never found it.\n\nBecause this error occurred during a `before all` hook we are skipping the remaining tests in the current suite: `Client Dashboard - Parcours...`\n    at Context.eval (webpack://vite_react_shadcn_ts/./cypress/e2e/client_dashboard.cy.ts:5:0)",
+                "diff": null
+              },
+              "uuid": "29df325a-a384-4755-b61b-deb2b0437760",
+              "parentUUID": "8d289bfa-f0ee-41b2-8082-2496dc63a120",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Affiche les missions assignées",
+              "fullTitle": "Client Dashboard - Parcours complet Affiche les missions assignées",
+              "timedOut": null,
+              "duration": 0,
+              "state": "skipped",
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.get('section').contains('Missions en cours').parent().within(function () {\n    cy.get('li').should('have.length.gte', 1);\n});",
+              "err": {},
+              "uuid": "0d1e7960-c417-4fff-8bea-140c9ba8e67c",
+              "parentUUID": "8d289bfa-f0ee-41b2-8082-2496dc63a120",
+              "isHook": false,
+              "skipped": true
+            },
+            {
+              "title": "Affiche les factures du client",
+              "fullTitle": "Client Dashboard - Parcours complet Affiche les factures du client",
+              "timedOut": null,
+              "duration": 0,
+              "state": "skipped",
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.get('section').contains('Factures récentes').parent().within(function () {\n    cy.get('li').should('have.length.gte', 1);\n});",
+              "err": {},
+              "uuid": "a20692c3-48bd-45f6-8277-34b3e4da5db1",
+              "parentUUID": "8d289bfa-f0ee-41b2-8082-2496dc63a120",
+              "isHook": false,
+              "skipped": true
+            },
+            {
+              "title": "Affiche les notifications",
+              "fullTitle": "Client Dashboard - Parcours complet Affiche les notifications",
+              "timedOut": null,
+              "duration": 0,
+              "state": "skipped",
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.get('section').contains('Notifications').parent().within(function () {\n    cy.get('li').should('have.length.gte', 1);\n});",
+              "err": {},
+              "uuid": "d4da8455-5a27-4a7f-bebe-676665f50f3f",
+              "parentUUID": "8d289bfa-f0ee-41b2-8082-2496dc63a120",
+              "isHook": false,
+              "skipped": true
+            },
+            {
+              "title": "Permet de se déconnecter proprement",
+              "fullTitle": "Client Dashboard - Parcours complet Permet de se déconnecter proprement",
+              "timedOut": null,
+              "duration": 0,
+              "state": "skipped",
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.get('button').contains('Déconnexion').click();\ncy.url().should('include', '/login');",
+              "err": {},
+              "uuid": "60f5045b-694b-4255-9e9e-0dbdb66b3877",
+              "parentUUID": "8d289bfa-f0ee-41b2-8082-2496dc63a120",
+              "isHook": false,
+              "skipped": true
+            }
+          ],
+          "suites": [],
+          "passes": [],
+          "failures": [
+            "29df325a-a384-4755-b61b-deb2b0437760"
+          ],
+          "pending": [],
+          "skipped": [
+            "0d1e7960-c417-4fff-8bea-140c9ba8e67c",
+            "a20692c3-48bd-45f6-8277-34b3e4da5db1",
+            "d4da8455-5a27-4a7f-bebe-676665f50f3f",
+            "60f5045b-694b-4255-9e9e-0dbdb66b3877"
+          ],
+          "duration": 33917,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.0.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": false,
+        "json": true
+      },
+      "version": "6.2.0"
+    }
+  }
+}

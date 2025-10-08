@@ -1,0 +1,46 @@
+name: Admin Dashboard CI
+
+on:
+  push:
+    paths:
+      - 'src/modules/adminDashboard/**'
+      - '.github/workflows/dashboard-ci.yml'
+      - 'package.json'
+      - 'vitest.config.*'
+      - 'cypress/**'
+      - 'storybook/**'
+  pull_request:
+    paths:
+      - 'src/modules/adminDashboard/**'
+      - '.github/workflows/dashboard-ci.yml'
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - name: Install dependencies
+        run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Build
+        run: npm run build
+      - name: Unit tests (Vitest)
+        run: npm run test
+      - name: E2E tests (Cypress)
+        run: npx cypress run --spec "cypress/e2e/adminDashboard*.spec.ts"
+      - name: Coverage
+        run: npm run test -- --coverage
+      - name: Storybook build
+        run: npm run build-storybook
+      - name: Storybook tests
+        run: npm run test-storybook
+      - name: Upload coverage
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage
+          path: coverage/

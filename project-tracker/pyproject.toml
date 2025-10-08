@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "project-tracker"
+version = "0.1.0"
+description = "Documentation dynamique et génération de README à partir d’un suivi projet JSON."
+authors = [
+  { name="Votre Nom", email="votre@email.com" }
+]
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+  "markdown",
+  "weasyprint",
+  "jsonschema"
+]
+
+[project.scripts]
+readmegen = "project_tracker.scripts.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["project-tracker/scripts"]

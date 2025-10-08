@@ -1,0 +1,20 @@
+name: Performance Audit (Lighthouse CI)
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * *'
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Lighthouse CI
+        run: npm install -g @lhci/cli
+      - name: Run Lighthouse CI
+        run: lhci autorun --collect.url=https://staging.onelog.africa/admin/dashboard --upload.target=filesystem --upload.outputDir=lhci-report
+      - name: Upload report artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: lighthouse-report
+          path: lhci-report/

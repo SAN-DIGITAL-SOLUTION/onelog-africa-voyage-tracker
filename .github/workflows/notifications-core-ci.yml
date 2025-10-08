@@ -1,0 +1,47 @@
+name: Notifications Core CI
+
+on:
+  push:
+    paths:
+      - 'notifications-core/**'
+      - '.github/workflows/notifications-core-ci.yml'
+  pull_request:
+    paths:
+      - 'notifications-core/**'
+
+jobs:
+  validate-templates:
+    runs-on: [self-hosted, windows-latest]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate templates
+        run: npx ts-node notifications-core/validate-templates.ts
+
+      - name: Update README (auto-doc)
+        run: npx ts-node notifications-core/update-docs.ts
+
+      - name: Commit and push README if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add notifications-core/README.md
+          git diff --cached --quiet || git commit -m "docs(notifications-core): auto-update README with templates table [skip ci]"
+          git push || echo "No changes to push."
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload validation log
+        uses: actions/upload-artifact@v3
+        with:
+          name: template-validation-log
+          path: logs/test-results.log

@@ -1,0 +1,257 @@
+{
+  "stats": {
+    "suites": 5,
+    "tests": 4,
+    "passes": 0,
+    "pending": 0,
+    "failures": 4,
+    "start": "2025-08-28T19:27:08.117Z",
+    "end": "2025-08-28T19:28:36.565Z",
+    "duration": 88448,
+    "testsRegistered": 4,
+    "passPercent": 0,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "5bfd57e7-7671-469d-9ce9-f85289590d81",
+      "title": "",
+      "fullFile": "cypress\\e2e\\critical-flow.cy.ts",
+      "file": "cypress\\e2e\\critical-flow.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "f6b94ee4-8d29-4400-814e-bbbaa8829365",
+          "title": "Parcours utilisateur critique",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [],
+          "suites": [
+            {
+              "uuid": "b522bcf6-7444-4dae-b387-5f0e7af3923e",
+              "title": "Connexion et dashboard",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "devrait permettre la connexion admin",
+                  "fullTitle": "Parcours utilisateur critique Connexion et dashboard devrait permettre la connexion admin",
+                  "timedOut": null,
+                  "duration": 26100,
+                  "state": "failed",
+                  "speed": null,
+                  "pass": false,
+                  "fail": true,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.get('[data-testid=\"email-input\"]').type('admin@onelog.africa');\ncy.get('[data-testid=\"password-input\"]').type('Admin123!');\ncy.get('[data-testid=\"login-button\"]').click();\ncy.wait('@login');\ncy.url().should('include', '/dashboard');\ncy.get('[data-testid=\"dashboard-title\"]').should('contain', 'Tableau de bord');",
+                  "err": {
+                    "message": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `[data-testid=\"email-input\"]`, but never found it.",
+                    "estack": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `[data-testid=\"email-input\"]`, but never found it.\n    at Context.eval (webpack://vite_react_shadcn_ts/./cypress/e2e/critical-flow.cy.ts:12:0)",
+                    "diff": null
+                  },
+                  "uuid": "5f2f7028-6e91-418c-8316-614c04673c81",
+                  "parentUUID": "b522bcf6-7444-4dae-b387-5f0e7af3923e",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [],
+              "failures": [
+                "5f2f7028-6e91-418c-8316-614c04673c81"
+              ],
+              "pending": [],
+              "skipped": [],
+              "duration": 26100,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "069d91cd-1777-4338-8863-3b7161ec5ecb",
+              "title": "Création mission complète",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "devrait créer une mission de A à Z",
+                  "fullTitle": "Parcours utilisateur critique Création mission complète devrait créer une mission de A à Z",
+                  "timedOut": null,
+                  "duration": 19379,
+                  "state": "failed",
+                  "speed": null,
+                  "pass": false,
+                  "fail": true,
+                  "pending": false,
+                  "context": null,
+                  "code": "// Connexion\ncy.get('[data-testid=\"email-input\"]').type('admin@onelog.africa');\ncy.get('[data-testid=\"password-input\"]').type('Admin123!');\ncy.get('[data-testid=\"login-button\"]').click();\n// Navigation création mission\ncy.get('[data-testid=\"create-mission-btn\"]').click();\n// Remplir formulaire\ncy.get('[data-testid=\"client-select\"]').select('MEDLOG');\ncy.get('[data-testid=\"driver-select\"]').select('Jean Dupont');\ncy.get('[data-testid=\"vehicle-select\"]').select('Camion 001');\ncy.get('[data-testid=\"pickup-location\"]').type('Douala Port');\ncy.get('[data-testid=\"delivery-location\"]').type('Yaoundé Depot');\ncy.get('[data-testid=\"expected-start\"]').type('2025-08-30');\n// Soumettre\ncy.get('[data-testid=\"submit-mission\"]').click();\ncy.wait('@createMission');\n// Vérification\ncy.get('[data-testid=\"success-message\"]').should('contain', 'Mission créée');",
+                  "err": {
+                    "message": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `[data-testid=\"email-input\"]`, but never found it.",
+                    "estack": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `[data-testid=\"email-input\"]`, but never found it.\n    at Context.eval (webpack://vite_react_shadcn_ts/./cypress/e2e/critical-flow.cy.ts:23:0)",
+                    "diff": null
+                  },
+                  "uuid": "7e00a8e8-7f54-4dcc-94bc-78d9468bc0e2",
+                  "parentUUID": "069d91cd-1777-4338-8863-3b7161ec5ecb",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [],
+              "failures": [
+                "7e00a8e8-7f54-4dcc-94bc-78d9468bc0e2"
+              ],
+              "pending": [],
+              "skipped": [],
+              "duration": 19379,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "ef66462e-2929-4411-9555-1f5d30248340",
+              "title": "Supervision temps réel",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "devrait afficher les véhicules en temps réel",
+                  "fullTitle": "Parcours utilisateur critique Supervision temps réel devrait afficher les véhicules en temps réel",
+                  "timedOut": null,
+                  "duration": 22738,
+                  "state": "failed",
+                  "speed": null,
+                  "pass": false,
+                  "fail": true,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.get('[data-testid=\"email-input\"]').type('admin@onelog.africa');\ncy.get('[data-testid=\"password-input\"]').type('Admin123!');\ncy.get('[data-testid=\"login-button\"]').click();\n// Navigation supervision\ncy.get('[data-testid=\"supervision-link\"]').click();\ncy.url().should('include', '/supervision');\n// Vérification carte\ncy.get('[data-testid=\"supervision-map\"]').should('be.visible');\ncy.wait('@getVehicles');\n// Test filtres\ncy.get('[data-testid=\"filter-status\"]').select('en cours');\ncy.get('[data-testid=\"vehicle-marker\"]').should('have.length.greaterThan', 0);\n// Mode plein écran\ncy.get('[data-testid=\"fullscreen-btn\"]').click();\ncy.get('[data-testid=\"supervision-dashboard\"]').should('have.class', 'fullscreen');",
+                  "err": {
+                    "message": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `[data-testid=\"email-input\"]`, but never found it.",
+                    "estack": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `[data-testid=\"email-input\"]`, but never found it.\n    at Context.eval (webpack://vite_react_shadcn_ts/./cypress/e2e/critical-flow.cy.ts:44:0)",
+                    "diff": null
+                  },
+                  "uuid": "6bbba476-cc6c-4644-8bfb-538a945603c5",
+                  "parentUUID": "ef66462e-2929-4411-9555-1f5d30248340",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [],
+              "failures": [
+                "6bbba476-cc6c-4644-8bfb-538a945603c5"
+              ],
+              "pending": [],
+              "skipped": [],
+              "duration": 22738,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "c10cee49-0645-4499-964c-c870efdfab1f",
+              "title": "Facturation multi-acteurs",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "devrait générer une facture groupée",
+                  "fullTitle": "Parcours utilisateur critique Facturation multi-acteurs devrait générer une facture groupée",
+                  "timedOut": null,
+                  "duration": 19697,
+                  "state": "failed",
+                  "speed": null,
+                  "pass": false,
+                  "fail": true,
+                  "pending": false,
+                  "context": null,
+                  "code": "cy.get('[data-testid=\"email-input\"]').type('admin@onelog.africa');\ncy.get('[data-testid=\"password-input\"]').type('Admin123!');\ncy.get('[data-testid=\"login-button\"]').click();\n// Navigation facturation\ncy.get('[data-testid=\"billing-link\"]').click();\n// Sélectionner partenaire\ncy.get('[data-testid=\"billing-partner\"]').select('MEDLOG');\ncy.get('[data-testid=\"start-date\"]').type('2025-08-01');\ncy.get('[data-testid=\"end-date\"]').type('2025-08-31');\n// Générer facture\ncy.get('[data-testid=\"generate-invoice\"]').click();\ncy.get('[data-testid=\"invoice-preview\"]').should('be.visible');",
+                  "err": {
+                    "message": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `[data-testid=\"email-input\"]`, but never found it.",
+                    "estack": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `[data-testid=\"email-input\"]`, but never found it.\n    at Context.eval (webpack://vite_react_shadcn_ts/./cypress/e2e/critical-flow.cy.ts:63:0)",
+                    "diff": null
+                  },
+                  "uuid": "62fa52d2-322f-49cd-a48e-05b221867faf",
+                  "parentUUID": "c10cee49-0645-4499-964c-c870efdfab1f",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [],
+              "failures": [
+                "62fa52d2-322f-49cd-a48e-05b221867faf"
+              ],
+              "pending": [],
+              "skipped": [],
+              "duration": 19697,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            }
+          ],
+          "passes": [],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 0,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.0.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports",
+        "overwrite": false,
+        "html": false,
+        "json": true
+      },
+      "version": "6.2.0"
+    }
+  }
+}

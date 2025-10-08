@@ -1,0 +1,5 @@
+{
+  "entryPoints": ["./services/userProfileService.ts", "./hooks/useUserProfile.ts", "./components/UserProfileForm.tsx"],
+  "out": "./docs/api",
+  "tsconfig": "./tsconfig.json"
+}

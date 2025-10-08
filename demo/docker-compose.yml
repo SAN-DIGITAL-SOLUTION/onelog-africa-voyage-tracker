@@ -1,0 +1,51 @@
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    environment:
+      NODE_ENV: production
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - onelognet
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: onelogdb
+      POSTGRES_USER: onelog
+      POSTGRES_PASSWORD: secret
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "onelog"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - onelognet
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@onelog.africa
+      PGADMIN_DEFAULT_PASSWORD: onelog123
+    ports:
+      - "5050:80"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - onelognet
+
+volumes:
+  pgdata:
+
+networks:
+  onelognet:

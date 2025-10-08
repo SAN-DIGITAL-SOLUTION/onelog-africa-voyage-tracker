@@ -16,6 +16,7 @@ export default function Landing() {
     <div className="relative min-h-screen flex flex-col bg-background dark:bg-dm-bg transition-colors">
       <LandingHeader />
       <main className="flex flex-col flex-1">
+        <h1 className="sr-only">OneLog Africa – Plateforme logistique panafricaine</h1>
         <LandingHero />
         <LandingWhy />
         <LandingKeyFeatures />

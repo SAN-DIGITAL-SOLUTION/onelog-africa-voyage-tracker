@@ -45,6 +45,7 @@ export default function LandingHero() {
               textShadow: "0 2px 18px #1A3C4033",
               letterSpacing: "-0.01em",
             }}
+            as="h1"
           >
             <Truck size={38} style={{ color: "#1A3C40", background: "#F9A825", borderRadius: 7, boxShadow: "0 2px 8px #E6510033" }}/>
             <span>
