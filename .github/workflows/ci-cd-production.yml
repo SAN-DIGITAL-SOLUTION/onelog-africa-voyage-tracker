@@ -53,16 +53,134 @@ jobs:
 
       - name: 📊 SonarCloud Scan
         if: ${{ secrets.SONAR_TOKEN != '' }}
-        uses: SonarSource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          npx sonar-scanner \
+            -Dsonar.projectKey=san-digital-solution_onelog-africa-voyage-tracker \
+            -Dsonar.organization=san-digital-solution \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+
+  # ===== VÉRIFICATION DE SÉCURITÉ =====
+  security-readiness:
+    name: 🔒 Public Repository Readiness Check
+    runs-on: ubuntu-latest
+    needs: code-quality
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🔍 Security Check - Fichiers sensibles
+        run: |
+          echo "=== VÉRIFICATION DE SÉCURITÉ - FICHIERS SENSIBLES ===" > security-report.md
+          echo "" >> security-report.md
+
+          # Vérifier les fichiers sensibles qui ne devraient pas être committés
+          SENSITIVE_PATTERNS=(".env" ".env.local" ".env.*" "*.key" "*.pem" "*.p12" "*.pfx" "secret*" "password*" "token*" "api_key*")
+
+          echo "🔍 Recherche de fichiers sensibles dans le repository..." >> security-report.md
+
+          SENSITIVE_FOUND=false
+          for pattern in "${SENSITIVE_PATTERNS[@]}"; do
+            echo "" >> security-report.md
+            echo "#### Recherche: $pattern" >> security-report.md
+
+            if git ls-files | grep -E "$pattern$" > /dev/null 2>&1; then
+              echo "❌ **FICHIERS SENSIBLES TROUVÉS:**" >> security-report.md
+              git ls-files | grep -E "$pattern$" >> security-report.md
+              SENSITIVE_FOUND=true
+            else
+              echo "✅ Aucun fichier sensible trouvé pour le pattern: $pattern" >> security-report.md
+            fi
+          done
+
+          # Vérifier les dumps de base de données
+          echo "" >> security-report.md
+          echo "#### Recherche de dumps de base de données" >> security-report.md
+          if git ls-files | grep -E "(dump\.sql|backup\.sql|\.backup)" > /dev/null 2>&1; then
+            echo "❌ **DUMPS DE BASE DE DONNÉES TROUVÉS:**" >> security-report.md
+            git ls-files | grep -E "(dump\.sql|backup\.sql|\.backup)" >> security-report.md
+            SENSITIVE_FOUND=true
+          else
+            echo "✅ Aucun dump de base de données trouvé" >> security-report.md
+          fi
+
+          # Vérifier .gitignore
+          echo "" >> security-report.md
+          echo "#### Vérification du .gitignore" >> security-report.md
+          if [ -f ".gitignore" ]; then
+            echo "✅ Fichier .gitignore présent" >> security-report.md
+
+            # Vérifier les entrées importantes
+            if grep -E "(\.env|node_modules|dist|build)" .gitignore > /dev/null; then
+              echo "✅ .gitignore contient les entrées importantes" >> security-report.md
+            else
+              echo "⚠️ .gitignore pourrait manquer d'entrées importantes" >> security-report.md
+            fi
+          else
+            echo "❌ Fichier .gitignore manquant" >> security-report.md
+            SENSITIVE_FOUND=true
+          fi
+
+          # Vérifier README.md
+          echo "" >> security-report.md
+          echo "#### Vérification du README.md" >> security-report.md
+          if [ -f "README.md" ]; then
+            echo "✅ Fichier README.md présent" >> security-report.md
+
+            # Vérifier les sections importantes
+            README_SECTIONS=("installation" "usage" "license" "contact" "contribution" "setup" "configuration")
+            FOUND_SECTIONS=()
+
+            for section in "${README_SECTIONS[@]}"; do
+              if grep -i -E "(^#|$section|^##.*$section)" README.md > /dev/null; then
+                FOUND_SECTIONS+=("$section")
+              fi
+            done
+
+            if [ ${#FOUND_SECTIONS[@]} -gt 0 ]; then
+              echo "✅ Sections trouvées: ${FOUND_SECTIONS[*]}" >> security-report.md
+            else
+              echo "⚠️ Aucune section standard trouvée dans README.md" >> security-report.md
+            fi
+          else
+            echo "❌ Fichier README.md manquant" >> security-report.md
+            SENSITIVE_FOUND=true
+          fi
+
+          # Vérifier LICENSE
+          echo "" >> security-report.md
+          echo "#### Vérification de la LICENSE" >> security-report.md
+          if [ -f "LICENSE" ] || [ -f "LICENSE.md" ] || [ -f "LICENSE.txt" ]; then
+            echo "✅ Fichier de licence présent" >> security-report.md
+          else
+            echo "⚠️ Aucun fichier de licence trouvé" >> security-report.md
+          fi
+
+          # Résultat final
+          echo "" >> security-report.md
+          if [ "$SENSITIVE_FOUND" = true ]; then
+            echo "❌ **ÉCHEC: FICHIERS SENSIBLES DÉTECTÉS**" >> security-report.md
+            echo "Le dépôt ne peut pas être rendu public en toute sécurité." >> security-report.md
+            exit 1
+          else
+            echo "✅ **SUCCÈS: AUCUN FICHIER SENSIBLE DÉTECTÉ**" >> security-report.md
+            echo "Le dépôt peut être rendu public en toute sécurité." >> security-report.md
+          fi
+
+      - name: 📊 Upload Security Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: security-readiness-report
+          path: security-report.md
+          retention-days: 30
 
   # ===== TESTS =====
   unit-tests:
     name: 🧪 Unit Tests
     runs-on: ubuntu-latest
-    needs: code-quality
+    needs: [code-quality, security-readiness]
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
